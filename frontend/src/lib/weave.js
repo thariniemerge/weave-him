@@ -4,13 +4,23 @@ export const qByKey = (key) => QUESTIONS.find((q) => q.key === key);
 const clean = (t) => t.replace(/^\s*(he|he…|he\.\.\.)\s+/i, "").replace(/\s+/g, " ").trim();
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 const flat = (s) => s.replace(/,/g, "");
+// 1-2 word band label, max 14 chars, cut at a word boundary
+export function shortLabel(t) {
+  const words = t.toUpperCase().replace(/[^\p{L}\p{N}'&\s-]/gu, "").split(/\s+/).filter(Boolean);
+  for (let i = 0; i < words.length - 1; i++) {
+    const two = `${words[i]} ${words[i + 1]}`;
+    if (two.length <= 14) return two;
+  }
+  const one = words.find((w) => w.length <= 14);
+  return one || (words[0] || "").slice(0, 14);
+}
 
 export function resolveChoice(key, ans) {
   if (!ans) return null;
   if (ans.custom) {
     const t = clean(ans.custom);
     if (!t) return null;
-    return { id: "custom", label: t, strand: t.toLowerCase(), tag: t.toLowerCase(), band: t.toUpperCase(), sentence: `“${t}”` };
+    return { id: "custom", label: t, strand: t.toLowerCase(), tag: t.toLowerCase(), band: shortLabel(t), sentence: `“${t}”` };
   }
   return qByKey(key).options.find((o) => o.id === ans.id) || null;
 }
@@ -18,7 +28,7 @@ export function resolveChoice(key, ans) {
 export function resolveRemember(r) {
   if (r.custom) {
     const t = clean(r.custom);
-    return { id: "custom", label: t, short: t, band: `REMEMBERS ${t.toUpperCase()}`, sentence: `you remember ${t}` };
+    return { id: "custom", label: t, short: t, band: shortLabel(t), sentence: `you remember ${t}` };
   }
   return REMEMBERS.find((x) => x.id === r.id);
 }
@@ -48,7 +58,7 @@ export function buildPayload(a) {
     remembers: rem.map((r) => r.short),
     remember_keys: rem.map((r) => r.id),
     feel: q7.label,
-    band: [`${q3.band} · ${q1.band}`, `${q2.band} · ${q4.band}`, `${rem[0].band.startsWith("REMEMBERS") ? rem[0].band : "REMEMBERS " + rem[0].band} · ${q7.band}`],
+    band: [q3.band, q1.band, q4.band, q2.band, rem[0].band, q7.band],
     card: {
       line1: `${cap(q3.strand)} · ${cap(q1.strand)}`,
       line2: cap(`remembers ${rem[0].short}`),

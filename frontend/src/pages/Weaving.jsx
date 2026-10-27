@@ -7,7 +7,7 @@ import { COPY, ROMAN } from "../content";
 import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete } from "../lib/weave";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
-import { BandLine } from "./Meet";
+import { BandText } from "../components/weave/BandText";
 import { play, startLoop, stopLoop } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 
@@ -29,7 +29,7 @@ const Tag = ({ text, i, shown }) => {
     <motion.span data-testid={`hoop-tag-${i}`}
       initial={false} animate={shown ? { opacity: 1, scale: 1, y: 0, rotate: t.rot } : { opacity: 0, scale: 0.6, y: -24, rotate: t.rot * 3 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`absolute z-20 max-w-[34%] px-2.5 py-1 rounded-md border border-[color:#a98a6a] shadow-[0_4px_8px_-4px_rgba(58,36,32,.55)] f-cg italic text-[14px] leading-tight ${t.light ? "text-[color:var(--parchment)]" : ""}`}
+      className={`absolute z-20 max-w-[34%] px-2.5 py-1 rounded-md border border-[color:#a98a6a] shadow-[0_4px_8px_-4px_rgba(58,36,32,.55)] f-cg italic text-[14px] leading-tight [overflow-wrap:anywhere] line-clamp-2 ${t.light ? "text-[color:var(--parchment)]" : ""}`}
       style={{ ...t.pos, background: t.bg }}>
       {text}
     </motion.span>
@@ -93,10 +93,7 @@ export default function Weaving() {
           <div className="absolute inset-x-0 top-0 border-b-2 border-dashed border-[color:var(--rose)] transition-[height] duration-500 ease-out"
             style={{ ...cloth, height: `${(1 - p) * 100}%` }} />
         </div>
-        <div className="absolute inset-0 transition-opacity duration-500" style={{ opacity: step >= 4 ? 1 : 0 }}>
-          <BandLine i={0} text={band[0]} pos={{ top: "63.4%", w: "42%" }} max={8} />
-          <BandLine i={2} text={band[2]} pos={{ top: "68.4%", w: "50%" }} max={8} />
-        </div>
+        <BandText band={band} kind="hoop" show={step >= 4} />
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       <h1 className="f-cg font-bold italic text-[32px] mt-3 text-center">{COPY.weaving}</h1>

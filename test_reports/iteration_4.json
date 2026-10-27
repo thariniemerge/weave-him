@@ -1,0 +1,38 @@
+{
+  "summary": "Iteration 4 tested all 4 enhancements: server card rendering, live card preview with lightbox, vow reweaving, and Web Audio sound toggle. Regression also checked. Backend: 13/13 new tests pass in tests/test_server_card_reweave.py. POST /api/husbands returns edit_token and reweaves_left=3, and a db.cards doc with source='server' is stored at creation. card.png is a 1080x1920 PNG. og.jpg is a 720x1280 JPEG. The share page's og:image is .../og.jpg. GET hides edit_token and edit_token_hash. Deleting the stored card makes the next card.png render it on demand (200), and it is re-stored. Reweave: a wrong token gives 403, an unknown id 404, index -1 or 5 gives 422. Three valid reweaves each change only vows[index], decrement reweaves_left 2/1/0, persist, start with I'll, and have <=18 words. The 4th gives 409 'The basketmaker is out of willow.' and the vows stay unchanged. Frontend at 390x844: full flow Welcome -> strands I-VII (3 range sliders move and captions change, 2 remembers) -> weaving auto-navigates -> /meet/hgdvzckg. Vows are staggered (opacities 0.47,0,0,0,0 at load). card-thumbnail shows the server PNG (blob, natural size 1080x1920). The lightbox opens with the image. Save downloads jasper-woven-by-hand.png and toasts 'Link copied'. Share on desktop falls back to download plus a 'Link copied' toast. Reweave UI: clicking the vow-2 row shows reweave-button-2 with '3 of 3 left'. Clicking it shows 'Reweaving…' and the quill, then vow-text-2 changes. Counts go 2, 1, then out-of-willow appears. This persists after reload, and other vows then show out-of-willow too. Public /h/:id and a fresh-context /meet/:id show no reweave tip or role=button; /h has no card thumbnail. sound-toggle is present on Welcome, Strand 1/5, Weaving, Meet, /h and Tell. Clicking toggles aria-pressed and sets localStorage weave-him-muted to 1/0, and this persists after reload. With prefers-reduced-motion it is muted by default. There are no console errors or page errors, including with sound unmuted. No horizontal overflow at 390px on any screen.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/husbands/{id}/reweave", "issue": "The template fallback can produce a near-duplicate of another vow. Observed: vow II became the template \"I'll have your coffee ready before you remember you need it.\" while vow I was already \"I'll bring your coffee before you ask, and pretend it was nothing.\" reweave_fallback only excludes exact string matches."},
+      {"endpoint": "POST /api/husbands (llm_vows)", "issue": "The log says 'LLM vows failed: ' with an empty message. str(asyncio.TimeoutError) is empty, so the timeouts cannot be diagnosed. Use logger.warning(..., repr(e)) or exc_info."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Card lightbox (mobile 390px)", "issues": ["The dialog close X sits on top of the card image's top-right corner (WOVEN TO ORDER banner). Consider moving it outside or above the image."]},
+      {"screen": "Welcome footer / share card", "issues": ["The placeholder '[Inspired-by credit line] · Built on Emergent' still shows on Welcome and is baked into the card PNG."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_server_card_reweave.py", "/app/backend/tests/test_weave_api.py", "/app/test_reports/pytest/pytest_iter4.xml"],
+  "action_items": [
+    "Optional: in reweave_fallback, skip templates whose topic key (e.g. coffee) already matches a theme in the current vows, or prefer unused keys.",
+    "Optional: log repr(e) in the LLM failure warnings.",
+    "Optional: reposition the lightbox close button on mobile.",
+    "Replace the placeholder credit line when the real credit is known."
+  ],
+  "critical_code_review_comments": [
+    "reweave_vow compares the token hash with != rather than hmac.compare_digest. This is low risk but trivial to harden.",
+    "There is a reweave race: the check of reweaves>=3 happens before the LLM call, but the atomic find_one_and_update with reweaves<$lt 3 correctly caps it at 3. Good.",
+    "Older husbands with no edit_token_hash correctly get 403 on reweave.",
+    "card_doc re-renders any non-'server' card doc on demand. Legacy client-uploaded cards are replaced the first time they are fetched, which is the intended behaviour.",
+    "The POST /husbands/{id}/card upload endpoint was removed, which made 3 TestCard tests in test_weave_api.py stale. They were retired."
+  ],
+  "updated_files": ["/app/backend/tests/test_server_card_reweave.py (new)", "/app/backend/tests/test_weave_api.py (removed stale TestCard upload tests)"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Husbands were created via pytest (TEST run, several ids) and via the UI: hgdvzckg (Jasper), reweaves exhausted. One husband's db.cards doc was deleted to test on-demand render, and it was re-created.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=... pytest tests/test_server_card_reweave.py tests/test_weave_api.py -n 0. The tests must run sequentially because the LLM key allows 1 concurrent request. The test uses pymongo with backend/.env to delete a card doc for the on-demand render test. Reweave in the UI uses the vow-N/reweave-button-N/vow-text-N testids (1-based); the API index is 0-based. aria-pressed on sound-toggle is true when sound is ON."
+}

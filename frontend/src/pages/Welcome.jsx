@@ -62,7 +62,7 @@ export default function Welcome() {
       </div>
       <Pill data-testid="commission-button" className="mt-5" onClick={start}>{COPY.cta}</Pill>
       <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#5A3D34]">
-        {COPY.counter(count ?? "—")}
+        {COPY.counter(count ?? "…")}
       </p>
       <Footer>{CONFIG.CREDIT_LINE}</Footer>
       <HowItWorks open={how} onOpenChange={setHow} />

@@ -10,6 +10,11 @@ import { play } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 
 const STRAND_TINTS = ["var(--peony)", "var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)"];
+const greetingFor = (to, his) => {
+  const n = his.trim();
+  if (!n) return to.greeting;
+  return to.id === "partner" ? `My love, ${n},` : `Dear ${n},`;
+};
 const isMobile = () => /iphone|ipad|android|mobile/i.test(navigator.userAgent);
 
 const Letter = ({ greeting, sentence, name, setName }) => (
@@ -23,8 +28,9 @@ const Letter = ({ greeting, sentence, name, setName }) => (
         <span className="hl font-semibold" data-testid="letter-strand">{sentence}</span>
         {COPY.letterBody(sentence)[2]}
       </p>
+      <p className="f-cg italic text-[19px] mt-4" data-testid="letter-sign-off">{COPY.withLove}</p>
       <input data-testid="signature-input" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} placeholder={COPY.herName}
-        aria-label="Your first name" className="mt-3 w-full min-h-[44px] bg-transparent outline-none f-cg italic text-[19px] border-b border-dotted border-[color:var(--peony)] placeholder:text-[color:#8a6f64]" />
+        aria-label="Your name" className="w-full min-h-[44px] bg-transparent outline-none f-cg italic text-[22px] border-b border-dotted border-[color:var(--peony)] placeholder:text-[color:#8a6f64] placeholder:text-[18px]" />
     </div>
   </section>
 );
@@ -36,12 +42,14 @@ export default function Tell() {
   const [to, setTo] = useState(RECIPIENTS[0]);
   const [strand, setStrand] = useState(0);
   const [name, setName] = useState("");
+  const [his, setHis] = useState("");
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => nav("/")); }, [id, h, nav]);
   if (!h) return <Page className="items-center justify-center"><p className="f-cg italic text-[20px]">Finding his strands…</p></Page>;
 
   const sentence = h.threads[strand]?.sentence || "";
   const link = shareLink(h.id);
-  const body = [to.greeting, COPY.letterBody(sentence).join(""), name.trim() ? `— ${name.trim()}` : ""].filter(Boolean).join("\n");
+  const greeting = greetingFor(to, his);
+  const body = [greeting, COPY.letterBody(sentence).join(""), COPY.withLove, name.trim()].filter(Boolean).join("\n");
   const sendText = async () => {
     play("paper");
     if (navigator.share) {
@@ -81,7 +89,12 @@ export default function Tell() {
           </Chip>
         ))}
       </div>
-      <Letter greeting={to.greeting} sentence={sentence} name={name} setName={setName} />
+      <label className="block mt-5" htmlFor="his-name">
+        <span className="f-sc text-[12px] text-[color:#5A3D34]">{COPY.hisName}</span>
+        <input id="his-name" data-testid="his-name-input" value={his} maxLength={30} onChange={(e) => setHis(e.target.value)}
+          className="mt-1 w-full min-h-[44px] px-4 rounded-full bg-[color:var(--paper)] border border-dashed border-[color:#b8956a] outline-none f-cg italic text-[18px]" />
+      </label>
+      <Letter greeting={greeting} sentence={sentence} name={name} setName={setName} />
       <button data-testid="send-text-button" onClick={sendText} className="pill pill-primary mt-6">
         <MessageCircle className="w-5 h-5" strokeWidth={1.8} /><span>{COPY.sendText}</span>
       </button>

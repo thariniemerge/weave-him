@@ -105,28 +105,7 @@ class TestHusbands:
         assert s.post(f"{API}/husbands", json=p).status_code == 422
 
 
-class TestCard:
-    def test_og_404_before_upload(self, s, husband):
-        assert s.get(f"{API}/husbands/{husband['id']}/og.jpg").status_code == 404
-
-    def test_upload_reject_non_png(self, s, husband):
-        r = s.post(f"{API}/husbands/{husband['id']}/card", data=b"notapng", headers={"Content-Type": "image/png"})
-        assert r.status_code == 400
-
-    def test_upload_404_unknown(self, s):
-        r = s.post(f"{API}/husbands/nosuchid/card", data=png_bytes(10, 10), headers={"Content-Type": "image/png"})
-        assert r.status_code == 404
-
-    def test_upload_and_og(self, s, husband):
-        r = s.post(f"{API}/husbands/{husband['id']}/card", data=png_bytes(), headers={"Content-Type": "image/png"})
-        assert r.status_code == 200 and r.json()["ok"] is True
-        r2 = s.post(f"{API}/husbands/{husband['id']}/card", data=png_bytes(), headers={"Content-Type": "image/png"})
-        assert r2.json().get("existing") is True
-        og = s.get(f"{API}/husbands/{husband['id']}/og.jpg")
-        assert og.status_code == 200 and og.headers["content-type"] == "image/jpeg"
-        assert Image.open(io.BytesIO(og.content)).size == (720, 1280)
-        png = s.get(f"{API}/husbands/{husband['id']}/card.png")
-        assert png.status_code == 200 and Image.open(io.BytesIO(png.content)).size == (1080, 1920)
+# TestCard (client upload) retired in iteration 4: cards are server-rendered; see test_server_card_reweave.py
 
 
 class TestShare:

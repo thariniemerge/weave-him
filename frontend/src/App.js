@@ -1,4 +1,5 @@
 import "@/App.css";
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, MotionConfig } from "framer-motion";
 import { Toaster } from "sonner";
@@ -12,6 +13,7 @@ import CardPage from "./pages/CardPage";
 
 function AnimatedRoutes() {
   const location = useLocation();
+  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; }, [location.pathname]);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
     <div className="mx-auto w-full max-w-[430px] overflow-x-hidden">

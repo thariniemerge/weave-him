@@ -59,7 +59,9 @@ export const COPY = {
   sendTo: "Send to",
   strandGave: "The strand he gave you",
   letterBody: (s) => ["You're woven into my wicker husband. Your strand: ", s, ". Thought you should know."],
-  herName: "[Her first name]",
+  herName: "Sign with your name",
+  withLove: "With love,",
+  hisName: "His name (optional)",
   sendText: "Send as a text",
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
@@ -97,7 +99,7 @@ export const QUESTIONS = [
     n: 2, key: "q2", text: "On a *lazy* Sunday, he…",
     options: [
       { id: "pancakes", label: "Makes pancakes, badly", strand: "pancakes, badly", tag: "brave cook", band: "PANCAKES", sentence: "you make pancakes, badly, and serve them proudly" },
-      { id: "reads", label: "Reads beside me in silence", strand: "reads beside me", tag: "quiet reader", band: "READS BESIDE ME", sentence: "you read beside me and let the quiet be good" },
+      { id: "reads", label: "Reads beside me in silence", strand: "reads beside me", tag: "quiet reader", band: "QUIET READS", sentence: "you read beside me and let the quiet be good" },
       { id: "market", label: "Drags me to a farmers' market", strand: "farmers' markets", tag: "market-goer", band: "MARKET DAYS", sentence: "you drag me to the farmers' market and make it fun" },
       { id: "adventure", label: "Plans an adventure I didn't ask for", strand: "unasked adventures", tag: "adventurer", band: "ADVENTURES", sentence: "you plan the adventures I'd never think to ask for" },
     ],
@@ -124,7 +126,7 @@ export const QUESTIONS = [
     n: 7, key: "q7", text: "How should he make you *feel*?", kicker: "The final strand",
     options: [
       { id: "safe", label: "Safe harbour", strand: "safe harbour", tag: "safe harbour", band: "SAFE HARBOUR", sentence: "you make me feel safe, like a harbour in a storm" },
-      { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", tag: "amuser", band: "ENDLESSLY AMUSED", sentence: "you keep me endlessly amused" },
+      { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", tag: "amuser", band: "AMUSED", sentence: "you keep me endlessly amused" },
       { id: "seen", label: "Truly seen", strand: "truly sees me", tag: "noticer", band: "TRULY SEEN", sentence: "you make me feel truly seen" },
       { id: "alone", label: "Never alone", strand: "never alone", tag: "constant", band: "NEVER ALONE", sentence: "you make sure I never feel alone" },
     ],
@@ -159,11 +161,11 @@ export const SLIDERS = [
 ];
 
 export const REMEMBERS = [
-  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "REMEMBERS MOM'S BIRTHDAY", sentence: "you always remember Mom's birthday" },
-  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "MY COFFEE ORDER", sentence: "you know exactly how I take my coffee" },
-  { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "MY WORST JOKES", sentence: "you laugh at my worst jokes, every time" },
-  { id: "song", label: "My favourite song", short: "my favourite song", band: "MY FAVOURITE SONG", sentence: "you never forget my favourite song" },
-  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "MY CHILDHOOD PET", sentence: "you remember the name of my childhood pet" },
+  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S BIRTHDAY", sentence: "you always remember Mom's birthday" },
+  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee" },
+  { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time" },
+  { id: "song", label: "My favourite song", short: "my favourite song", band: "FAVOURITE SONG", sentence: "you never forget my favourite song" },
+  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "CHILDHOOD PET", sentence: "you remember the name of my childhood pet" },
   { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises" },
 ];
 

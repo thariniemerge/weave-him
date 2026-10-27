@@ -49,6 +49,23 @@ def fit(texts, kind, mx, mn, step, width, ls_em):
     return s
 
 
+def clamp_lines(texts, kind, size, width, ls_em):
+    """At the minimum size, cut over-long lines at a word boundary with an ellipsis."""
+    f, out = font(kind, size), []
+    for t in texts:
+        if text_width(t, f, size * ls_em) <= width * 1.01:
+            out.append(t)
+            continue
+        words = t.split(" ")
+        while len(words) > 1 and text_width(" ".join(words) + "…", f, size * ls_em) > width:
+            words.pop()
+        cut = " ".join(words)
+        while text_width(cut + "…", f, size * ls_em) > width and len(cut) > 1:
+            cut = cut[:-1]
+        out.append(cut.rstrip(" ,·") + "…")
+    return out
+
+
 def paint(card, mask, color, shadows=()):
     for (dx, dy, blur, rgba) in shadows:
         sh = mask.filter(ImageFilter.GaussianBlur(blur / 2)) if blur else mask
@@ -83,6 +100,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     # Name
     nm = name.upper()
     s = fit([nm], "cg", 104, 40, 2, 440, 0.06)
+    nm = clamp_lines([nm], "cg", s, 440, 0.06)[0]
     f, ls = font("cg", s), s * 0.06
     m = new()
     draw_line(m, nm, f, (W + ls - text_width(nm, f, ls)) / 2, content_baseline(f, 932, s), ls)
@@ -90,6 +108,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
 
     # Strands under the name
     s = fit([line1, line2], "sc600", 20, 12, 1, 400, 0.12)
+    line1, line2 = clamp_lines([line1, line2], "sc600", s, 400, 0.12)
     f, ls, lh = font("sc600", s), s * 0.12, s * 1.45
     m = new()
     for i, t in enumerate([line1, line2]):
@@ -113,6 +132,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     # Woven from (two caps lines) + site line
     l1, l2 = f"{woven[0]}, {woven[1]},".upper(), f"& {woven[2]}".upper()
     s = fit([l1, l2], "cg600", 29, 16, 1, 524, 0.04)
+    l1, l2 = clamp_lines([l1, l2], "cg600", s, 524, 0.04)
     f, ls, lh = font("cg600", s), s * 0.04, s * 1.08
     m = new()
     for i, t in enumerate([l1, l2]):
@@ -120,6 +140,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     paint(card, m, hexrgb("3A2420"))
     url = f"(Weave yours at {site})"
     s2 = fit([url], "sc600", 19, 11, 1, 524, 0.12)
+    url = clamp_lines([url], "sc600", s2, 524, 0.12)[0]
     f2 = font("sc600", s2)
     a2, d2 = f2.getmetrics()
     m = new()
@@ -143,4 +164,10 @@ def og_jpeg(png: bytes) -> bytes:
     im = Image.open(io.BytesIO(png)).convert("RGB").resize((720, 1280), Image.LANCZOS)
     buf = io.BytesIO()
     im.save(buf, "JPEG", quality=82, optimize=True)
+    return buf.getvalue()
+
+
+def full_jpeg(png: bytes) -> bytes:
+    buf = io.BytesIO()
+    Image.open(io.BytesIO(png)).convert("RGB").save(buf, "JPEG", quality=88, subsampling=0, optimize=True, progressive=True)
     return buf.getvalue()

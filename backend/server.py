@@ -12,7 +12,7 @@ import os, re, json, random, secrets, hashlib, logging, asyncio, uuid
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from content import NAMES, VOW_TEMPLATES, GENERIC_VOWS, BANNED, SYSTEM_PROMPT, REWEAVE_PROMPT
-from card_render import render_card, og_jpeg
+from card_render import render_card, og_jpeg, full_jpeg
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / ".env")
@@ -25,6 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
+CARD_VERSION = 2
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
 ID_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
@@ -56,7 +57,7 @@ class HusbandIn(BaseModel):
     remembers: List[str] = Field(default=[], max_length=3)
     remember_keys: List[str] = Field(default=[], max_length=3)
     feel: str
-    band: List[str] = Field(default=[], max_length=3)
+    band: List[str] = Field(default=[], max_length=8)
     card: CardText
     threads: List[Thread] = Field(default=[], max_length=10)
     site: str = Field(default="", max_length=80)
@@ -141,6 +142,10 @@ def template_vows(p: HusbandIn) -> List[str]:
     return vows[:5]
 
 
+def undash(v: str) -> str:
+    return re.sub(r"\s*[—–]\s*", ", ", v).replace(", ,", ",").strip()
+
+
 def vow_ok(v) -> bool:
     if not isinstance(v, str) or not v.strip().lower().startswith(("i'll", "i’ll", "i will")):
         return False
@@ -196,7 +201,7 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
         vows, _ = json.JSONDecoder().raw_decode(raw[start:]) if start >= 0 else (None, 0)
     except ValueError:
         vows = None
-    vows = [clip(v, 200) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
+    vows = [undash(clip(v, 200)) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
     return vows if vows_ok(vows) else None
 
 
@@ -208,7 +213,8 @@ def render_for(h: "Husband", host: str = "") -> bytes:
 async def store_card(h: "Husband", host: str = "") -> dict:
     png = await asyncio.to_thread(render_for, h, host)
     og = await asyncio.to_thread(og_jpeg, png)
-    doc = {"id": h.id, "png": png, "og": og, "source": "server", "created_at": datetime.now(timezone.utc).isoformat()}
+    jpg = await asyncio.to_thread(full_jpeg, png)
+    doc = {"id": h.id, "png": png, "og": og, "jpg": jpg, "v": CARD_VERSION, "source": "server", "created_at": datetime.now(timezone.utc).isoformat()}
     await db.cards.replace_one({"id": h.id}, doc, upsert=True)
     return doc
 
@@ -234,7 +240,7 @@ async def create_husband(p: HusbandIn, request: Request):
     try:
         vows = await llm_vows(p)
     except Exception as e:
-        logger.warning("LLM vows failed: %s", e)
+        logger.warning("LLM vows failed: %r", e)
     if not vows:
         vows, source = template_vows(p), "template"
     h = Husband(
@@ -269,7 +275,8 @@ async def read_husband(hid: str):
 def reweave_fallback(h: Husband) -> List[str]:
     keys = [*h.keys.values(), *h.remember_keys]
     pool = [VOW_TEMPLATES[k] for k in keys if k in VOW_TEMPLATES] + list(VOW_TEMPLATES.values()) + GENERIC_VOWS
-    return [v for v in dict.fromkeys(pool) if v not in h.vows]
+    used = {w for v in h.vows for w in re.findall(r"[a-z']{5,}", v.lower())}
+    return [v for v in dict.fromkeys(pool) if v not in h.vows and not (set(re.findall(r"[a-z']{5,}", v.lower())) - {"always", "never"}) & used]
 
 
 @api.post("/husbands/{hid}/reweave", response_model=Husband)
@@ -288,11 +295,11 @@ async def reweave_vow(hid: str, body: ReweaveIn):
         others = "\n".join(f"- {v}" for i, v in enumerate(h.vows) if i != body.index)
         raw = await llm_text(REWEAVE_PROMPT, strands_brief(h.strands, h.remembers, h.feel, h.sliders) +
                              f"\nHis other vows (do not repeat them):\n{others}\nThe vow to replace: {old}")
-        cand = clip((raw or "").strip().strip('"').splitlines()[0] if raw else "", 200)
+        cand = undash(clip((raw or "").strip().strip('"').splitlines()[0] if raw else "", 200))
         if vow_ok(cand) and cand.lower() != old.lower() and cand not in h.vows:
             new = cand
     except Exception as e:
-        logger.warning("LLM reweave failed: %s", e)
+        logger.warning("LLM reweave failed: %r", e)
     if not new:
         pool = reweave_fallback(h)
         new = random.choice(pool[:6]) if pool else old
@@ -306,7 +313,7 @@ async def reweave_vow(hid: str, body: ReweaveIn):
 
 async def card_doc(hid: str, request: Request) -> dict:
     doc = await db.cards.find_one({"id": hid})
-    if doc and doc.get("source") == "server":
+    if doc and doc.get("v") == CARD_VERSION:
         return doc
     return await store_card(await get_or_404(hid), req_host(request))
 
@@ -316,6 +323,13 @@ async def card_og(hid: str, request: Request):
     doc = await card_doc(hid, request)
     return Response(content=bytes(doc["og"]), media_type="image/jpeg",
                     headers={"Cache-Control": "public, max-age=86400"})
+
+
+@api.get("/husbands/{hid}/card.jpg")
+async def card_jpg(hid: str, request: Request):
+    doc = await card_doc(hid, request)
+    return Response(content=bytes(doc["jpg"]), media_type="image/jpeg",
+                    headers={"Cache-Control": "public, max-age=3600"})
 
 
 @api.get("/husbands/{hid}/card.png")
@@ -333,7 +347,7 @@ async def share_page(hid: str, request: Request):
     base = f"{proto}://{host}"
     page = f"{base}/h/{h.id}"
     rel = f"/h/{h.id}"
-    title = escape(f"Meet {h.name}, a wicker husband woven by hand")
+    title = escape(f"Meet {h.name} · Weave Him")
     desc = escape(f"Woven from {', '.join(h.card.woven)}. {h.vows[0]}")
     img = f"{base}/api/husbands/{h.id}/og.jpg"
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>{title}</title>

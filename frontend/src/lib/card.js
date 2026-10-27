@@ -11,6 +11,7 @@ export async function renderCard(node) {
   await waitImages(node);
   const opts = { width: 1080, height: 1920, pixelRatio: 1, canvasWidth: 1080, canvasHeight: 1920, cacheBust: false };
   opts.fontEmbedCSS = await getFontEmbedCSS(node).catch(() => undefined);
+  opts.type = "image/jpeg"; opts.quality = 0.88;
   await toBlob(node, opts); // warm-up pass so Safari has images & fonts decoded
   return toBlob(node, opts);
 }
@@ -25,17 +26,40 @@ export async function copyText(text) {
   }
 }
 
-export async function shareCard({ blob, name, link }) {
-  const file = new File([blob], `${name.toLowerCase()}-woven-by-hand.png`, { type: "image/png" });
-  const text = `${COPY.shareText(name)} ${link}`;
-  if (navigator.canShare?.({ files: [file] })) {
-    try { await navigator.share({ files: [file], title: `Meet ${name}`, text }); return "shared"; }
-    catch (e) { if (e.name === "AbortError") return "cancelled"; }
-  }
+export const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const cardFile = (blob, name) => new File([blob], `${name.toLowerCase()}-woven-by-hand.jpg`, { type: "image/jpeg" });
+
+function download(file) {
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = file.name;
+  a.href = URL.createObjectURL(file); a.download = file.name;
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+async function shareFiles(data) {
+  try { await navigator.share(data); return "shared"; }
+  catch (e) { return e.name === "AbortError" ? "cancelled" : "failed"; }
+}
+
+// iPhone keeps "Save Image" inside the share sheet; elsewhere a plain download
+export async function saveCard({ blob, name }) {
+  const file = cardFile(blob, name);
+  if (isIOS() && navigator.canShare?.({ files: [file] })) {
+    const r = await shareFiles({ files: [file] });
+    if (r !== "failed") return r;
+  }
+  download(file);
+  toast("His card is saved", { description: file.name });
+  return "downloaded";
+}
+
+export async function shareCard({ blob, name, link }) {
+  const file = cardFile(blob, name);
+  if (navigator.canShare?.({ files: [file] })) {
+    const r = await shareFiles({ files: [file], title: `Meet ${name}`, text: `${COPY.shareText(name)} ${link}` });
+    if (r !== "failed") return r;
+  }
+  download(file);
   await copyText(link);
   toast(COPY.linkCopied, { description: "His card is downloading, too." });
   return "downloaded";

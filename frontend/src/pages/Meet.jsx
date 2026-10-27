@@ -8,25 +8,16 @@ import { play } from "../lib/sound";
 import { ShareCard } from "../components/weave/ShareCard";
 import { COPY, CONFIG } from "../content";
 import { cachedHusband, getCardBlob, getHusband, isMine, shareLink } from "../lib/api";
-import { renderCard, shareCard, loadCardFonts, copyText } from "../lib/card";
+import { renderCard, shareCard, saveCard, loadCardFonts, copyText, isIOS } from "../lib/card";
+import { ShareReveal } from "../components/weave/ShareReveal";
 import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
-import { useFitText } from "../hooks/useFitText";
-
-const BAND_POS = [{ top: "64.2%", w: "38%" }, { top: "71%", w: "44%" }, { top: "77.8%", w: "48%" }];
-
-export const BandLine = ({ text, pos, i, max = 9 }) => {
-  const [ref] = useFitText([text], { max, min: 7, step: 0.5, width: "auto" });
-  return (
-    <div ref={ref} data-testid={`band-line-${i}`} className="absolute left-1/2 -translate-x-1/2 text-center f-sc font-semibold text-[color:#f3e3c4] whitespace-nowrap overflow-hidden leading-none"
-      style={{ top: pos.top, width: pos.w, letterSpacing: "0.12em" }}>{text}</div>
-  );
-};
+import { BandText } from "../components/weave/BandText";
 
 export const Cameo = ({ h }) => (
   <div className="relative w-full" style={{ aspectRatio: "278 / 260" }} data-testid="meet-cameo">
     <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt={`${h.name}, a wicker husband`} />
-    {h.band.map((b, i) => <BandLine key={i} i={i} text={b} pos={BAND_POS[i]} />)}
+    <BandText band={h.band} kind="cameo" />
     <p data-testid="ribbon-name" className="absolute left-0 right-0 text-center f-cg italic font-semibold text-[26px] text-[color:var(--parchment)] leading-none" style={{ top: "86.6%" }}>
       meet {h.name}
     </p>
@@ -61,30 +52,17 @@ export default function Meet({ isPublic = false }) {
   const { reset } = useAnswers();
   const [h, setH] = useState(() => cachedHusband(id) || null);
   const [missing, setMissing] = useState(false);
-  const [busy, setBusy] = useState(false);
   const { ref, blob, url, fallback, fontsReady } = useCard(h, !isPublic);
   const mine = !isPublic && isMine(id);
 
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => setMissing(true)); }, [id, h]);
-  useEffect(() => { if (h) document.title = `Meet ${h.name} · Weave Him`; }, [h]);
+  useEffect(() => { if (isPublic && h) document.title = `Meet ${h.name} · Weave Him`; }, [h, isPublic]);
   useEffect(() => { if (h?.id) play("harp"); }, [h?.id]);
 
-  const onShare = async () => {
-    play("paper");
-    setBusy(true);
-    try {
-      const b = blob || (await getCardBlob(h.id).catch(() => renderCard(ref.current)));
-      await shareCard({ blob: b, name: h.name, link: shareLink(h.id) });
-    } finally { setBusy(false); }
-  };
-  const onSave = async () => {
-    play("paper");
-    const a = document.createElement("a");
-    a.href = url; a.download = `${h.name.toLowerCase()}-woven-by-hand.png`;
-    document.body.appendChild(a); a.click(); a.remove();
-    await copyText(shareLink(h.id));
-    toast(COPY.linkCopied, { description: "His card is saving, too." });
-  };
+  const [reveal, setReveal] = useState(false);
+  const onShare = () => { play("paper"); blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
+  const onSave = () => { play("paper"); blob && saveCard({ blob, name: h.name }); };
+  const onCopy = async () => { play("paper"); await copyText(shareLink(h.id)); toast(COPY.linkCopied); };
   const again = () => { play("page"); reset(); nav("/strand/1"); };
 
   if (missing) return (
@@ -117,15 +95,17 @@ export default function Meet({ isPublic = false }) {
           <Pill data-testid="weave-your-own-button" onClick={again}>{COPY.weaveOwn}</Pill>
         ) : (
           <>
-            <CardPreview url={url} name={h.name} onShare={onShare} onSave={onSave} busy={busy} />
-            <button data-testid="share-him-button" onClick={onShare} disabled={busy} className="pill pill-primary">
-              <Share className="w-5 h-5" strokeWidth={1.8} /><span>{busy ? COPY.pressing : COPY.share}</span>
+            <CardPreview url={url} name={h.name} onOpen={() => setReveal(true)} />
+            <button data-testid="share-him-button" onClick={() => setReveal(true)} className="pill pill-primary">
+              <Share className="w-5 h-5" strokeWidth={1.8} /><span>{COPY.share}</span>
             </button>
             <button data-testid="in-your-life-button" onClick={() => { play("page"); nav(`/tell/${h.id}`); }} className="pill pill-secondary">{COPY.inLife}</button>
             <div className="text-center"><button data-testid="weave-another-link" onClick={again} className="text-link">{COPY.again}</button></div>
           </>
         )}
       </div>
+      <ShareReveal open={reveal} onClose={() => setReveal(false)} name={h.name} url={url}
+        onSave={onSave} onShare={onShare} onCopy={onCopy} isIOS={isIOS()} />
       {isPublic && <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-6">{CONFIG.CREDIT_LINE}</p>}
       {!isPublic && fallback && (
         <div aria-hidden className="fixed top-0 pointer-events-none" style={{ left: -20000 }}>

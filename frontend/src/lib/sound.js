@@ -87,6 +87,21 @@ const SYNTH = {
     const squish = env(biquad(noise(0.32), "lp", 600), (t) => Math.exp(-t * 12) * 0.35);
     return norm(mix(thump, squish), 0.42);
   },
+  reveal: () => {
+    const d = 2.2;
+    const drum = buf(d).map((_, i) => {
+      const t = i / SR, sw = Math.min(1, t / 0.9) ** 2 * Math.exp(-Math.max(0, t - 0.9) * 3.2);
+      return (Math.sin(2 * Math.PI * 62 * t) + 0.5 * Math.sin(2 * Math.PI * 93 * t)) * sw;
+    });
+    const roll = env(biquad(noise(d), "lp", 260), (t) => Math.min(1, t / 0.9) ** 2 * Math.exp(-Math.max(0, t - 0.9) * 4) * 0.6);
+    let y = mix(drum, roll);
+    [587.33, 659.25, 739.99, 880, 987.77, 1174.66, 1318.51, 1479.98].forEach((f, k) => {
+      y = mix(y, env(string(f, 1.2, 0.998), (t) => Math.exp(-t * 3) * 0.55), Math.round((0.82 + k * 0.055) * SR));
+    });
+    const bell = buf(1.3).map((_, i) => { const t = i / SR; return (Math.sin(2 * Math.PI * 2349 * t) + 0.6 * Math.sin(2 * Math.PI * 3136 * t)) * Math.exp(-t * 3.5) * 0.12; });
+    y = mix(y, bell, Math.round(1.25 * SR));
+    return norm(env(y, (t, dd) => Math.min(1, (dd - t) / 0.25)), 0.5);
+  },
   paper: () => {
     let y = buf(0.32);
     for (let k = 0; k < 7; k++) {

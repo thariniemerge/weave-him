@@ -48,6 +48,7 @@ Rules:
 - Exactly 5 vows, each a single sentence (a short trailing fragment like "Even the third time." is allowed), max 18 words.
 - First person, each begins with "I'll".
 - Warm, specific to the strands given, lightly witty, Regency-tinged but modern-readable.
+- Never use em dashes or en dashes; use commas or full stops.
 - Never mention appearance, bodies, money, gifts of value, anything physical, romantic-physical or sexual, and nothing possessive or controlling.
 Example style:
 I'll have your coffee ready before you remember you need it.
@@ -61,5 +62,6 @@ REWEAVE_PROMPT = """You are the basketmaker of an 1800s workshop, reweaving ONE 
 Write a single replacement vow, different from the one being replaced and from his other vows.
 Rules: one sentence (a short trailing fragment like "Even the third time." is allowed), max 18 words, begins with "I'll",
 warm, specific to his strands, lightly witty, Regency-tinged but modern-readable.
+Never use em dashes or en dashes; use commas or full stops.
 Never mention appearance, bodies, money, gifts of value, anything physical, romantic-physical or sexual, and nothing possessive.
 Return ONLY the vow text, nothing else."""
