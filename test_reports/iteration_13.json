@@ -1,0 +1,46 @@
+{
+  "summary": "Frontend-only contrast audit of the Willow & Mist theme at 390x844 and 1280x800. I ran a full UI flow at each size: Welcome, strands I-VII (unselected, hover, 3 selected, disabled CTA), /bands with 3 chips, weaving, Meet (new husbands 946nfgau and 6x9ggxap, plus a5yxsmhb), share reveal, Tell (every recipient chip and a strand chip selected), toasts, and /h/:id. A script (/app/tests/contrast_audit.js) computes the WCAG ratio of every text element against its composited background. For text drawn over SVG art, I sampled screenshot pixels instead. Three real issues were still present and I fixed all of them. (1) The BuildingHusband caption on the forest panel was still #4A5641, a 1.75:1 ratio, so the claimed fix was not in the code. It is now #F1ECE1, measured at 11.59:1. (2) The new global rule '[aria-pressed=true]{color:#F1ECE1}' also matched the sound toggle, which has aria-pressed=true whenever sound is on (the default). That made the speaker icon bone on bone (~1.1:1) and nearly invisible on every page. I scoped the rule with :not([data-testid=sound-toggle]); the icon is now ink rgb(42,33,27). (3) The 'n/60' counter (#6E6A5C) measured 3.9:1 against the edge of the card gradient. It is now bark #4A3A2E (7.8:1), and both placeholders were darkened to #5E5A4E. After the fixes there are 0 real failures at both sizes. Confirmed: selected /bands chips have bone text rgb(241,236,225) on wine rgb(107,46,54); badges are ink on amber rgb(226,203,146); ribbon-name is rgb(241,236,225) in Cormorant Garamond italic with the dark shadow, and its glyph-box pixels give at least 8.61:1 on the wine ribbon; selected options are bone on moss; band-line SVG text uses fill #F1ECE1 (the audit flags these through CSS color, a false positive). At 390x844 the share-reveal close button is the topmost element at its centre, Playwright's click works, and the dialog closes. The 'Link copied' toast is ink on bone and passes. Disabled CTAs (opacity 0.45) measure 2.85:1, which WCAG 1.4.3 exempts for disabled controls. I logged this as info only.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BuildingHusband caption (PanelFigures.jsx)", "issue": "Still moss #4A5641 on forest (1.75:1) even though the request said it was fixed. Fixed by the tester: now #F1ECE1 (11.59:1).", "selector": "[data-testid=building-husband] p", "priority": "HIGH (fixed)"},
+      {"component": "SoundToggle (all pages)", "issue": "The global [aria-pressed=true] bone rule overrode text-[color:var(--ink)]. With sound on (the default) the icon was bone on bone and invisible. Fixed by the tester by scoping the rule with :not([data-testid=sound-toggle]).", "selector": "[data-testid=sound-toggle]", "priority": "HIGH (fixed)"},
+      {"component": "QuestionCard char counter", "issue": "#6E6A5C at 11px measured 3.9:1 against the card gradient. Fixed by the tester: now #4A3A2E. Placeholders in QuestionCard and Remembers changed to #5E5A4E.", "selector": "[data-testid=question-card] span.f-sc", "priority": "LOW (fixed)"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All strand CTAs when disabled", "issues": ["opacity .45 gives bone on wine-at-45% = 2.85:1. WCAG exempts disabled controls; this is info only. Use opacity .6 if the text should stay readable."]},
+      {"screen": "Share reveal 390", "issues": ["The 'Tap to close' label at top is partly covered by the top edge of the card. Cosmetic."]}
+    ]
+  },
+  "screenshots": [
+    "/app/.screenshots/i13_question_390_3sel.jpeg",
+    "/app/.screenshots/i13_question_1280_3sel.jpeg (before the caption fix)",
+    "/app/.screenshots/i13_question_1280_3sel_after.jpeg (after the fixes)",
+    "/app/.screenshots/i13_bands_390.jpeg",
+    "/app/.screenshots/i13_bands_1280.jpeg",
+    "/app/.screenshots/i13_meet_390.jpeg",
+    "/app/.screenshots/i13_meet_bottom_390.jpeg",
+    "/app/.screenshots/i13_meet_1280.jpeg",
+    "/app/.screenshots/i13_share_390.jpeg",
+    "/app/.screenshots/i13_tell_390.jpeg",
+    "/app/.screenshots/i13_soundtoggle_before.jpeg"
+  ],
+  "test_report_links": ["/app/tests/contrast_audit.js", "/app/tests/i13_audit_390a.json", "/app/tests/i13_audit_390b.json", "/app/tests/i13_audit_1280.json"],
+  "action_items": [
+    "Review the tester's 3 fixes (listed in updated_files) and keep them.",
+    "When adding attribute-level colour rules such as [aria-pressed=true], scope them to the components they are meant for, so icon toggles on light backgrounds are not affected.",
+    "Optional: raise the disabled CTA opacity to about 0.6 for readability."
+  ],
+  "critical_code_review_comments": [
+    "index.css: an unlayered global attribute selector placed after the Tailwind utilities beats any utility of equal specificity. This is the same class of bug as the old '.f-sc{color:inherit}'. Prefer component-level classes.",
+    "PanelFigures.jsx: the caption fix described in the request was not applied. Check that edits are saved before handing off.",
+    "BandText SVG uses fill rather than CSS color. This is fine, but automated colour audits will report it as a false positive."
+  ],
+  "updated_files": ["/app/frontend/src/components/weave/PanelFigures.jsx", "/app/frontend/src/index.css", "/app/frontend/src/components/weave/QuestionCard.jsx", "/app/frontend/src/pages/Remembers.jsx", "/app/tests/contrast_audit.js"],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100% after the tester's fixes (3 contrast failures found and fixed)"},
+  "seed_data_creation": "Created husbands 946nfgau (390 flow) and 6x9ggxap (1280 flow) through the UI.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run the audit with page.evaluate(open('/app/tests/contrast_audit.js').read(), label). Ignore band-line-* results (SVG fill is bone) and any result with op<=0.5 (disabled CTA). Check the ribbon by setting its text colour to transparent, then sampling the Range bounding box pixels with PIL. The sound toggle defaults to aria-pressed=true."
+}

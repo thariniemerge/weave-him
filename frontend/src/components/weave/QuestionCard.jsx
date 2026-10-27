@@ -70,9 +70,9 @@ export const QuestionCard = ({ q, value, onChange }) => {
         <input
           id={`own-${q.key}`} data-testid="custom-answer-input" maxLength={60} value={text} placeholder={COPY.spinPlaceholder}
           onChange={(e) => onText(e.target.value)}
-          className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[19px] placeholder:text-[color:#6E6A5C]"
+          className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[19px] placeholder:text-[color:#5E5A4E]"
         />
-        <span className="f-sc text-[11px] text-[color:#6E6A5C]">{text.length}/60</span>
+        <span className="f-sc text-[11px] text-[color:#4A3A2E]">{text.length}/60</span>
       </motion.div>
     </section>
   );

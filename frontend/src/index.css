@@ -211,4 +211,4 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 /* the question card already wears a wax seal top-right: tuck the fern bottom-left there */
 [data-testid=question-card].stitch-card::after { top: auto; right: auto; left: -8px; bottom: -12px; transform: scaleX(-1) rotate(180deg); }
 /* contrast rule: anything selected sits on moss/wine, so its text is bone */
-[aria-pressed=true] { color: #F1ECE1; }
+[aria-pressed=true]:not([data-testid=sound-toggle]) { color: #F1ECE1; }

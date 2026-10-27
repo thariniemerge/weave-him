@@ -56,7 +56,7 @@ export default function Remembers() {
             <input data-testid="remember-custom-input" maxLength={60} value={draft} disabled={full} placeholder={COPY.remembersOwnPlaceholder}
               onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustom()}
               aria-label={COPY.remembersOwn}
-              className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#6E6A5C] disabled:opacity-40" />
+              className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#5E5A4E] disabled:opacity-40" />
             <button data-testid="remember-custom-add" onClick={addCustom} disabled={!draft.trim() || full} aria-label="Add my own"
               className="w-11 h-11 rounded-full flex items-center justify-center bg-[color:var(--wisteria)] border border-[color:var(--gold)] disabled:opacity-40">
               <Plus className="w-5 h-5" />
