@@ -31,6 +31,12 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Music plays across the whole app (musicForRoute levels 0.22/0.12, duckMusic). Up to 3 picks per question. First-person copy.
 - Stitched face with 7 emotions (Face.jsx, emote bus). Text on the top two bands only, labels max 12 chars, squeezed with textLength at 80%.
 
+## Iteration 4 (2026-06)
+- Reveal choreography (cameo, then the card unfolds, then vows are written in, then seal). The card renders in the background. Weaving preloads assets.
+- No-scroll question screens (StrandCTA: fixed bar on phone, inline on desktop; short-window CSS). /bands chooser. Story video export (cardVideo.js, MediaRecorder).
+- New original hero head/face (Face.jsx draws head, hair, beard, neck, shoulders and cravat over the art). Twig strokes were removed from meet-cameo.svg and weave-hoop.svg (originals in /app/scripts/*.orig.svg). The emotion picker was removed.
+- NOTE: the Emergent LLM key budget is exhausted, so vows currently fall back to templates.
+
 ## Backlog
 - P1: Server-side rendering of the OG card, so previews exist even if the creator leaves the page before the card finishes rendering.
 - P2: Rate limiting on POST /api/husbands. Option to make share links point to /h/{id} directly once a custom domain with SSR or edge meta is set.
