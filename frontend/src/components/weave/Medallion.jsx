@@ -36,7 +36,7 @@ function useTexts(root, p, name, lines) {
 const LEVELS = [600, 572, 546, 470, 432, 416, 392, 84];
 let lastStrands = null;
 
-function useReveal(root, p, strands, finished, named) {
+function useReveal(root, p, strands, finished, named, fadeOnly) {
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
     const fig = q("figure"), rect = q("reveal-rect"), edge = q("reveal-edge");
@@ -49,29 +49,42 @@ function useReveal(root, p, strands, finished, named) {
       return;
     }
     fig.setAttribute("mask", `url(#${p}reveal-mask)`);
-    const y = LEVELS[strands];
+    const y = fadeOnly ? LEVELS[7] : LEVELS[strands];
+    if (fadeOnly && rect.dataset.y) {
+      // reduced motion: no wipe, he simply fades in at the end
+      rect.style.transition = "opacity .6s ease";
+      rect.style.opacity = strands === 7 ? 1 : 0;
+    }
     if (!rect.dataset.y) {
-      // first paint of this instance: start from the last level any screen showed (never from top or bottom)
-      const from = lastStrands != null && lastStrands < strands ? LEVELS[lastStrands] : y;
-      [rect, edge].forEach((el) => { el.style.transition = "none"; el.style.transform = `translateY(${from}px)`; });
+      // first paint of this instance: start from the last level any screen showed (never from top or bottom),
+      // with nothing fading out from the SVG's defaults
+      const grow = lastStrands != null && lastStrands < strands;
+      const from = grow ? LEVELS[lastStrands] : y;
+      const all = [rect, edge, ...late, ribbon];
+      all.forEach((el) => { el.style.transition = "none"; });
+      [rect, edge].forEach((el) => { el.style.transform = `translateY(${from}px)`; });
+      [...late, ribbon].forEach((el) => { el.style.opacity = finished && !grow ? 1 : 0; });
+      edge.style.opacity = 0;
+      if (fadeOnly) rect.style.opacity = strands === 7 && !grow ? 1 : 0;
       rect.getBoundingClientRect();
-      [rect, edge].forEach((el) => { el.style.transition = ""; });
+      all.forEach((el) => { el.style.transition = ""; });
+      if (fadeOnly) { rect.style.transition = "opacity .6s ease"; rect.style.opacity = strands === 7 ? 1 : 0; }
     }
     [rect, edge].forEach((el) => { el.style.transform = `translateY(${y}px)`; });
     rect.dataset.y = y;
     lastStrands = strands;
-    const edgeOn = strands > 0 && !(strands === 7 && finished);
+    const edgeOn = !fadeOnly && strands > 0 && !(strands === 7 && finished);
     edge.style.transitionDelay = edgeOn ? "0s" : "0s, .8s";
     edge.style.opacity = edgeOn ? 1 : 0;
     late.forEach((el) => { el.style.transitionDelay = finished ? ".8s" : "0s"; el.style.opacity = finished ? 1 : 0; });
     ribbon.style.transitionDelay = finished ? ".8s" : "0s";
     ribbon.style.opacity = finished && named ? 1 : 0;
-  }, [strands, finished, named]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [strands, finished, named, fadeOnly]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 // medallion-K.svg as one piece: frame, portrait, bands and ribbon. He moves only through K's own groups.
-// `strands` (0-7) weaves him bottom-up; `finished` adds the heart, bands and ribbon.
-export function Medallion({ name, band, alive = false, strands, finished = true, testid = "medallion", label }) {
+// `strands` (0-7) weaves him bottom-up; `finished` adds the heart (pulsing once with `pulse`), bands and ribbon.
+export function Medallion({ name, band, alive = false, strands, finished = true, pulse = false, fadeOnly = false, testid = "medallion", label }) {
   const reduce = useReducedMotion();
   const [[p, html]] = useState(() => scoped(MEDALLION));
   const root = useRef(null);
@@ -84,9 +97,9 @@ export function Medallion({ name, band, alive = false, strands, finished = true,
   }, [e, blink, lift, reduce]);
   useLayoutEffect(() => { if (!reduce && (e === "kiss" || e === "hearts")) floatHearts(parts.current); }, [n]); // eslint-disable-line react-hooks/exhaustive-deps
   useTexts(root, p, name, bandLines(band));
-  useReveal(root, p, strands, finished, !!name);
+  useReveal(root, p, strands, finished, !!name, fadeOnly);
   return (
-    <div className="medallion relative w-full" data-testid={testid} data-emotion={reduce ? "smile" : e} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
+    <div className={`medallion relative w-full${pulse && finished ? " mk-pulse" : ""}`} data-testid={testid} data-emotion={reduce ? "smile" : e} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
       <div ref={root} />
       {alive && <button type="button" aria-label="Make him react" onClick={tap} data-testid="face-tap-target"
         className="absolute rounded-full cursor-pointer" style={{ left: "32%", top: "12%", width: "36%", height: "40%" }} />}

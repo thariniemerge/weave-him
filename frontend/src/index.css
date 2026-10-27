@@ -218,8 +218,10 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .8s cubic-bezier(0,0,.2,1), opacity .4s ease; }
 .medallion [id$="-bands"], .medallion [id$="-heart"], .medallion [id$="-ribbon"] { transition: opacity .8s ease; }
 .mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.mk-pulse [id$="-heart"] > * { transform-box: fill-box; transform-origin: center; animation: mk-pulse .9s ease-in-out .9s; }
+@keyframes mk-pulse { 40% { transform: scale(1.45); } 70% { transform: scale(.95); } }
 .mk-float .mk-fl { animation: mk-rise 1.9s ease-out forwards; }
 .mk-float > :nth-child(2) .mk-fl { animation-delay: .35s; }
 .mk-float > :nth-child(3) .mk-fl { animation-delay: .7s; }
 @keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -120px) scale(calc(var(--s) * 1.25)); } }
-@media (prefers-reduced-motion: reduce) { .mk-float .mk-fl { animation: none; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .mk-float .mk-fl, .mk-pulse [id$="-heart"] > * { animation: none; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }

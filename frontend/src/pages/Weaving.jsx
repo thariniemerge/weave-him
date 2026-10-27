@@ -13,6 +13,9 @@ import { play, startLoop, stopLoop } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 
 const STEP_MS = 680;
+const FALLBACK_MS = 9000;
+// face weaves in (0.8s), then the heart pulses and the bands appear
+const FINISH_MS = 2600;
 const TAGS = [
   { pos: { left: "0%", top: "12%" }, rot: -6, bg: "var(--wedgwood)" },
   { pos: { right: "0%", top: "13%" }, rot: 6, bg: "var(--ochre)" },
@@ -20,7 +23,7 @@ const TAGS = [
   { pos: { right: "0%", top: "53%" }, rot: 5, bg: "var(--rose)", light: true },
   { pos: { left: "3%", top: "34%" }, rot: 3, bg: "var(--wisteria)" },
   { pos: { right: "2%", top: "33%" }, rot: -5, bg: "var(--peony)" },
-  { pos: { left: "31%", top: "86%" }, rot: -2, bg: "var(--ochre)" },
+  { pos: { left: "0%", top: "72%" }, rot: -2, bg: "var(--ochre)" },
 ];
 
 const Tag = ({ text, i, shown }) => {
@@ -73,13 +76,23 @@ export default function Weaving() {
       .forEach((f) => document.fonts.load(f).catch(() => {}));
   }, []);
   useEffect(() => { if (step > 0) play("pluck", { rate: [1, 1.12, 1.26, 1.33, 1.5, 1.68, 2][step - 1] }); }, [step]);
+  // Strands I-VI weave him up to the chin on a timer; his face waits for the vows (or the 9s fallback)
+  const [late, setLate] = useState(false);
   useEffect(() => {
-    const t = setInterval(() => setStep((s) => Math.min(s + 1, 7)), reduce ? 400 : STEP_MS);
-    return () => clearInterval(t);
+    const t = setInterval(() => setStep((s) => (s < 6 ? s + 1 : s)), reduce ? 400 : STEP_MS);
+    const f = setTimeout(() => setLate(true), FALLBACK_MS);
+    return () => { clearInterval(t); clearTimeout(f); };
   }, [reduce]);
   useEffect(() => {
-    if (husband && (step >= 7 || skip)) {
-      const t = setTimeout(() => nav(`/meet/${husband.id}`, { replace: true }), skip ? 0 : 600);
+    if (skip) { setStep(7); return; }
+    if (step === 6 && (husband || late)) {
+      const t = setTimeout(() => setStep(7), 350);
+      return () => clearTimeout(t);
+    }
+  }, [step, husband, late, skip]);
+  useEffect(() => {
+    if (husband && step >= 7) {
+      const t = setTimeout(() => nav(`/meet/${husband.id}`, { replace: true }), skip ? 0 : FINISH_MS);
       return () => clearTimeout(t);
     }
   }, [husband, step, skip, nav]);
@@ -95,7 +108,7 @@ export default function Weaving() {
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <PanelOrInline>
       <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
-        <div className="w-[72%] mx-auto"><Medallion band={band} strands={7} finished={step >= 7} name={step >= 7 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
+        <div className="w-[72%] mx-auto"><Medallion band={band} strands={step} finished={step >= 7} pulse fadeOnly={!!reduce} name={step >= 7 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>
