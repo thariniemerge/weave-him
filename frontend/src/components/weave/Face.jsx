@@ -95,7 +95,7 @@ function Eyes({ e, blink }) {
                   <circle r="4.8" fill={AMBER} /><circle r="2.1" fill={INK} /><circle cx="1.6" cy="-1.6" r="0.9" fill="#fff8e6" />
                 </Show>
                 <Show on={e === "hearts"}>
-                  <g transform="translate(0 -4.5) scale(.9)">
+                  <g transform="translate(0 -6) scale(1.5)">
                     <motion.path d={HEART} fill={ROSE} stroke="#7d2e3e" strokeWidth="1" style={fb}
                       animate={e === "hearts" ? { scale: [1, 1.3, 1, 1.3, 1] } : { scale: 1 }} transition={{ duration: 1.6 }} />
                   </g>

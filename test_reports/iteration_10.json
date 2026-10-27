@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only test of the new woven hero Face, the removed emotion picker, and the strand no-scroll checks. Everything passes except one thing: /strand/5 still scrolls at 1280x720 (scrollHeight 784 vs innerHeight 720, the next-remembers-button bottom is at 728-763px so it is cut off) and at 1366x768 (787 vs 768). It passes at 1440x900 and 1920x1080. Meet at 390 and 1280: no emotion-picker, 0 console errors, tap cycle blush>hearts>kiss>sigh>shy>smile>wink and each returns to idle. Share him sets wink. Ambient emotions fire (shy at 390, blush at 1280 within 12s). The cravat and brooch do not overlap band-line-0..2 and the shoulder top is above band 1 at both sizes. Weaving: face-hoop reaches opacity 1 at about 4s, the hoop bands are readable and there are no twig strokes. At 390 the WovenProgress clears the CTA bar on strands 1-4 and 6 (bottom 648 vs bar 750).",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Temperament (/strand/5) desktop", "issue": "Not fixed. At 1280x720 the page scrolls 64px and next-remembers-button is not fully visible (bottom at 728px with 1 tag row, 763px with 2 tag rows). At 1366x768 it scrolls 19px. Measured at 1280x720 with 1 tag row: h1 86-121, cards 156-302 / 310-457 / 465-612, so-far-tags 624-652, CTA 672-728. You need to save about 10-70px, e.g. reduce slider card heights at lg (they are 146px each), cut the header/h1 top gap, or limit the tags to 1 row at lg (hide the 4th+ tag or use nowrap+overflow).", "selector": "[data-testid=next-remembers-button]", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet cameo", "issues": ["Heart-iris eyes are very small; at 390 the 'hearts' state is hard to tell from idle (it reads as pink eyes). Consider larger hearts (scale ~1.4) or a brief pop.", "On desktop the biceps line sits under 'My commission is ready' in the right column, not under the ribbon (the ribbon is in the left panel). That is expected from the layout, just noting it.", "The share card (server-rendered story card) still shows the old abstract figure, not the new hero face. Out of scope, but it is inconsistent."]},
+      {"screen": "BuildingHusband desktop panel strand 5", "issues": ["Before the face shows (done<5) the ghost egg head is the old placeholder silhouette. This is fine but does not match the new angular head."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Fix /strand/5 desktop no-scroll at 1280x720 and 1366x768 (it needs about 70px less height at 720 when the tags wrap to 2 rows), then re-verify that next-remembers-button is fully visible.",
+    "Optional: enlarge the heart irises so the hearts emotion reads on phones."
+  ],
+  "critical_code_review_comments": [
+    "Face.jsx: the tap cycle starts at index 2 (blush) via cycle=useRef(2). That is intentional but undocumented.",
+    "Face.jsx: the blink/lift inner setTimeouts are not cleared on unmount, so setState can fire after unmount (harmless in React 18).",
+    "The Temperament lg layout relies on fixed spacing; tag wrapping changes the height, so it is fragile across content."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "92%"},
+  "seed_data_creation": "Weaving created husband /meet/qxsn6u9d from seeded answers.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Seed sessionStorage 'weave-him-answers' = {q1:[{id:'coffee'}],q2:[{id:'pancakes'}],q3:[{id:'rehearse'}],q4:[{id:'small'}],q7:[{id:'safe'}],remembers:[{id:'pet'}]}. Strand CTAs: weave-strand-button (1-4,7), next-remembers-button (5), next-feel-button (6). Face svg data-testid face-cameo/face-hoop with data-emotion; tap via face-tap-target. Screenshots: .screenshots/hero_390_{idle,wink,hearts,blush,kiss,sigh,shy,smile}.png, hero_1280_{idle,wink,hearts,...}.png, hoop_390.png, strand5_1280x720.png, strand5_390_bottom.png, strand1_390_bottom.png, strand6_1440_building.png."
+}
