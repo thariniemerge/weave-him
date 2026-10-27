@@ -21,7 +21,7 @@ export const BuildingHusband = ({ done }) => {
         </div>
         <Face kind="cameo" show={done >= 5} />
       </div>
-      <p className="f-sc text-center text-[16px] mt-4 text-[color:#5A3D34]">
+      <p className="f-sc text-center text-[16px] mt-4 text-[color:#4A5641]">
         {done ? `${ROMAN[done]} of VII strands woven` : "The basketmaker awaits the first strand"}
       </p>
     </div>

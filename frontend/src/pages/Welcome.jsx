@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
 import { Art, Pill, Page, SoundToggle } from "../components/weave/ui";
-import { PanelOrInline } from "../components/weave/Layout";
+import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
 import { play } from "../lib/sound";
 import { COPY } from "../content";
 import { getStats } from "../lib/api";
@@ -13,7 +13,7 @@ const HowItWorks = ({ open, onOpenChange }) => (
     <DrawerContent className="mx-auto max-w-[430px] bg-[color:var(--paper)] border-[color:var(--gold)]" data-testid="how-it-works-sheet">
       <div className="px-7 pt-4 pb-10">
         <DrawerTitle className="f-cg text-3xl font-semibold">How it <span className="italic text-[color:var(--rose)]">works</span></DrawerTitle>
-        <DrawerDescription className="f-cg italic text-[17px] text-[color:#5A3D34] mt-1">dearest reader, it's quite simple…</DrawerDescription>
+        <DrawerDescription className="f-cg italic text-[17px] text-[color:#4A5641] mt-1">dearest reader, it's quite simple…</DrawerDescription>
         <ol className="mt-6 space-y-5">
           {COPY.howSteps.map((s, i) => (
             <li key={s.title} className="flex gap-4 items-start">
@@ -25,7 +25,7 @@ const HowItWorks = ({ open, onOpenChange }) => (
             </li>
           ))}
         </ol>
-        <p data-testid="fan-disclaimer" className="f-cg italic text-[13px] leading-snug text-[color:#6b4f45] mt-7">{COPY.disclaimer}</p>
+        <p data-testid="fan-disclaimer" className="f-cg italic text-[13px] leading-snug text-[color:#4A3A2E] mt-7">{COPY.disclaimer}</p>
       </div>
     </DrawerContent>
   </Drawer>
@@ -41,6 +41,7 @@ export default function Welcome() {
 
   return (
     <Page className="pt-4">
+      <FallingLeaves />
       <header className="flex items-center h-11">
         <div className="flex items-center gap-2 mr-auto">
           <Art name="heart" className="w-6 h-6" />
@@ -65,7 +66,7 @@ export default function Welcome() {
         </div>
       </div>
       <Pill data-testid="commission-button" className="mt-5" onClick={start}>{COPY.cta}</Pill>
-      <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#5A3D34]">
+      <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#4A5641]">
         {COPY.counter(count ?? "…")}
       </p>
       <HowItWorks open={how} onOpenChange={setHow} />

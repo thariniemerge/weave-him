@@ -1,0 +1,8 @@
+<html><body style="margin:0;background:#E6E1D6"><div id="w" style="width:834px"></div><div id="m" style="width:834px"></div>
+<script>
+Promise.all(["welcome-cameo","meet-cameo"].map(n=>fetch("/art/"+n+".svg").then(r=>r.text()))).then(([a,b])=>{
+  document.getElementById("w").innerHTML=a; document.getElementById("m").innerHTML=b;
+  document.querySelectorAll("svg").forEach(s=>{s.style.width="834px";s.style.height="auto";s.style.display="block"});
+  window.ready=true;
+});
+</script></body></html>

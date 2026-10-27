@@ -42,7 +42,7 @@ export default function App() {
       <AnswersProvider>
         <BrowserRouter>
           <AnimatedRoutes />
-          <Toaster position="bottom-center" toastOptions={{ style: { background: "#FFFCF7", border: "1px solid #C9A45C", color: "#3A2420", fontFamily: "'Cormorant Garamond', serif", fontSize: 18 } }} />
+          <Toaster position="bottom-center" toastOptions={{ style: { background: "#F1ECE1", border: "1px solid #A8823F", color: "#2A211B", fontFamily: "'Cormorant Garamond', serif", fontSize: 18 } }} />
         </BrowserRouter>
       </AnswersProvider>
     </MotionConfig>

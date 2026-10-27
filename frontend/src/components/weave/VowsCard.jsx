@@ -40,10 +40,10 @@ const Vow = ({ i, text, delay, canEdit, open, onOpen, left, busy, onReweave, wri
                 className="min-h-[44px] inline-flex items-center gap-2 px-4 rounded-full whitespace-nowrap border border-dashed border-[color:var(--rose)] text-[color:var(--rose)] f-cg italic text-[17px] disabled:opacity-50">
                 <Feather className="w-4 h-4" strokeWidth={1.6} />{busy ? "Reweaving…" : COPY.reweave}
               </button>
-              {!busy && <span className="f-sc text-[11px] text-[color:#5A3D34]">{COPY.reweaveLeft(left)}</span>}
+              {!busy && <span className="f-sc text-[11px] text-[color:#4A5641]">{COPY.reweaveLeft(left)}</span>}
             </div>
           ) : (
-            <p data-testid="out-of-willow" className="mt-1 f-cg italic text-[17px] text-[color:#5A3D34]">{COPY.outOfWillow}</p>
+            <p data-testid="out-of-willow" className="mt-1 f-cg italic text-[17px] text-[color:#4A5641]">{COPY.outOfWillow}</p>
           )}
         </motion.div>
       )}
@@ -93,12 +93,12 @@ export const VowsCard = ({ h, setH, canEdit }) => {
       transition={{ delay: unfold, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}>
       <Art name="vow-strip" className="w-full block" />
       <div className="px-7 pt-4">
-        <p className="f-sc text-center text-[13px] text-[color:#5A3D34]" data-testid="vows-number">{COPY.vowsNo} [{h.number}]</p>
+        <p className="f-sc text-center text-[13px] text-[color:#4A5641]" data-testid="vows-number">{COPY.vowsNo} [{h.number}]</p>
         <p className="f-cg italic text-center text-[19px] text-[color:var(--rose)]">{COPY.dearest}</p>
         <div className="flex items-center justify-center gap-2 my-2 text-[color:var(--rose)]">
           <span className="h-0 w-16 border-t-2 border-dashed border-current opacity-70" /><Art name="heart" className="w-5 h-5" /><span className="h-0 w-16 border-t-2 border-dashed border-current opacity-70" />
         </div>
-        {canEdit && <p className="f-sc text-center text-[11px] text-[color:#7a5d52] -mt-1" data-testid="reweave-tip">{COPY.reweaveTip} · {COPY.reweaveLeft(h.reweaves_left ?? 0)}</p>}
+        {canEdit && <p className="f-sc text-center text-[11px] text-[color:#4A3A2E] -mt-1" data-testid="reweave-tip">{COPY.reweaveTip} · {COPY.reweaveLeft(h.reweaves_left ?? 0)}</p>}
         <ol className="space-y-2.5 mt-3">
           {h.vows.map((v, i) => (
             <Vow key={i} i={i} text={v} delay={revealed ? 0 : start + step * i} writing={writing === i} canEdit={canEdit} open={open === i} left={h.reweaves_left ?? 0}
@@ -108,7 +108,7 @@ export const VowsCard = ({ h, setH, canEdit }) => {
         <motion.div className="flex items-end justify-between mt-5" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: sigDelay, duration: 0.5 }}>
           <div>
             <p className="f-cg italic text-[16px]">{COPY.yours}</p>
-            <p data-testid="signature-name" className="f-mark text-[46px] leading-none text-[color:#8a2f42] border-b border-[color:var(--gold)] pb-1 pr-4">{h.name}</p>
+            <p data-testid="signature-name" className="f-sig text-[46px] leading-none text-[color:#561F28] border-b border-[color:var(--gold)] pb-1 pr-4">{h.name}</p>
           </div>
           <motion.div initial={{ scale: 1.6, opacity: 0, rotate: -20 }} animate={{ scale: 1, opacity: 1, rotate: -6 }}
             transition={{ delay: sigDelay + 0.2, type: "spring", stiffness: 300, damping: 16 }}>

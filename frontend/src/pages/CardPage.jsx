@@ -14,7 +14,7 @@ export default function CardPage() {
   const [h, setH] = useState(id === "_layers" ? DUMMY : null);
   const [fontsReady, setFontsReady] = useState(false);
   useEffect(() => {
-    document.documentElement.style.background = layer === "over" ? "transparent" : "#21150f";
+    document.documentElement.style.background = layer === "over" ? "transparent" : "#16201A";
     document.body.style.cssText = "background:transparent;margin:0";
     loadCardFonts().then(() => setFontsReady(true));
   }, [layer]);

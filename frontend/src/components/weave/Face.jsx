@@ -13,7 +13,7 @@ const HEADS = {
   cameo: { box: "0 0 834 780", x: 414.5, y: 263, low: 212 },
   hoop: { box: "0 0 834 837", x: 414.5, y: 252, low: 250 },
 };
-const INK = "#3A2420", ROSE = "#9C3D4F", AMBER = "#C98A2E", LINEN = "#F3EAD8";
+const INK = "#2A211B", ROSE = "#6B2E36", AMBER = "#C98A2E", LINEN = "#E9E4D6", LANTERN = "#C99A4A";
 const stitch = { fill: "none", strokeLinecap: "round", strokeLinejoin: "round", strokeDasharray: "6 3.5" };
 const fb = { transformBox: "fill-box", transformOrigin: "center" };
 const HEART = "M0 3 C -6 -3 -10 2 -5 6 L 0 10 L 5 6 C 10 2 6 -3 0 3 Z";
@@ -27,7 +27,7 @@ const Show = ({ on, children, ...p }) => (
 );
 
 const Floater = ({ x, y, dx = 0, delay = 0, scale = 1 }) => (
-  <motion.path d={HEART} fill={ROSE} stroke="#7d2e3e" strokeWidth="1" style={fb}
+  <motion.path d={HEART} fill={LANTERN} stroke="#8a6428" strokeWidth="1" style={fb}
     initial={{ opacity: 0, x, y, scale }} animate={{ opacity: [0, 1, 0], x: x + dx, y: y - 80, scale: scale * 1.2 }}
     transition={{ duration: 1.8, delay, ease: "easeOut" }} />
 );
@@ -71,8 +71,8 @@ const Body = ({ id, low }) => (
     </g>
     <path d="M -40 156 C -24 162 -10 165 0 170 M 40 156 C 24 162 10 165 0 170" stroke="#cdbb98" strokeWidth="1.5" fill="none" />
     <g transform="translate(0 164) scale(1.9)">
-      <path d={HEART} fill={ROSE} stroke="#C9A45C" strokeWidth="1.1" />
-      <circle cy="5" r="1.1" fill="#f3d58a" />
+      <path d={HEART} fill={LANTERN} stroke="#7a5a26" strokeWidth="1.1" style={{ filter: "drop-shadow(0 0 3px rgba(240,201,120,.8))" }} />
+      <circle cy="5" r="1.1" fill="#F0C978" />
     </g>
   </g>
 );
@@ -96,7 +96,7 @@ function Eyes({ e, blink }) {
                 </Show>
                 <Show on={e === "hearts"}>
                   <g transform="translate(0 -7) scale(1.8)">
-                    <motion.path d={HEART} fill={ROSE} stroke="#7d2e3e" strokeWidth="1" style={fb}
+                    <motion.path d={HEART} fill={LANTERN} stroke="#8a6428" strokeWidth="1" style={fb}
                       animate={e === "hearts" ? { scale: [1, 1.3, 1, 1.3, 1] } : { scale: 1 }} transition={{ duration: 1.6 }} />
                   </g>
                 </Show>
@@ -131,7 +131,7 @@ function Mouth({ e }) {
     <g transform="translate(0 47)">
       <Show on={!grin && e !== "kiss"}>
         <path d="M -19 0 Q -4 5 11 -1 Q 17 -4 21 -9" stroke={ROSE} strokeWidth="3.4" {...stitch} />
-        <path d="M -9 6 Q 0 8 9 5" stroke="#c9737f" strokeWidth="1.6" fill="none" opacity=".6" />
+        <path d="M -9 6 Q 0 8 9 5" stroke="#8A4A50" strokeWidth="1.6" fill="none" opacity=".6" />
       </Show>
       <Show on={grin}>
         <path d="M -24 -3 Q -4 12 16 2 Q 23 -2 27 -10" stroke={ROSE} strokeWidth="3.8" {...stitch} />

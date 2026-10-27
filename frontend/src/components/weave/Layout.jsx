@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { useReducedMotion } from "framer-motion";
 import { Art } from "./ui";
 
 export const useMedia = (q) => useSyncExternalStore(
@@ -25,7 +26,7 @@ export const PanelArt = ({ children }) => {
 
 export const EmergentBadge = ({ fixed = false }) => (
   <a href="https://emergent.sh" target="_blank" rel="noopener" data-testid={fixed ? "emergent-badge-fixed" : "emergent-badge"}
-    className={`${fixed ? "hidden lg:inline-flex fixed bottom-4 left-4 z-40" : "inline-flex lg:hidden"} items-center gap-2 h-9 pl-1.5 pr-4 rounded-full bg-[color:var(--paper)] border border-[color:var(--gold)] text-[color:var(--ink)] shadow-[0_6px_14px_-10px_rgba(58,36,32,.6)] transition-transform duration-200 hover:-translate-y-0.5`}>
+    className={`${fixed ? "hidden lg:inline-flex fixed bottom-4 left-4 z-40" : "inline-flex lg:hidden"} items-center gap-2 h-9 pl-1.5 pr-4 rounded-full bg-[color:var(--paper)] border border-[color:var(--gold)] text-[color:var(--ink)] shadow-[0_6px_14px_-10px_rgba(42,33,27,.6)] transition-transform duration-200 hover:-translate-y-0.5`}>
     <img src="/assets/emergent-logo.png" alt="" className="w-6 h-6 rounded-full" />
     <span className="f-sc text-[13px] font-semibold tracking-[0.06em]">Built with Emergent</span>
   </a>
@@ -45,16 +46,37 @@ const Ornaments = () => (
   </div>
 );
 
+const LEAF_COLS = ["#C99A4A", "#B07F45", "#9AA38A", "#8E6A3E", "#C99A4A", "#7F8A6E"];
+// A few fallen leaves drifting down (Welcome & Meet only)
+export const FallingLeaves = () => {
+  const reduce = useReducedMotion();
+  if (reduce) return null;
+  return createPortal(
+    <div aria-hidden data-testid="falling-leaves">
+      {LEAF_COLS.map((c, i) => (
+        <svg key={i} viewBox="0 0 24 24" className="leaf-fall" width={14 + (i % 3) * 5}
+          style={{ left: `${8 + i * 15 + (i % 2) * 4}%`, animationDuration: `${22 + (i * 7) % 13}s`, animationDelay: `${i * 3.7}s` }}>
+          <path d="M3 12 Q12 1 21 12 Q12 23 3 12Z" fill={c} opacity=".85" />
+          <path d="M2 12 H20" stroke="#4A3A2E" strokeWidth=".8" opacity=".6" />
+        </svg>
+      ))}
+    </div>,
+    document.body,
+  );
+};
+
 export function Layout({ children }) {
   const desk = useDesktop();
   const [panel, setPanel] = useState(null);
   return (
     <PanelCtx.Provider value={panel}>
+      <div className="mist-layer" aria-hidden />
+      <div className="grain-layer" aria-hidden />
       <Ornaments />
       {desk ? (
         <div className="relative z-10 grid grid-cols-2 min-h-[100dvh]" data-testid="desktop-layout">
-          <aside className="sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
-            <div ref={setPanel} className="relative w-full max-w-[min(640px,80vh)] flex flex-col items-center" />
+          <aside className="forest-panel sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
+            <div ref={setPanel} className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center" />
           </aside>
           <div className="flex justify-center px-8">
             <div className="desk-col w-full max-w-[560px] min-h-[100dvh] flex flex-col justify-center">{children}</div>

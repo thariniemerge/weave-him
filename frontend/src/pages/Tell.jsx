@@ -32,7 +32,7 @@ const Letter = ({ greeting, sentence, name, setName }) => (
       </p>
       <p className="f-cg italic text-[19px] mt-4" data-testid="letter-sign-off">{COPY.withLove}</p>
       <input data-testid="signature-input" value={name} maxLength={30} onChange={(e) => setName(e.target.value)} placeholder={COPY.herName}
-        aria-label="Your name" className="w-full min-h-[44px] bg-transparent outline-none f-cg italic text-[22px] border-b border-dotted border-[color:var(--peony)] placeholder:text-[color:#8a6f64] placeholder:text-[18px]" />
+        aria-label="Your name" className="w-full min-h-[44px] bg-transparent outline-none f-cg italic text-[22px] border-b border-dotted border-[color:var(--peony)] placeholder:text-[color:#5E6656] placeholder:text-[18px]" />
     </div>
   </section>
 );
@@ -73,7 +73,7 @@ export default function Tell() {
       <h1 className="f-cg font-bold text-[34px] leading-tight mt-2">
         {COPY.tellTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.tellTitle[1]}</span>
       </h1>
-      <p className="f-cg italic text-[18px] leading-snug text-[color:#4a3029] mt-1">{COPY.tellSub}</p>
+      <p className="f-cg italic text-[18px] leading-snug text-[color:#2A211B] mt-1">{COPY.tellSub}</p>
       <p className="f-sc text-[13px] mt-5 mb-2">{COPY.sendTo}</p>
       <div className="flex flex-wrap gap-2.5">
         {RECIPIENTS.map((r) => (
@@ -93,9 +93,9 @@ export default function Tell() {
         ))}
       </div>
       <label className="block mt-5" htmlFor="his-name">
-        <span className="f-sc text-[12px] text-[color:#5A3D34]">{COPY.hisName}</span>
+        <span className="f-sc text-[12px] text-[color:#4A5641]">{COPY.hisName}</span>
         <input id="his-name" data-testid="his-name-input" value={his} maxLength={30} onChange={(e) => setHis(e.target.value)}
-          className="mt-1 w-full min-h-[44px] px-4 rounded-full bg-[color:var(--paper)] border border-dashed border-[color:#b8956a] outline-none f-cg italic text-[18px]" />
+          className="mt-1 w-full min-h-[44px] px-4 rounded-full bg-[color:var(--paper)] border border-dashed border-[color:#9AA38A] outline-none f-cg italic text-[18px]" />
       </label>
       <Letter greeting={greeting} sentence={sentence} name={name} setName={setName} />
       <button data-testid="send-text-button" onClick={sendText} className="pill pill-primary mt-6">

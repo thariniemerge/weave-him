@@ -37,7 +37,7 @@ export const WovenProgress = ({ done }) => (
   <div data-testid="woven-progress">
     <div className="flex justify-between items-baseline mb-2">
       <span className="f-sc text-[13px]">Your husband so far</span>
-      <span className="f-sc text-[13px] text-[color:#5A3D34]">{ROMAN[done] || "None"} of VII strands</span>
+      <span className="f-sc text-[13px] text-[color:#4A5641]">{ROMAN[done] || "None"} of VII strands</span>
     </div>
     <div className="relative h-[22px] rounded-full border border-[color:#8a6a3c] bg-[color:var(--paper)] overflow-hidden"
       style={{ backgroundImage: "repeating-linear-gradient(90deg, transparent 0 9px, rgba(138,106,60,.35) 9px 10px)" }}>

@@ -64,7 +64,7 @@ export function BandText({ band, kind, show = true }) {
         <path d={g.paths[2]} stroke="#2a1810" strokeOpacity="0.82" strokeWidth="34" strokeLinecap="round" fill="none" data-testid="band-strip" />
       )}
       {lines.map((l, i) => (
-        <text key={i} fontSize={g.font} dy="0.34em" fill="#F6EFE4" filter={`url(#${id}-sh)`} style={txt} data-testid={`band-line-${i}`}>
+        <text key={i} fontSize={g.font} dy="0.34em" fill="#F1ECE1" filter={`url(#${id}-sh)`} style={txt} data-testid={`band-line-${i}`}>
           <textPath href={`#${id}-${i}`} xlinkHref={`#${id}-${i}`} startOffset="50%" textAnchor="middle"
             {...(fit[i] ? { textLength: fit[i], lengthAdjust: "spacingAndGlyphs" } : {})}>{l}</textPath>
         </text>

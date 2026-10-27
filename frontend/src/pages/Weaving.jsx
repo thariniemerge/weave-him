@@ -31,7 +31,7 @@ const Tag = ({ text, i, shown }) => {
     <motion.span data-testid={`hoop-tag-${i}`}
       initial={false} animate={shown ? { opacity: 1, scale: 1, y: 0, rotate: t.rot } : { opacity: 0, scale: 0.6, y: -24, rotate: t.rot * 3 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`absolute z-20 max-w-[34%] px-2.5 py-1 rounded-md border border-[color:#a98a6a] shadow-[0_4px_8px_-4px_rgba(58,36,32,.55)] f-cg italic text-[14px] leading-tight [overflow-wrap:anywhere] line-clamp-2 ${t.light ? "text-[color:var(--parchment)]" : ""}`}
+      className={`absolute z-20 max-w-[34%] px-2.5 py-1 rounded-md border border-[color:#7D7462] shadow-[0_4px_8px_-4px_rgba(42,33,27,.55)] f-cg italic text-[14px] leading-tight [overflow-wrap:anywhere] line-clamp-2 ${t.light ? "text-[color:var(--parchment)]" : ""}`}
       style={{ ...t.pos, background: t.bg }}>
       {text}
     </motion.span>

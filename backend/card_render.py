@@ -105,7 +105,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     f, ls = font("cg", s), s * 0.06
     m = new()
     draw_line(m, nm, f, (W + ls - text_width(nm, f, ls)) / 2, content_baseline(f, 932, s), ls)
-    paint(card, m, hexrgb("f6e9cf"), [(0, 4, 18, (20, 10, 5, .75)), (0, 0, 1, (255, 240, 210, .6))])
+    paint(card, m, hexrgb("F1ECE1"), [(0, 4, 18, (20, 10, 5, .75)), (0, 0, 1, (255, 240, 210, .6))])
 
     # Strands under the name
     s = fit([line1, line2], "sc600", 20, 12, 1, 400, 0.12)
@@ -114,7 +114,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     m = new()
     for i, t in enumerate([line1, line2]):
         draw_line(m, t, f, 540 - text_width(t, f, ls) / 2, content_baseline(f, 1070 + i * lh, lh), ls)
-    paint(card, m, hexrgb("ecd9b4"), [(0, 2, 8, (10, 5, 3, .8))])
+    paint(card, m, hexrgb("E2DCC8"), [(0, 2, 8, (10, 5, 3, .8))])
 
     # His number 04✦17
     f, ls = font("cg", 112), 2.24
@@ -125,10 +125,10 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     m = new()
     draw_line(m, a, f, x0, bl, ls)
     draw_line(m, b, f, x0 + wa + 3.36 + wst + 3.36, bl, ls)
-    paint(card, m, hexrgb("3A2420"))
+    paint(card, m, hexrgb("2A211B"))
     m = new()
     star(m, x0 + wa + 3.36 + 13.5, 1606, 12, 4.8)
-    paint(card, m, hexrgb("9C3D4F"))
+    paint(card, m, hexrgb("6B2E36"))
 
     # Woven from (two caps lines) + site line
     l1, l2 = f"{woven[0]}, {woven[1]},".upper(), f"& {woven[2]}".upper()
@@ -138,7 +138,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     m = new()
     for i, t in enumerate([l1, l2]):
         draw_line(m, t, f, 348, content_baseline(f, 1738 + i * lh, lh), ls)
-    paint(card, m, hexrgb("3A2420"))
+    paint(card, m, hexrgb("2A211B"))
     url = f"(Weave yours at {site})"
     s2 = fit([url], "sc600", 19, 11, 1, 524, 0.12)
     url = clamp_lines([url], "sc600", s2, 524, 0.12)[0]
@@ -146,7 +146,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     a2, d2 = f2.getmetrics()
     m = new()
     draw_line(m, url, f2, 348, 1738 + 2 * lh + 8 + a2, s2 * 0.12)
-    paint(card, m, hexrgb("5A3D34"))
+    paint(card, m, hexrgb("4A5641"))
 
     # Credit line: upright, *word* in italics, one line
     parts = [(t[1:-1], "cgi") if t.startswith("*") else (t, "cg") for t in re.split(r"(\*[^*]+\*)", credit) if t]
@@ -160,7 +160,7 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     for t, k in parts:
         draw_line(m, t, font(k, size), x, bl, size * 0.02)
         x += text_width(t, font(k, size), size * 0.02)
-    paint(card, m, hexrgb("cdb79c"))
+    paint(card, m, hexrgb("B9B29E"))
 
     card.alpha_composite(over)
     out = io.BytesIO()

@@ -30,11 +30,11 @@ export default function Remembers() {
       <StrandHeader n={6} back="/strand/5" />
       <section className="stitch-card px-6 pt-8 pb-7 mt-3" data-testid="remembers-card">
         <Art name="floral-card" className="absolute -top-5 -left-4 w-14" />
-        <p className="f-sc text-center text-[13px] text-[color:#5A3D34]">{COPY.orderTitle}</p>
+        <p className="f-sc text-center text-[13px] text-[color:#4A5641]">{COPY.orderTitle}</p>
         <h1 className="f-cg font-bold text-center text-[32px] leading-tight mt-2">
           {COPY.remembersTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.remembersTitle[1]}</span>{COPY.remembersTitle[2]}
         </h1>
-        <p className="f-cg italic text-center text-[17px] text-[color:#5A3D34]">{COPY.remembersSub}</p>
+        <p className="f-cg italic text-center text-[17px] text-[color:#4A5641]">{COPY.remembersSub}</p>
         <p data-testid="remembers-count" className="f-sc text-center text-[12px] mt-1 text-[color:var(--rose)]">{picks.length} of 3 chosen</p>
         <div className="flex flex-wrap gap-2.5 justify-center mt-5">
           {REMEMBERS.map((r, i) => (
@@ -56,7 +56,7 @@ export default function Remembers() {
             <input data-testid="remember-custom-input" maxLength={60} value={draft} disabled={full} placeholder={COPY.remembersOwnPlaceholder}
               onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustom()}
               aria-label={COPY.remembersOwn}
-              className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#9a7f73] disabled:opacity-40" />
+              className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#6E6A5C] disabled:opacity-40" />
             <button data-testid="remember-custom-add" onClick={addCustom} disabled={!draft.trim() || full} aria-label="Add my own"
               className="w-11 h-11 rounded-full flex items-center justify-center bg-[color:var(--wisteria)] border border-[color:var(--gold)] disabled:opacity-40">
               <Plus className="w-5 h-5" />

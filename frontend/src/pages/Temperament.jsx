@@ -28,7 +28,7 @@ const Slider = ({ s, value, onChange }) => {
         onChange={(e) => move(Number(e.target.value))} className="woven-range mt-1"
         style={{ "--track-img": "url(/art/slider-track.svg)", "--thumb-img": "url(/art/heart.svg)" }}
       />
-      <div className="flex justify-between f-sc text-[11.5px] text-[color:#4a3029] -mt-1">
+      <div className="flex justify-between f-sc text-[11.5px] text-[color:#2A211B] -mt-1">
         <span>{s.left}</span><span>{s.right}</span>
       </div>
       <div className="h-7 mt-1 relative overflow-hidden">
@@ -53,7 +53,7 @@ export default function Temperament() {
       <h1 className="f-cg font-bold text-[34px] lg:text-[28px] leading-tight text-center mt-1">
         {COPY.temperTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.temperTitle[1]}</span>
       </h1>
-      <p className="f-cg italic text-center text-[18px] text-[color:#5A3D34] mb-4 lg:mb-2">{COPY.temperSub}</p>
+      <p className="f-cg italic text-center text-[18px] text-[color:#4A5641] mb-4 lg:mb-2">{COPY.temperSub}</p>
       <div className="space-y-4 lg:space-y-2">
         {SLIDERS.map((s) => (
           <Slider key={s.key} s={s} value={answers.sliders[s.key] ?? s.def}
@@ -64,14 +64,14 @@ export default function Temperament() {
         <span className="f-sc text-[12px] mr-1">{COPY.wovenFrom}</span>
         {tags.map((t, i) => (
           <motion.span key={t + i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className={`f-cg italic text-[16px] lg:text-[15px] px-3 py-1 lg:py-0.5 rounded-full border border-[color:#b8956a] ${i >= 7 ? "lg:hidden" : ""}`} style={{ background: CHIP_TINTS[i % 5] }}>
+            className={`f-cg italic text-[16px] lg:text-[15px] px-3 py-1 lg:py-0.5 rounded-full border border-[color:#9AA38A] ${i >= 7 ? "lg:hidden" : ""}`} style={{ background: CHIP_TINTS[i % 5] }}>
             {t}
           </motion.span>
         ))}
       </div>
       <div className="flex flex-col items-center mt-4 lg:hidden">
         <Art name="hoop-small" className="w-24 floaty" />
-        <p className="f-cg italic text-[16px] text-[color:#5A3D34] mt-1">{COPY.comingTogether}</p>
+        <p className="f-cg italic text-[16px] text-[color:#4A5641] mt-1">{COPY.comingTogether}</p>
       </div>
       <StrandCTA data-testid="next-remembers-button" onClick={() => { play("page"); nav("/strand/6"); }}>{COPY.nextRemembers}</StrandCTA>
     </Page>

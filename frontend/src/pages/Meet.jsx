@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { X, Share } from "lucide-react";
 import { Page, Pill, Art, SoundToggle } from "../components/weave/ui";
-import { PanelOrInline } from "../components/weave/Layout";
+import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
 import { VowsCard } from "../components/weave/VowsCard";
 import { CardPreview } from "../components/weave/CardPreview";
 import { play, duckMusic } from "../lib/sound";
@@ -94,6 +94,7 @@ export default function Meet({ isPublic = false }) {
 
   return (
     <Page>
+      <FallingLeaves />
       <header className="flex items-center justify-between h-11">
         <span className="f-mark text-[28px] text-[color:var(--rose)] leading-none">{COPY.wordmark}</span>
         <div className="flex items-center -mr-2">
@@ -103,7 +104,7 @@ export default function Meet({ isPublic = false }) {
           </Link>
         </div>
       </header>
-      <p className="f-sc text-center text-[13px] text-[color:#5A3D34] mt-1">{isPublic ? COPY.readyPublic : COPY.ready}</p>
+      <p className="f-sc text-center text-[13px] text-[color:#4A5641] mt-1">{isPublic ? COPY.readyPublic : COPY.ready}</p>
       <PanelOrInline>
         <motion.div initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
           <Cameo h={h} alive />

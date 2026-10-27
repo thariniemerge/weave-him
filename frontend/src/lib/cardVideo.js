@@ -1,7 +1,7 @@
 // Turns his share card into a short looping story video: the sky glows and he winks.
 const W = 1080, H = 1920, FPS = 30, SECONDS = 6;
 const HEAD = { x: 545, y: 695 };
-const INK = "#3A2420", ROSE = "#9C3D4F", PEONY = "rgba(217,160,166,";
+const INK = "#2A211B", ROSE = "#6B2E36", PEONY = "rgba(217,160,166,";
 
 const pickType = () => ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm;codecs=vp8", "video/webm"]
   .find((t) => window.MediaRecorder?.isTypeSupported?.(t));

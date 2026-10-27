@@ -38,11 +38,11 @@ export default function Bands() {
         </Link>
         <SoundToggle />
       </header>
-      <p className="f-sc text-center text-[13px] text-[color:#5A3D34]">{COPY.bandsKicker}</p>
+      <p className="f-sc text-center text-[13px] text-[color:#4A5641]">{COPY.bandsKicker}</p>
       <h1 className="f-cg font-bold text-center text-[30px] leading-tight mt-1">
         {COPY.bandsTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.bandsTitle[1]}</span>
       </h1>
-      <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#5A3D34]">{COPY.bandsSub}</p>
+      <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
       <PanelOrInline>
         <div className="relative w-full max-w-[300px] lg:max-w-none mx-auto mt-2" style={{ aspectRatio: "278 / 260" }} data-testid="bands-preview">
           <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt="Your wicker husband wearing the chosen strands" />
@@ -55,14 +55,14 @@ export default function Bands() {
           const i = picked.indexOf(l);
           return (
             <motion.button key={l} type="button" whileTap={{ scale: 0.95 }} onClick={() => toggle(l)} aria-pressed={i >= 0} data-testid={`band-choice-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-              className={`relative min-h-[44px] pl-4 pr-4 rounded-full f-sc text-[14px] font-semibold tracking-[0.06em] transition-colors duration-200 ${i >= 0 ? "bg-[color:var(--rose)] text-[color:var(--parchment)] border border-[color:#7d2e3e]" : "border border-dashed border-[color:#b8956a] bg-[color:var(--paper)]"}`}>
-              {i >= 0 && <span className="absolute -top-2 -left-1 w-5 h-5 rounded-full bg-[color:var(--ochre)] text-[color:var(--ink)] text-[11px] flex items-center justify-center border border-[color:#a98a6a]">{i + 1}</span>}
+              className={`relative min-h-[44px] pl-4 pr-4 rounded-full f-sc text-[14px] font-semibold tracking-[0.06em] transition-colors duration-200 ${i >= 0 ? "bg-[color:var(--rose)] text-[color:var(--parchment)] border border-[color:#4F1F27]" : "border border-dashed border-[color:#9AA38A] bg-[color:var(--paper)]"}`}>
+              {i >= 0 && <span className="absolute -top-2 -left-1 w-5 h-5 rounded-full bg-[color:var(--ochre)] text-[color:var(--ink)] text-[11px] flex items-center justify-center border border-[color:#7D7462]">{i + 1}</span>}
               {l}
             </motion.button>
           );
         })}
       </div>
-      <p className="f-cg italic text-center text-[15px] mt-2 text-[color:#6b4f45]" data-testid="bands-count">{picked.length} of {MAX} chosen</p>
+      <p className="f-cg italic text-center text-[15px] mt-2 text-[color:#4A3A2E]" data-testid="bands-count">{picked.length} of {MAX} chosen</p>
       <div className="mt-auto" />
       <StrandCTA data-testid="weave-him-button" disabled={!picked.length} onClick={() => { play("page"); nav("/weaving"); }}>{COPY.weaveHim}</StrandCTA>
     </Page>

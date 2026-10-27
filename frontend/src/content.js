@@ -23,7 +23,7 @@ export const COPY = {
     { title: "Meet him", body: "He arrives with an 1800s name and five vows, written just for me." },
   ],
   kicker: "hand-woven for the Season",
-  wordmark: "Weave Him",
+  wordmark: "weave him",
   tagline: ["He's made of willow & wicker.", "So make him of what matters."],
   steps: ["Answer", "Weave", "Meet him"],
   cta: "Commission my husband",
@@ -88,10 +88,10 @@ export const COPY = {
 };
 
 export const RECIPIENTS = [
-  { id: "partner", label: "Partner", greeting: "My love,", tint: "#9C3D4F" },
-  { id: "dad", label: "Dad", greeting: "Dear Dad,", tint: "#CCD9E2" },
-  { id: "brother", label: "Brother", greeting: "Dear brother,", tint: "#D3DEC9" },
-  { id: "friend", label: "Best friend", greeting: "Dearest friend,", tint: "#EBD9A6" },
+  { id: "partner", label: "Partner", greeting: "My love,", tint: "#6B2E36" },
+  { id: "dad", label: "Dad", greeting: "Dear Dad,", tint: "#C9CEC1" },
+  { id: "brother", label: "Brother", greeting: "Dear brother,", tint: "#C9CEC1" },
+  { id: "friend", label: "Best friend", greeting: "Dearest friend,", tint: "#D8C08A" },
 ];
 
 // Single-choice strands. strand = tag label, tag = "so far" chip, band = band word, sentence = letter form
@@ -145,7 +145,7 @@ export const QUESTIONS = [
 
 export const SLIDERS = [
   {
-    key: "out", title: "When we're out together", left: "Quiet company", right: "Constant banter", tint: "#CCD9E2", def: 75,
+    key: "out", title: "When we're out together", left: "Quiet company", right: "Constant banter", tint: "#C9CEC1", def: 75,
     steps: [
       { tag: "quiet company", caption: "He's happy to say nothing at all, together." },
       { tag: "easy company", caption: "A good word, then a good silence." },
@@ -153,7 +153,7 @@ export const SLIDERS = [
     ],
   },
   {
-    key: "love", title: "How he shows his love", left: "Small daily rituals", right: "Grand gestures", tint: "#E4DCEB", def: 25,
+    key: "love", title: "How he shows his love", left: "Small daily rituals", right: "Grand gestures", tint: "#C9CEC1", def: 25,
     steps: [
       { tag: "ritual-keeper", caption: "Coffee on the nightstand, every single morning." },
       { tag: "note-leaver", caption: "A note in my coat pocket, now and then." },
@@ -161,7 +161,7 @@ export const SLIDERS = [
     ],
   },
   {
-    key: "feel", title: "With him, I feel", left: "Safe and steady", right: "Swept off my feet", tint: "#EBD9A6", def: 50,
+    key: "feel", title: "With him, I feel", left: "Safe and steady", right: "Swept off my feet", tint: "#D8C08A", def: 50,
     steps: [
       { tag: "steady", caption: "The porch light is always on." },
       { tag: "steady & sly", caption: "Steady hands, and a little mischief." },
