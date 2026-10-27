@@ -90,7 +90,8 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
     timer.current = setTimeout(() => setE("idle"), DUR[name] || 2000);
   };
 
-  useEffect(() => { subs.add(play); return () => { subs.delete(play); clearTimeout(timer.current); }; }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { subs.add(play); return () => { subs.delete(play); }; }); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => clearTimeout(timer.current), []); // only clear the idle timer on unmount
 
   useEffect(() => {
     if (reduce) return;

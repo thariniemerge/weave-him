@@ -25,6 +25,12 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Band labels on SVG textPath that fit each band. Letter card: sign-off and optional his-name greeting. No em dashes anywhere. Favicons, page titles, Wicker credit line and fan disclaimer.
 - The new oval-sky.webp shows the wicker husband. On preview hosts the card prints the site as "weavehim.[domain]".
 
+## Iteration 3 (2026-06)
+- Responsive layout: mobile under 768px, wider tablet column at 768-1023px, and a split desktop layout at 1024px and up (sticky art panel through PanelOrInline/PanelArt in Layout.jsx). On desktop the reveal puts its buttons beside the card.
+- Emergent badge (inline on mobile, fixed bottom-left on desktop). The credit line is now just "Built with Emergent". CARD_VERSION=4.
+- Music plays across the whole app (musicForRoute levels 0.22/0.12, duckMusic). Up to 3 picks per question. First-person copy.
+- Stitched face with 7 emotions (Face.jsx, emote bus). Text on the top two bands only, labels max 12 chars, squeezed with textLength at 80%.
+
 ## Backlog
 - P1: Server-side rendering of the OG card, so previews exist even if the creator leaves the page before the card finishes rendering.
 - P2: Rate limiting on POST /api/husbands. Option to make share links point to /h/{id} directly once a custom domain with SSR or edge meta is set.

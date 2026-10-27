@@ -24,7 +24,7 @@ function resolveOne(key, ans) {
   if (ans.custom !== undefined) {
     const t = clean(ans.custom || "");
     if (!t) return null;
-    return { id: "custom", label: t, strand: t.toLowerCase(), tag: t.toLowerCase(), band: shortLabel(t), sentence: `“${t}”` };
+    return { id: "custom", label: t, strand: t, tag: t.toLowerCase(), band: shortLabel(t), sentence: `“${t}”` };
   }
   return qByKey(key).options.find((o) => o.id === ans.id) || null;
 }

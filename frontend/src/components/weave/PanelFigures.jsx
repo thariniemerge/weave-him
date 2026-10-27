@@ -8,7 +8,8 @@ import { ROMAN } from "../../content";
 // Desktop panel: the husband woven bottom-up as she answers
 export const BuildingHusband = ({ done }) => {
   const { answers } = useAnswers();
-  const band = ["q3", "q1", "q4", "q2"].flatMap((k) => resolveChoices(k, answers[k]).map((o) => o.band));
+  const picks = ["q3", "q1", "q4", "q2"].map((k) => resolveChoices(k, answers[k]));
+  const band = [...picks.map((l) => l[0]), ...picks.flatMap((l) => l.slice(1))].filter(Boolean).map((o) => o.band);
   const pct = 22 + (done / 7) * 78;
   return (
     <div className="w-full" data-testid="building-husband">

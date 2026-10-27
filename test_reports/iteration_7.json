@@ -1,0 +1,54 @@
+{
+  "summary": "Iteration 7 (responsive layout, Emergent badge, credit removal, app-wide music, multi-select, first-person copy, stitched face, 2-line bands). Backend: 17/17 pytest pass (multi-pick payload with 20 strands/12 band, 25 rejected with 422, card.jpg 1080x1920 prints 'Built with Emergent', CARD_VERSION=4, copy/source checks). Frontend: tested at 390, 768, 1280 and 1920. Found one real bug: the face never went back to idle, so every emotion stayed until the next one. I fixed it in Face.jsx and re-verified. Everything else in the request passes.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Face.jsx", "issue": "FIXED BY TESTER: the face stayed on its last emotion forever (smile after load, wink after Share him, hearts after a reweave). It never returned to idle. Cause: the no-deps useEffect cleaned up with clearTimeout(timer.current) on every re-render, and play() itself causes a re-render, so the idle timer was always cancelled. Fix: the subscribe effect now only removes play from subs; the timer is cleared in a separate mount-only effect. Re-verified: every emotion is idle about 2.6s after the tap.", "selector": "[data-testid=face-cameo]", "priority": "HIGH (fixed)"},
+      {"component": "ShareReveal (390px)", "issue": "After Copy link, the sonner 'Link copied' toast covers the reveal's close X at the top right for about 4s. elementFromPoint at the X returns the toast <li>. Escape and tapping outside still close it. Suggest moving the toast to the bottom, or offsetting it, while the reveal is open.", "selector": "[data-testid=share-reveal-close]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Desktop 1280 strand V / Tell", "issues": ["A decorative flower/rose art sits under the sound-toggle and the V/VII roman at the top right of the right column. It does not block clicks (pointer-events none), but it adds visual noise behind the icon."]},
+      {"screen": "Custom thread", "issues": ["Custom answers are lowercased in strands (strand: t.toLowerCase()), so proper nouns show as 'sundays' in the Tell chips and the vows prompt. Consider keeping the original case."]},
+      {"screen": "Desktop BuildingHusband vs Meet", "issues": ["During strands the panel band lists labels grouped per question (q3 picks, then q1 picks…). The final husband band uses firsts first. So the band text changes between strand VII and Meet (e.g. 'STEADY HAND · LETS ME VENT' becomes 'LAUGHS · LETS ME VENT'). Cosmetic."]}
+    ]
+  },
+  "passed_checks": [
+    "No horizontal overflow at 390/768/1280/1920 on /, /strand/*, /weaving, /meet, /tell, /h. 768 column is 641px (572 x 1.12). At 1024px and up there is an art-panel plus a 560px column.",
+    "Desktop panel: welcome cameo; building-husband clip grows 78% -> 66.9% -> 55.7% -> 44.6% -> 33.4% -> 11.1% inset; its face is hidden until strand >= 5; weaving-hoop and face-hoop are in the panel; meet-cameo and face-cameo are in the panel; the Tell panel shows the cameo.",
+    "Desktop reveal: card is 728px tall at an 800px viewport, and the actions (left 723) sit to the right of the card (right 667). Mobile reveal: actions sit under the card.",
+    "Emergent badge: href https://emergent.sh/, target _blank, rel noopener. At 390 it is inline at the page bottom and overlaps no button (welcome, strand, meet, tell); the fixed one is hidden. At 1280/1920 the fixed badge is at bottom-left (16, 784) and overlaps nothing; the inline one is hidden.",
+    "No 'Inspired by' text in the DOM. fan-disclaimer text matches. Server card shows 'Built with Emergent' at the bottom (iter7_card_a5yxsmhb.jpg).",
+    "Multi-select: 3 picks show '3 of 3'; a 4th tap leaves aria-pressed false; deselecting gives '2 of 3'; custom text typed with 3 picks is rejected (value stays empty); custom counts as one; picks and custom text persist after Back; the weave button is disabled at 0 picks.",
+    "Full multi-pick flow: POST 200 (6cn4ayym), 11 strands include all picks, 11 band labels, vows use 'you', no 422. A second husband (7hez3e37) was created at 1280.",
+    "Bands at 390 and 1280: only band-line-0 and band-line-1 exist; each has 2 labels of 12 chars or fewer; the text bbox is inside the path x-range (e.g. 282-553 within 250-585); text is above the ribbon; textLength is applied when needed.",
+    "Face tap cycle: blush, hearts, kiss, sigh, shy, smile, wink. Share him sets wink; a reweave sets hearts; after the fix each returns to idle. Smile on load at about 1s. Reduced motion keeps the face idle.",
+    "First-person copy is present on strands I, III, V, VI, VII, Meet ('My commission is ready') and Tell. The letter body still says 'You're woven…'. No em dash in content.js/lib.",
+    "Music: one AudioContext (sound.js:119). App.js calls musicForRoute on every pathname change. Levels: 0.12 on /strand and /weaving, 0.22 elsewhere. duckMusic runs on the reveal and the harp. welcome-theme is fetched once per full page load (5 requests for 5 loads, none on SPA navigation). Mute persists in localStorage weave-him-muted across navigation and reload. No console errors.",
+    "Regression: weaving -> meet, reveal Save (download rowan-woven-by-hand.jpg), Copy link toast, Tell greeting (My love, / Dear Dad,) and sign-off 'With love,', public /h/:id has no share-him-button."
+  ],
+  "screenshots": [
+    "/app/test_reports/img/iter7/m390_welcome.jpeg", "/app/test_reports/img/iter7/m390_strand1.jpeg", "/app/test_reports/img/iter7/m390_meet.jpeg", "/app/test_reports/img/iter7/m390_reveal.jpeg", "/app/test_reports/img/iter7/m390_reveal_toast.jpeg", "/app/test_reports/img/iter7/m390_tell.jpeg", "/app/test_reports/img/iter7/m390_bands_a5yx.jpg",
+    "/app/test_reports/img/iter7/d1280_welcome.jpeg", "/app/test_reports/img/iter7/d1280_strand4.jpeg", "/app/test_reports/img/iter7/d1280_strand5.jpeg", "/app/test_reports/img/iter7/d1280_weaving.jpeg", "/app/test_reports/img/iter7/d1280_meet.jpeg", "/app/test_reports/img/iter7/d1280_reveal.jpeg", "/app/test_reports/img/iter7/d1280_tell.jpeg",
+    "/app/test_reports/img/iter7/v768_strand1.jpeg", "/app/test_reports/img/iter7/v1920_strand1.jpeg",
+    "/app/test_reports/img/iter7/face_1_blush.jpg ... face_7_wink.jpg", "/app/test_reports/img/iter7/faces_strip.jpg", "/app/test_reports/img/iter7/face_hearts_reweave.jpg",
+    "/app/test_reports/img/iter7_card_a5yxsmhb.jpg"
+  ],
+  "test_report_links": ["/app/backend/tests/test_iter7_multi_credit.py", "/app/test_reports/pytest/iter7.xml"],
+  "action_items": [
+    "Review and keep the Face.jsx idle-timer fix (lines 93-94).",
+    "Optional: keep the toast from covering the reveal close X on mobile.",
+    "Optional: keep the original case for custom strands; tidy the ornament behind the desktop sound toggle."
+  ],
+  "critical_code_review_comments": [
+    "Face.jsx: a no-deps effect whose cleanup clears shared timers cancels them on every render. Keep subscription effects free of side-effect cleanups (fixed).",
+    "BandText renders a hidden probe <text> inside the same SVG, so innerText of building-husband duplicates labels. Harmless (aria-hidden), but tests that read textContent of the svg should target band-line-* only.",
+    "QuestionCard: rejecting custom text when 3 options are picked only shakes the input. Consider a short hint so users understand why their typing is ignored."
+  ],
+  "updated_files": ["/app/frontend/src/components/weave/Face.jsx", "/app/backend/tests/test_iter7_multi_credit.py"],
+  "success_rate": {"backend": "100%", "frontend": "97% (1 bug fixed by tester, 1 low UX issue)"},
+  "seed_data_creation": "Husbands created: 6cn4ayym (multi-pick, token YQVRy7ttz00YoZeCYokHtlH3, 3 reweaves used, 0 left), 7hez3e37 (desktop flow), plus one TEST_-strand husband from pytest.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=... pytest tests/test_iter7_multi_credit.py -n 0. Vow testids are 1-indexed (vow-text-1, reweave-button-1). Owner token for 6cn4ayym: localStorage 'weave-him-tokens' = {6cn4ayym: 'YQVRy7ttz00YoZeCYokHtlH3'} (no reweaves left). Read face emotion via [data-testid=face-cameo] data-emotion; tap via face-tap-target with force=True. Mute key: weave-him-muted."
+}
