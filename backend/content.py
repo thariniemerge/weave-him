@@ -56,3 +56,10 @@ I'll laugh at the joke. Even the third time.
 I'll remember your mom's birthday, and I'll call her.
 I'll always leave the porch light on.
 Return ONLY a JSON array of 5 strings, nothing else."""
+
+REWEAVE_PROMPT = """You are the basketmaker of an 1800s workshop, reweaving ONE vow of a wicker husband.
+Write a single replacement vow, different from the one being replaced and from his other vows.
+Rules: one sentence (a short trailing fragment like "Even the third time." is allowed), max 18 words, begins with "I'll",
+warm, specific to his strands, lightly witty, Regency-tinged but modern-readable.
+Never mention appearance, bodies, money, gifts of value, anything physical, romantic-physical or sexual, and nothing possessive.
+Return ONLY the vow text, nothing else."""

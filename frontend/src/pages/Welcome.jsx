@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
-import { Art, Pill, Page, Footer } from "../components/weave/ui";
+import { Art, Pill, Page, Footer, SoundToggle } from "../components/weave/ui";
+import { play } from "../lib/sound";
 import { COPY, CONFIG } from "../content";
 import { getStats } from "../lib/api";
 import { useAnswers } from "../lib/store";
@@ -34,18 +35,19 @@ export default function Welcome() {
   const [count, setCount] = useState(null);
   const [how, setHow] = useState(false);
   useEffect(() => { getStats().then((d) => setCount(d.total)).catch(() => setCount(null)); }, []);
-  const start = () => { reset(); nav("/strand/1"); };
+  const start = () => { play("page"); reset(); nav("/strand/1"); };
 
   return (
     <Page className="pt-4">
-      <header className="flex items-center justify-between h-11">
-        <div className="flex items-center gap-2">
+      <header className="flex items-center h-11">
+        <div className="flex items-center gap-2 mr-auto">
           <Art name="heart" className="w-6 h-6" />
           <span className="f-sc text-[15px] font-semibold">{COPY.guild}</span>
         </div>
         <button data-testid="how-it-works-link" onClick={() => setHow(true)} className="f-cg italic text-[17px] text-[color:var(--rose)] min-h-[44px] px-1">
           {COPY.howItWorks}
         </button>
+        <SoundToggle className="-mr-2 ml-1" />
       </header>
       <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[40dvh] object-contain -mt-1" />
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>

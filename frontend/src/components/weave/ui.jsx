@@ -1,3 +1,5 @@
+import { Volume2, VolumeX } from "lucide-react";
+import { setMuted, useMuted } from "../../lib/sound";
 import { motion } from "framer-motion";
 
 export const Art = ({ name, className = "", alt = "", ...p }) => (
@@ -43,3 +45,14 @@ export const Chip = ({ active, tint = "var(--wisteria)", children, className = "
 export const Footer = ({ children }) => (
   <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-2">{children}</p>
 );
+
+export const SoundToggle = ({ className = "" }) => {
+  const muted = useMuted();
+  return (
+    <button data-testid="sound-toggle" aria-label={muted ? "Turn sound on" : "Mute sound"} aria-pressed={!muted}
+      onClick={() => setMuted(!muted)}
+      className={`w-11 h-11 flex items-center justify-center rounded-full text-[color:var(--ink)] hover:bg-[color:var(--wisteria)] transition-colors ${className}`}>
+      {muted ? <VolumeX className="w-5 h-5" strokeWidth={1.5} /> : <Volume2 className="w-5 h-5" strokeWidth={1.5} />}
+    </button>
+  );
+};

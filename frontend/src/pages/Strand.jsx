@@ -7,6 +7,7 @@ import { useAnswers } from "../lib/store";
 import { resolveChoice } from "../lib/weave";
 import Temperament from "./Temperament";
 import Remembers from "./Remembers";
+import { play } from "../lib/sound";
 
 export const nextPath = (n) => (n < 7 ? `/strand/${n + 1}` : "/weaving");
 export const prevPath = (n) => (n > 1 ? `/strand/${n - 1}` : "/");
@@ -34,7 +35,7 @@ function Question({ n }) {
           <Art name="corner-wedgwood" className="absolute -left-10 -top-8 w-12 opacity-80 -scale-x-100 pointer-events-none" />
           <WovenProgress done={n - 1} />
         </div>
-        <Pill data-testid="weave-strand-button" className="mt-5" disabled={!ok} onClick={() => nav(nextPath(n))}>
+        <Pill data-testid="weave-strand-button" className="mt-5" disabled={!ok} onClick={() => { play("page"); nav(nextPath(n)); }}>
           {n === 7 ? COPY.weaveHim : COPY.weaveStrand}
         </Pill>
       </div>

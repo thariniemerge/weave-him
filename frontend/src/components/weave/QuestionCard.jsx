@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Feather } from "lucide-react";
 import { Art, Accent } from "./ui";
 import { COPY } from "../../content";
+import { play } from "../../lib/sound";
 
 const TINTS = ["var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)"];
 
@@ -36,7 +37,7 @@ export const QuestionCard = ({ q, value, onChange }) => {
       </h1>
       <div className="space-y-3">
         {q.options.map((o, i) => (
-          <Option key={o.id} opt={o} i={i} active={value?.id === o.id} onPick={() => { setText(""); onChange({ id: o.id }); }} />
+          <Option key={o.id} opt={o} i={i} active={value?.id === o.id} onPick={() => { play("pluck", { rate: 0.9 + i * 0.08 }); setText(""); onChange({ id: o.id }); }} />
         ))}
       </div>
       <label className="block f-sc text-[12px] mt-5 mb-1 text-[color:#5A3D34]" htmlFor={`own-${q.key}`}>{COPY.spinOwn}</label>

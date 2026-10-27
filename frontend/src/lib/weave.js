@@ -1,4 +1,4 @@
-import { QUESTIONS, SLIDERS, REMEMBERS } from "../content";
+import { QUESTIONS, SLIDERS, REMEMBERS, CONFIG, siteHost } from "../content";
 
 export const qByKey = (key) => QUESTIONS.find((q) => q.key === key);
 const clean = (t) => t.replace(/^\s*(he|he…|he\.\.\.)\s+/i, "").replace(/\s+/g, " ").trim();
@@ -57,6 +57,8 @@ export function buildPayload(a) {
     threads: [q1, q2, q3, q4].map((o) => ({ label: cap(o.strand), sentence: o.sentence }))
       .concat(rem.map((r) => ({ label: cap(r.short), sentence: r.sentence })))
       .concat([{ label: cap(q7.strand), sentence: q7.sentence }]),
+    site: siteHost(),
+    credit: CONFIG.CARD_CREDIT_LINE,
   };
 }
 

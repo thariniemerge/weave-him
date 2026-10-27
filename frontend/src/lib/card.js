@@ -40,3 +40,7 @@ export async function shareCard({ blob, name, link }) {
   toast(COPY.linkCopied, { description: "His card is downloading, too." });
   return "downloaded";
 }
+
+const CARD_FONTS = ['500 104px "Cormorant Garamond"', 'italic 500 54px "Cormorant Garamond"', '600 29px "Cormorant Garamond"', '600 20px "Cormorant SC"', '700 24px "Cormorant SC"', '600 40px "Grenze Gotisch"'];
+// Fonts load lazily; request every card face explicitly before measuring
+export const loadCardFonts = () => Promise.all(CARD_FONTS.map((f) => document.fonts.load(f))).then(() => document.fonts.ready);

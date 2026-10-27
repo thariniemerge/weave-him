@@ -5,17 +5,26 @@ import { StrandHeader } from "../components/weave/StrandHeader";
 import { COPY, SLIDERS } from "../content";
 import { useAnswers } from "../lib/store";
 import { sliderStep, soFarTags } from "../lib/weave";
+import { play } from "../lib/sound";
+import { useRef } from "react";
 
 const CHIP_TINTS = ["var(--peony)", "var(--sage)", "var(--wisteria)", "var(--ochre)", "var(--wedgwood)"];
 
 const Slider = ({ s, value, onChange }) => {
   const step = s.steps[sliderStep(value)];
+  const last = useRef(value);
+  const move = (v) => {
+    if (sliderStep(v) !== sliderStep(last.current)) play("creak");
+    else if (Math.floor(v / 10) !== Math.floor(last.current / 10)) play("tick", { rate: 0.85 + v / 250 });
+    last.current = v;
+    onChange(v);
+  };
   return (
     <section className="stitch-card px-5 pt-5 pb-4" style={{ background: s.tint }} data-testid={`slider-card-${s.key}`}>
       <h2 className="f-cg font-semibold text-center text-[21px]">{s.title}</h2>
       <input
         type="range" min={0} max={100} value={value} aria-label={s.title} data-testid={`slider-${s.key}`}
-        onChange={(e) => onChange(Number(e.target.value))} className="woven-range mt-1"
+        onChange={(e) => move(Number(e.target.value))} className="woven-range mt-1"
         style={{ "--track-img": "url(/art/slider-track.svg)", "--thumb-img": "url(/art/heart.svg)" }}
       />
       <div className="flex justify-between f-sc text-[11.5px] text-[color:#4a3029] -mt-1">
@@ -63,7 +72,7 @@ export default function Temperament() {
         <Art name="hoop-small" className="w-24 floaty" />
         <p className="f-cg italic text-[16px] text-[color:#5A3D34] mt-1">{COPY.comingTogether}</p>
       </div>
-      <Pill data-testid="next-remembers-button" className="mt-5" onClick={() => nav("/strand/6")}>{COPY.nextRemembers}</Pill>
+      <Pill data-testid="next-remembers-button" className="mt-5" onClick={() => { play("page"); nav("/strand/6"); }}>{COPY.nextRemembers}</Pill>
     </Page>
   );
 }

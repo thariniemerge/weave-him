@@ -65,6 +65,14 @@ export const COPY = {
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
   shareText: (name) => `Meet ${name}, my wicker husband, woven by hand from what matters.`,
+  cardThumb: "His story card",
+  cardThumbSub: "tap to view · 1080 × 1920",
+  saveImage: "Save image",
+  shareShort: "Share",
+  reweave: "Reweave this vow",
+  reweaveLeft: (n) => `${n} of 3 left`,
+  outOfWillow: "The basketmaker is out of willow.",
+  reweaveTip: "tap a vow to reweave it",
 };
 
 export const RECIPIENTS = [

@@ -8,6 +8,8 @@ import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete } from "../lib/weave";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { BandLine } from "./Meet";
+import { play, startLoop, stopLoop } from "../lib/sound";
+import { SoundToggle } from "../components/weave/ui";
 
 const STEP_MS = 680;
 const TAGS = [
@@ -63,6 +65,8 @@ export default function Weaving() {
     weave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => { startLoop("rustle"); return () => stopLoop(); }, []);
+  useEffect(() => { if (step > 0) play("pluck", { rate: [1, 1.12, 1.26, 1.33, 1.5, 1.68, 2][step - 1] }); }, [step]);
   useEffect(() => {
     const t = setInterval(() => setStep((s) => Math.min(s + 1, 7)), reduce ? 400 : STEP_MS);
     return () => clearInterval(t);
@@ -81,6 +85,7 @@ export default function Weaving() {
 
   return (
     <Page className="items-center">
+      <SoundToggle className="absolute right-4 top-4" />
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <div className="relative w-full mt-3" style={{ aspectRatio: "294 / 295" }} data-testid="weaving-hoop">
         <Art name="weave-hoop" className="absolute inset-0 w-full h-full" alt="An embroidery hoop where a wicker figure is being woven" />
@@ -108,7 +113,7 @@ export default function Weaving() {
       {error ? (
         <button data-testid="weave-retry" onClick={weave} className="text-link mt-4">The thread snapped. Try again</button>
       ) : (
-        <button data-testid="skip-to-him" onClick={() => setSkip(true)} className="text-link mt-4">
+        <button data-testid="skip-to-him" onClick={() => { play("page"); setSkip(true); }} className="text-link mt-4">
           {skip && !husband ? "Tying the last knot…" : COPY.skip}
         </button>
       )}

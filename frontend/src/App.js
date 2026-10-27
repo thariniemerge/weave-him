@@ -8,10 +8,13 @@ import Strand from "./pages/Strand";
 import Weaving from "./pages/Weaving";
 import Meet from "./pages/Meet";
 import Tell from "./pages/Tell";
+import CardPage from "./pages/CardPage";
 
 function AnimatedRoutes() {
   const location = useLocation();
+  if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
+    <div className="mx-auto w-full max-w-[430px] overflow-x-hidden">
     <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Welcome />} />
@@ -23,6 +26,7 @@ function AnimatedRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
+    </div>
   );
 }
 
@@ -31,9 +35,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <AnswersProvider>
         <BrowserRouter>
-          <div className="mx-auto w-full max-w-[430px] overflow-x-hidden">
-            <AnimatedRoutes />
-          </div>
+          <AnimatedRoutes />
           <Toaster position="top-center" toastOptions={{ style: { background: "#FFFCF7", border: "1px solid #C9A45C", color: "#3A2420", fontFamily: "'Cormorant Garamond', serif", fontSize: 18 } }} />
         </BrowserRouter>
       </AnswersProvider>

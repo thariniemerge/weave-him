@@ -13,8 +13,7 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Backend: FastAPI + MongoDB, with collections `husbands` and `cards` (PNG + OG JPEG).
 - Endpoints: GET /api/stats, POST /api/husbands, GET /api/husbands/{id}, POST /api/husbands/{id}/card, GET /api/husbands/{id}/card.png, GET /api/husbands/{id}/og.jpg, GET /api/share/{id} (an OG meta page that redirects to /h/{id}).
 
-## Implemented (2026-06)
-- All 7 screens plus /h/{id}. Answers persist in sessionStorage. Live counter on the welcome screen. How-it-works sheet.
+## Implemented (2026-06)- All 7 screens plus /h/{id}. Answers persist in sessionStorage. Live counter on the welcome screen. How-it-works sheet.
 - Weaving animation in the hoop and loom, with skip. Reloading does not create a duplicate husband.
 - Meet screen with the band text, ribbon, vows card and wax seal. Tell screen with the letter preview, Web Share/sms/WhatsApp fallback and copy link.
 - Share card copied exactly from the template at 1080×1920 with pixelRatio 1. It waits for fonts and images, and long text auto-shrinks to fit. Web Share with files, or download + copy link + toast. The card is uploaded for OG previews.
