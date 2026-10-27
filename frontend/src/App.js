@@ -1,5 +1,5 @@
 import "@/App.css";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-router-dom";
 import { AnimatePresence, MotionConfig } from "framer-motion";
 import { Toaster } from "sonner";
@@ -13,12 +13,18 @@ import CardPage from "./pages/CardPage";
 import Bands from "./pages/Bands";
 import { Layout } from "./components/weave/Layout";
 import { musicForRoute } from "./lib/sound";
+import { IntroVeil, introWanted } from "./components/weave/IntroVeil";
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const [intro, setIntro] = useState(introWanted);
+  const [introOpen, setIntroOpen] = useState(false);
+  const stage = useRef(null);
   useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); window.scrollTo(0, 0); }, [location.pathname]);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
+    <>
+    <div ref={stage} className={intro ? `intro-stage${introOpen ? " is-open" : ""}` : undefined}>
     <Layout>
     <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
       <Routes location={location} key={location.pathname}>
@@ -33,6 +39,9 @@ function AnimatedRoutes() {
       </Routes>
     </AnimatePresence>
     </Layout>
+    </div>
+    {intro && <IntroVeil stageRef={stage} onOpen={() => setIntroOpen(true)} onDone={() => setIntro(false)} />}
+    </>
   );
 }
 

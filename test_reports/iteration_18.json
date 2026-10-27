@@ -1,0 +1,29 @@
+{
+  "summary": "Frontend-only test of the medallion-K redesign in Chromium, plus GET card.jpg. 100 checks ran. Every requirement passed; the few raw FAILs were all problems in my own test script (see context_for_next_testing_agent). (1) Meet /meet/62s6pvau and /h/62s6pvau at 390x844 and 1280x800: exactly 1 medallion svg inside meet-cameo, ribbon reads 'meet Jasper' and band textPaths show 'PATIENCE · COFFEE', 'PANCAKES · SMALL THINGS', 'REMEMBERS' (no 'FAITH IN ME'). textLength is absent on all short bands. On /bands, 'SMALL THINGS · WORST JOKES' (natural width 235 > max 227) correctly gets textLength=227 with spacingAndGlyphs, while short bands stay natural. There is one set of K eyes, 0 old-face elements (face-cameo/face-hoop/opening-cameo/band-text-cameo/.hk) and 0 page errors. The brooch main heart path fill is rgb(179,38,58). (2) Six taps on face-tap-target gave smile, wink, blush, hearts, shy, kiss, then idle after about 2.8s, on /meet and /h. During hearts, K-hearteyes opacity is 1 and its fills are #B3263A. (3) Weaving at 390 and 1280: weaving-medallion is visible and the figure has mask=url(#mkN-reveal-mask). The reveal-rect translateY steps 600 > 526.3 > 452.6 > 378.9 > 305.1 > 231.4 (1/7 per strand), reveal-edge opacity is 1, and bands/heart/ribbon have opacity 0 while weaving. It auto-navigates to /meet/{id}, and skip-to-him navigates immediately. (4) /bands: the preview has the medallion and the ribbon is hidden (opacity 0, empty name). Toggling chips changes the band text live. (5) Desktop /strand/1..7: the building-husband reveal y exactly matches done/7 (n-1). (6) /tell desktop: the medallion is in the left art-panel. (7) card.jpg?v=10 returns 200 image/jpeg 1080x1920. /card/{id} card-husband contains the portrait only (0 -bands, 0 -ribbon), and JASPER is in the cartouche. (8) The ?frames=0.9,2.8,3.6 page renders 3 frames with 0 page errors. Visually: frame 0 has both eyes closed, frame 1 is smiling with open eyes, frame 2 has the viewer's-right eye winked (pixel diff limited to the right brow/eye area, so the brow moved). Only one face, with no dot eyes, pink circles or stitched smile. (9) Reduced motion: data-emotion stays 'smile' for 12s and the eye transform stays constant (scaleY(0.82)), so there is no blinking. (10) No horizontal overflow at either width; scrollWidth equals the viewport. At 1280 two decorative corner IMGs extend to 1304px but are clipped, so no scroll.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Share card (server card.jpg)", "issues": ["A thin beige/pinkish sliver of the base frame's inner edge shows between the misty oval sky and the gilded frame near the top-left and top-right of the oval. It is cosmetic and minor."]},
+      {"screen": "Meet band 3", "issues": ["For Jasper, band 3 reads just 'REMEMBERS', from the shortLabel of \"REMEMBERS MOM'S BIRTHDAY\". This is semantically weak; 'SAFE HARBOUR' or \"MOM'S DAY\" would read better. It comes from the existing bandLines logic and is minor."]},
+      {"screen": "Frame 2 (wink)", "issues": ["The brow raise on the wink is subtle at card scale; consider a slightly larger browR lift for the video if it needs to read on phones."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/i18_medallion.py", "/app/backend/tests/i18_flows.py", "/app/backend/tests/i18_band_fit.py", "/app/backend/tests/i18_inspect.py"],
+  "action_items": [
+    "Optional: cover the sliver between the card oval and the frame in base.png or the portrait placement.",
+    "Optional: improve the band-3 short label choice ('REMEMBERS' alone)."
+  ],
+  "critical_code_review_comments": [
+    "The brooch '-heart' group also contains a circle with fill #E04A5A (glow) and a white-stroke highlight path. The main heart is #B3263A as required.",
+    "useTexts and useReveal suppress exhaustive-deps; fine as written, because root/p are stable.",
+    "Weaving only passes the name when p>=1, so the ribbon appears only at the end. Correct."
+  ],
+  "updated_files": ["/app/backend/tests/i18_medallion.py", "/app/backend/tests/i18_flows.py", "/app/backend/tests/i18_band_fit.py", "/app/backend/tests/i18_inspect.py"],
+  "success_rate": {"backend": "100% (card.jpg only)", "frontend": "100% of requirements (raw failures were all test-script artifacts)"},
+  "seed_data_creation": "Weaving runs created husbands 3jwtmpmc, gxre4wje and q5tu9dq4.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run with /opt/plugins-venv/bin/python. Usage: i18_medallion.py [all|meet|reduce] and i18_flows.py [weave bands strands tell card frames]. Screenshots go to /app/test_reports/img/i18_*. Medallion ids are prefixed mkN-, so use [id$=] selectors. Known false FAILs in i18_medallion.py: 'one medallion' fails because the figure contains a nested svg, so svgInM=2 (there is still 1 medallion); 'brooch red' fails because the highlight path has fill none; 'no h-overflow' at 1280 fails because of the decorative corner imgs. The 'card name' check in i18_flows.py is case-sensitive (JASPER). The fit test is in i18_band_fit.py."
+}

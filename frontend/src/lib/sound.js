@@ -147,7 +147,7 @@ function loadMusic() {
 }
 
 async function musicOn() {
-  if (!music.wanted || muted || music.src || music.starting || document.hidden || !ctx || ctx.state !== "running" || !music.raw) return;
+  if (music.held || !music.wanted || muted || music.src || music.starting || document.hidden || !ctx || ctx.state !== "running" || !music.raw) return;
   if (!music.buffer) {
     music.starting = true;
     try { music.buffer = await ctx.decodeAudioData(music.raw.slice(0)); } catch { music.starting = false; return; }
@@ -241,3 +241,9 @@ export function setMuted(m) {
 }
 
 export const useMuted = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => muted);
+export const isMuted = () => muted;
+// The intro holds the music until its harp shimmer has rung out
+export function holdMusic(on) {
+  music.held = on;
+  if (!on) { loadMusic(); musicOn(); }
+}

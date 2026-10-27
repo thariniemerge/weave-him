@@ -40,3 +40,14 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 ## Backlog
 - P1: Server-side rendering of the OG card, so previews exist even if the creator leaves the page before the card finishes rendering.
 - P2: Rate limiting on POST /api/husbands. Option to make share links point to /h/{id} directly once a custom domain with SSR or edge meta is set.
+
+## Iteration 5 (2026-06)
+- medallion-K.svg is now one inline component (Medallion.jsx). It's used on Meet, /h, Tell, Bands, Weaving and the desktop strand panel. He animates only through K-* groups (lib/face.js poses). Heart eyes, blush and floaters are hidden layers inside his own groups, and his hearts are #B3263A. The generator is /app/scripts/build_medallion.py.
+- Weaving: a bottom-up mask reveal inside #portrait with a golden edge. Bands, heart and ribbon appear only when weaving finishes.
+- Share card: CardPortrait (only #portrait, no bands) sits inside the unchanged gilded frame. base.png has been rebuilt and CARD_VERSION=10.
+- Video: real face patches (blink, slow smile, wink with brow raise, ends on smile). The old Face.jsx, BandText.jsx and huskK.js were deleted. The /card/{id}?frames=t1,t2 view is for checking frames.
+- Opening intro (IntroVeil.jsx + intro.css) is ported from the prototype. It shows only on a fresh page load of "/". It holds the music until the harp finishes, then fades the music in over 3s. Reduced motion gives a 0.5s fade with the sound kept. The veil is removed from the DOM after it opens. Recordings are in /public/recordings.
+
+## Backlog
+- P2: Band-3 short label can read weakly (e.g. "REMEMBERS").
+- P2: The mute setting defaults to ON for reduced-motion users, so the intro sound only plays once they unmute.

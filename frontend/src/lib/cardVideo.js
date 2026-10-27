@@ -19,7 +19,7 @@ export function poseAt(t) {
   const blink = Math.abs(t - 0.9) < 0.08 ? 1 : 0;
   const smile = ease((t - 1.3) / 1.5);
   const w = t < 3.2 ? 0 : t < 3.4 ? ease((t - 3.2) / 0.2) : t < 4.0 ? 1 : 1 - ease((t - 4.0) / 0.25);
-  return { pose: { smile: q(smile), wink: q(w), browR: q(w) }, blink };
+  return { pose: { smile: q(smile), wink: q(w), browR: q(1.6 * w) }, blink };
 }
 
 // Same portrait SVG as the card, posed, with the card's sky filter baked in

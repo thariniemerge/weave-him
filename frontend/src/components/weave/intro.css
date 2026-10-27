@@ -1,0 +1,71 @@
+/* Opening intro: forest veil ported as-is from weave-him-intro-prototype.html (Willow & Mist palette) */
+.iv{
+  --fog:#E6E1D6; --bone:#F1ECE1; --mist:#C9CEC1; --lichen:#9AA38A; --moss:#4A5641;
+  --forest:#1F2823; --forest-2:#2C372F; --bark:#4A3A2E; --ink:#2A211B;
+  --amber:#C99A4A; --glow:#F0C978; --wine:#6B2E36;
+  --display:"IM Fell English", "Iowan Old Style", Georgia, serif;
+  --serif:"Cormorant Garamond", Garamond, Georgia, serif;
+  --sc:"Cormorant SC", "Cormorant Garamond", Georgia, serif;
+  position:fixed;inset:0;overflow:hidden;z-index:2147483000;font-family:var(--serif);color:var(--ink)}
+.iv.is-open{pointer-events:none}
+
+/* our real Welcome screen comes forward */
+.intro-stage{opacity:0;transform:scale(.9) translateY(18px);filter:blur(7px);
+  transition:opacity 1.3s ease .7s, transform 1.7s cubic-bezier(.2,.7,.2,1) .6s, filter 1.3s ease .7s}
+.intro-stage.is-open{opacity:1;transform:none;filter:none}
+
+.iv-veil{position:absolute;inset:0;cursor:pointer;border:0;padding:0;background:transparent;color:inherit;font:inherit;display:block;width:100%;height:100%}
+.iv-veil:focus-visible{outline:2px solid var(--glow);outline-offset:-6px}
+.iv-backdrop{position:absolute;inset:0;
+  background:radial-gradient(60% 50% at 50% 45%, #34413A 0%, var(--forest-2) 45%, var(--forest) 100%);
+  transition:opacity 1.1s ease .35s}
+.is-open .iv-backdrop{opacity:0}
+.iv-shaft{position:absolute;inset:0;pointer-events:none;background:
+  radial-gradient(28% 60% at 52% 18%, rgba(240,201,120,.34), transparent 70%),
+  linear-gradient(105deg, transparent 38%, rgba(255,236,190,.10) 46%, transparent 54%),
+  linear-gradient(98deg, transparent 52%, rgba(255,236,190,.07) 58%, transparent 63%);
+  transition:opacity .9s ease .2s}
+.iv-mist{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg, transparent 55%, rgba(201,206,193,.16) 80%, rgba(201,206,193,.26) 100%);transition:opacity .8s ease}
+.is-open .iv-shaft,.is-open .iv-mist{opacity:0}
+.iv-layer{position:absolute;inset:0;will-change:transform}
+.iv-sway{position:absolute;inset:0;animation:iv-sway 7s ease-in-out infinite alternate}
+.iv-sway.r{animation-duration:8s;animation-delay:-2s}
+.iv-sway.t{animation:iv-swayT 6s ease-in-out infinite alternate}
+.iv-layer canvas{position:absolute;inset:0;width:100%;height:100%}
+.iv-L{transform-origin:0% 50%}.iv-R{transform-origin:100% 50%}.iv-T{transform-origin:50% 0%}.iv-B{transform-origin:50% 100%}
+.iv-layer{transition:transform 1.8s cubic-bezier(.66,0,.22,1), opacity .7s ease 1.15s}
+.is-open .iv-T{transform:translateY(-92%) scaleY(.9);transition-delay:0s,1.05s}
+.is-open .iv-L{transform:translateX(-88%) rotate(-14deg);transition-delay:.12s,1.15s}
+.is-open .iv-R{transform:translateX(88%) rotate(14deg);transition-delay:.12s,1.15s}
+.is-open .iv-B{transform:translateY(80%);transition-delay:.2s,1.2s}
+.is-open .iv-layer{opacity:0}
+@keyframes iv-sway{from{transform:rotate(-.5deg) translateX(-3px)}to{transform:rotate(.6deg) translateX(4px)}}
+@keyframes iv-swayT{from{transform:translateY(-4px) skewX(-.6deg)}to{transform:translateY(3px) skewX(.7deg)}}
+
+/* hanging tag */
+.iv-tagwrap{position:absolute;left:50%;top:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:5;
+  transform-origin:50% 0;animation:iv-swing 4.5s ease-in-out infinite alternate;transition:opacity .5s ease, transform .9s cubic-bezier(.5,0,.3,1)}
+.iv-twine{width:2px;height:calc(30vh + env(safe-area-inset-top,0px));background:linear-gradient(#8C7556,#B79B70)}
+.iv-plaque{position:relative;margin-top:-2px;background:var(--bone);color:var(--ink);padding:18px 26px 16px;border-radius:6px;min-width:200px;
+  box-shadow:0 14px 30px rgba(0,0,0,.45), inset 0 0 0 1px rgba(74,58,46,.25), inset 0 0 0 6px var(--bone), inset 0 0 0 7px rgba(74,58,46,.35);
+  display:flex;flex-direction:column;align-items:center;gap:6px}
+.iv-plaque::before{content:"";position:absolute;top:-7px;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#8C7556;box-shadow:inset 0 0 0 3px var(--bone)}
+.iv-seal{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin-top:-44px;
+  background:radial-gradient(circle at 35% 30%,#8A3B47,var(--wine) 55%,#42181F);color:#E9C9C4;font-family:var(--display);font-style:italic;font-size:26px;
+  box-shadow:inset 2px 3px 5px rgba(255,200,200,.25), inset -3px -4px 7px rgba(0,0,0,.45), 0 4px 8px rgba(0,0,0,.35)}
+.iv-plaque b{font-family:var(--display);font-style:italic;font-weight:400;font-size:30px;color:var(--wine);line-height:1}
+.iv-plaque span{font-family:var(--sc);font-size:12px;letter-spacing:.24em;color:var(--moss)}
+.iv-pulse{animation:iv-pulse 2.4s ease-in-out infinite}
+@keyframes iv-swing{from{transform:translateX(-50%) rotate(-2.2deg)}to{transform:translateX(-50%) rotate(2.2deg)}}
+@keyframes iv-pulse{0%,100%{opacity:.55}50%{opacity:1}}
+.is-open .iv-tagwrap{opacity:0;transform:translateX(-50%) translateY(-40vh) rotate(6deg);animation:none}
+
+.iv-fx{position:absolute;inset:0;pointer-events:none;width:100%;height:100%}
+
+@media (prefers-reduced-motion: reduce){
+  .iv-sway,.iv-tagwrap,.iv-pulse{animation:none}
+  .iv-layer,.intro-stage,.iv-backdrop,.iv-tagwrap,.iv-shaft,.iv-mist{transition:opacity .5s ease!important}
+  .is-open .iv-L,.is-open .iv-R,.is-open .iv-T,.is-open .iv-B{transform:none}
+  .is-open .iv-tagwrap{transform:translateX(-50%)}
+  .intro-stage{transform:none;filter:none}
+}
