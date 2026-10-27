@@ -183,7 +183,7 @@ function rampTo(v, sec) {
 // One soundtrack for the whole app; quieter while she's answering or weaving
 export function musicForRoute(path) {
   music.wanted = !path.startsWith("/card/");
-  const quiet = path.startsWith("/strand") || path.startsWith("/weaving");
+  const quiet = path.startsWith("/strand") || path.startsWith("/weaving") || path.startsWith("/bands");
   music.level = quiet ? 0.12 : 0.22;
   if (!music.wanted) return musicOff(0.4);
   if (!music.loading) setTimeout(() => (window.requestIdleCallback || setTimeout)(loadMusic), 800); // after first paint

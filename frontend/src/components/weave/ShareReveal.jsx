@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
-import { Download, Share, X } from "lucide-react";
+import { Download, Film, Share, X } from "lucide-react";
 import { COPY } from "../../content";
 import { play, duckMusic } from "../../lib/sound";
 import { useDesktop } from "./Layout";
@@ -29,7 +29,7 @@ const Shimmer = ({ loop, delay = 0.45 }) => (
     transition={{ delay, duration: 1.1, ease: "easeInOut", repeat: loop ? Infinity : 0, repeatDelay: 0.2 }} />
 );
 
-export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy, isIOS }) => {
+export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy, isIOS, onVideo, video }) => {
   const reduce = useReducedMotion();
   const [revealed, setRevealed] = useState(false);
   const [dust, setDust] = useState(false);
@@ -99,6 +99,13 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
         </div>
         {isIOS && <p className="text-center f-cg italic text-[14px] text-[#cdb79c] mt-1.5" data-testid="ios-save-hint">or press and hold the card to save</p>}
         <div className="text-center">
+          {onVideo && (
+            <button data-testid="reveal-video-button" onClick={onVideo} disabled={video != null}
+              className="pill !min-h-[48px] !text-[17px] mt-3 w-full border border-dashed border-[#c9a45c] text-[#f6efe4] bg-white/5 hover:bg-white/10 disabled:opacity-80">
+              <Film className="w-5 h-5" strokeWidth={1.7} />
+              <span data-testid="reveal-video-label">{video != null ? `Weaving his story… ${Math.round(video * 100)}%` : "Save as story video"}</span>
+            </button>
+          )}
           <button data-testid="reveal-copy-link" onClick={onCopy} className="text-link !text-[#f3d58a]">Copy link</button>
         </div>
         </fieldset>

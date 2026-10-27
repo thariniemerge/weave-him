@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { StrandCTA } from "../components/weave/StrandCTA";
 import { useNavigate } from "react-router-dom";
 import { Plus, X } from "lucide-react";
 import { Page, Pill, Art, Chip } from "../components/weave/ui";
@@ -63,10 +64,10 @@ export default function Remembers() {
           </div>
         )}
       </section>
-      <div className="mt-auto pt-8">
+      <div className="mt-auto pt-8 lg:hidden">
         <WovenProgress done={5} />
-        <Pill data-testid="next-feel-button" className="mt-5" disabled={!picks.length} onClick={() => { play("page"); nav("/strand/7"); }}>{COPY.nextFeel}</Pill>
       </div>
+      <StrandCTA data-testid="next-feel-button" disabled={!picks.length} onClick={() => { play("page"); nav("/strand/7"); }}>{COPY.nextFeel}</StrandCTA>
     </Page>
   );
 }

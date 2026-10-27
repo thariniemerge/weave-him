@@ -10,12 +10,13 @@ import Weaving from "./pages/Weaving";
 import Meet from "./pages/Meet";
 import Tell from "./pages/Tell";
 import CardPage from "./pages/CardPage";
+import Bands from "./pages/Bands";
 import { Layout } from "./components/weave/Layout";
 import { musicForRoute } from "./lib/sound";
 
 function AnimatedRoutes() {
   const location = useLocation();
-  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); }, [location.pathname]);
+  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); window.scrollTo(0, 0); }, [location.pathname]);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
     <Layout>
@@ -23,6 +24,7 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Welcome />} />
         <Route path="/strand/:n" element={<Strand />} />
+        <Route path="/bands" element={<Bands />} />
         <Route path="/weaving" element={<Weaving />} />
         <Route path="/meet/:id" element={<Meet />} />
         <Route path="/h/:id" element={<Meet isPublic />} />

@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { StrandCTA } from "../components/weave/StrandCTA";
 import { useNavigate } from "react-router-dom";
 import { Page, Pill, Art } from "../components/weave/ui";
 import { StrandHeader } from "../components/weave/StrandHeader";
@@ -72,7 +73,7 @@ export default function Temperament() {
         <Art name="hoop-small" className="w-24 floaty" />
         <p className="f-cg italic text-[16px] text-[color:#5A3D34] mt-1">{COPY.comingTogether}</p>
       </div>
-      <Pill data-testid="next-remembers-button" className="mt-5" onClick={() => { play("page"); nav("/strand/6"); }}>{COPY.nextRemembers}</Pill>
+      <StrandCTA data-testid="next-remembers-button" onClick={() => { play("page"); nav("/strand/6"); }}>{COPY.nextRemembers}</StrandCTA>
     </Page>
   );
 }

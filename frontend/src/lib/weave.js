@@ -17,6 +17,14 @@ export function shortLabel(t) {
 }
 
 export const MAX_PICKS = 3;
+// Her chosen band strands lead, in the order she tapped them
+export const orderBands = (labels, pick = []) => [...(pick || []).filter((l) => labels.includes(l)), ...labels.filter((l) => !(pick || []).includes(l))];
+export const allBandLabels = (a) => {
+  const [q1, q2, q3, q4, q7] = [...QK, "q7"].map((k) => resolveChoices(k, a[k]));
+  const rem = a.remembers.map(resolveRemember).filter(Boolean);
+  const l = [q3[0], q1[0], q4[0], q2[0], q7[0], rem[0], ...q3.slice(1), ...q1.slice(1), ...q4.slice(1), ...q2.slice(1), ...q7.slice(1), ...rem.slice(1)];
+  return [...new Set(l.filter(Boolean).map((o) => o.band))];
+};
 // Answers are lists of picks: [{ id } | { custom }]; older single answers are wrapped
 export const asList = (v) => (Array.isArray(v) ? v : v ? [v] : []);
 
@@ -67,7 +75,7 @@ export function buildPayload(a) {
     remembers: rem.map((r) => r.short),
     remember_keys: rem.map((r) => r.id),
     feel: q7.map((o) => o.label).join(" & "),
-    band: [...new Set([...firsts, ...rest].map((o) => o.band))],
+    band: orderBands([...new Set([...firsts, ...rest].map((o) => o.band))], a.bandPick),
     card: {
       line1: `${cap(q3[0].strand)} · ${cap(q1[0].strand)}`,
       line2: cap(`remembers ${rem[0].short}`),

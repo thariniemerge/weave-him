@@ -260,11 +260,15 @@ async def create_husband(p: HusbandIn, request: Request):
     )
     token = secrets.token_urlsafe(18)
     await db.husbands.insert_one({**h.to_mongo(), "edit_token_hash": hashlib.sha256(token.encode()).hexdigest()})
+    asyncio.create_task(_bg_card(h, req_host(request)))  # don't hold the reveal for the card
+    return HusbandCreated(**h.model_dump(), edit_token=token)
+
+
+async def _bg_card(h: "Husband", host: str):
     try:
-        await store_card(h, req_host(request))
+        await store_card(h, host)
     except Exception as e:
         logger.warning("Card render failed for %s: %s", h.id, e)
-    return HusbandCreated(**h.model_dump(), edit_token=token)
 
 
 async def get_or_404(hid: str) -> Husband:

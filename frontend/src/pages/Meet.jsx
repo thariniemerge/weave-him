@@ -9,12 +9,15 @@ import { play, duckMusic } from "../lib/sound";
 import { ShareCard } from "../components/weave/ShareCard";
 import { COPY } from "../content";
 import { cachedHusband, getCardBlob, getHusband, isMine, shareLink } from "../lib/api";
-import { renderCard, shareCard, saveCard, loadCardFonts, copyText, isIOS } from "../lib/card";
+import { renderCard, shareCard, saveCard, saveVideo, loadCardFonts, copyText, isIOS } from "../lib/card";
+import { makeCardVideo, canMakeVideo } from "../lib/cardVideo";
 import { ShareReveal } from "../components/weave/ShareReveal";
 import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
 import { BandText } from "../components/weave/BandText";
 import { Face, emote } from "../components/weave/Face";
+import { EmotionPicker } from "../components/weave/EmotionPicker";
+import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
   <div className="relative w-full" style={{ aspectRatio: "278 / 260" }} data-testid="meet-cameo">
@@ -52,6 +55,7 @@ function useCard(h, enabled) {
 export default function Meet({ isPublic = false }) {
   const { id } = useParams();
   const nav = useNavigate();
+  const reduce = useReducedMotion();
   const { reset } = useAnswers();
   const [h, setH] = useState(() => cachedHusband(id) || null);
   const [missing, setMissing] = useState(false);
@@ -71,6 +75,14 @@ export default function Meet({ isPublic = false }) {
   const onShare = () => { play("paper"); blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
   const onSave = () => { play("paper"); blob && saveCard({ blob, name: h.name }); };
   const onCopy = async () => { play("paper"); await copyText(shareLink(h.id)); toast(COPY.linkCopied); };
+  const [video, setVideo] = useState(null);
+  const onVideo = async () => {
+    if (!blob || video != null) return;
+    play("paper"); setVideo(0);
+    try { await saveVideo({ blob: await makeCardVideo(blob, setVideo), name: h.name, link: shareLink(h.id) }); }
+    catch { toast("The loom jammed. Try the video again in a moment."); }
+    finally { setVideo(null); }
+  };
   const again = () => { play("page"); reset(); nav("/strand/1"); };
 
   if (missing) return (
@@ -93,12 +105,17 @@ export default function Meet({ isPublic = false }) {
         </div>
       </header>
       <p className="f-sc text-center text-[13px] text-[color:#5A3D34] mt-1">{isPublic ? COPY.readyPublic : COPY.ready}</p>
-      <PanelOrInline><Cameo h={h} alive /></PanelOrInline>
+      <PanelOrInline>
+        <motion.div initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
+          <Cameo h={h} alive />
+        </motion.div>
+        <EmotionPicker />
+      </PanelOrInline>
       <p className="f-cg italic text-center text-[18px] mt-3 mb-5">
         {COPY.biceps[0]}<span className="hl">{COPY.biceps[1]}</span>{COPY.biceps[2]}
       </p>
       <VowsCard h={h} setH={setH} canEdit={mine} />
-      <div className="space-y-3 mt-6">
+      <motion.div className="space-y-3 mt-6" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : 5.4, duration: 0.5 }}>
         {isPublic ? (
           <Pill data-testid="weave-your-own-button" onClick={again}>{COPY.weaveOwn}</Pill>
         ) : (
@@ -111,9 +128,10 @@ export default function Meet({ isPublic = false }) {
             <div className="text-center"><button data-testid="weave-another-link" onClick={again} className="text-link">{COPY.again}</button></div>
           </>
         )}
-      </div>
+      </motion.div>
       <ShareReveal open={reveal} onClose={() => setReveal(false)} name={h.name} url={url}
-        onSave={onSave} onShare={onShare} onCopy={onCopy} isIOS={isIOS()} />
+        onSave={onSave} onShare={onShare} onCopy={onCopy} isIOS={isIOS()}
+        onVideo={canMakeVideo() ? onVideo : null} video={video} />
       {!isPublic && fallback && (
         <div aria-hidden className="fixed top-0 pointer-events-none" style={{ left: -20000 }}>
           <ShareCard ref={ref} husband={h} fontsReady={fontsReady} />

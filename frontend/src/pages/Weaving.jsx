@@ -68,6 +68,12 @@ export default function Weaving() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => { startLoop("rustle"); return () => stopLoop(); }, []);
+  // Warm up everything Meet him needs so nothing pops in late
+  useEffect(() => {
+    ["meet-cameo", "vow-strip", "wax-seal", "heart", "heart-empty"].forEach((n) => { new Image().src = `/art/${n}.svg`; });
+    ["400 40px 'Grenze Gotisch'", "500 20px 'Cormorant Garamond'", "italic 400 20px 'Cormorant Garamond'", "600 20px 'Cormorant SC'", "400 20px 'EB Garamond'"]
+      .forEach((f) => document.fonts.load(f).catch(() => {}));
+  }, []);
   useEffect(() => { if (step > 0) play("pluck", { rate: [1, 1.12, 1.26, 1.33, 1.5, 1.68, 2][step - 1] }); }, [step]);
   useEffect(() => {
     const t = setInterval(() => setStep((s) => Math.min(s + 1, 7)), reduce ? 400 : STEP_MS);

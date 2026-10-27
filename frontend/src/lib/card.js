@@ -41,6 +41,18 @@ async function shareFiles(data) {
   catch (e) { return e.name === "AbortError" ? "cancelled" : "failed"; }
 }
 
+export async function saveVideo({ blob, name, link }) {
+  const ext = blob.type.includes("mp4") ? "mp4" : "webm";
+  const file = new File([blob], `${name.toLowerCase()}-woven-by-hand.${ext}`, { type: blob.type });
+  if (navigator.canShare?.({ files: [file] })) {
+    const r = await shareFiles({ files: [file], title: `Meet ${name}`, text: `${COPY.shareText(name)} ${link}` });
+    if (r !== "failed") return r;
+  }
+  download(file);
+  toast("His story video is saved", { description: file.name });
+  return "downloaded";
+}
+
 // iPhone keeps "Save Image" inside the share sheet; elsewhere a plain download
 export async function saveCard({ blob, name }) {
   const file = cardFile(blob, name);
