@@ -4,9 +4,9 @@ import { shortLabel, BAND_MAX } from "../../lib/weave";
 
 // Band geometry traced from the storyboard art (viewBox = art width x 3). Only the top two bands carry text.
 export const BANDS = {
-  // bands wrap his chest, following its curve (Husband K)
-  cameo: { box: "0 0 834 780", paths: ["M 250 498 Q 414 524 579 498", "M 252 552 Q 414 578 577 552", "M 286 604 Q 414 628 543 604"], font: 23 },
-  hoop: { box: "0 0 834 837", paths: ["M 250 556 Q 414 582 578 556", "M 252 611 Q 414 636 576 611", "M 282 664 Q 414 688 546 664"], font: 22 },
+  // thin ribbons across his upper chest only (Husband K), so his face and abs stay visible
+  cameo: { box: "0 0 834 780", paths: ["M 296 490 Q 414 505 533 490", "M 292 520 Q 414 536 537 520", "M 322 550 Q 414 564 507 550"], font: 20 },
+  hoop: { box: "0 0 834 837", paths: ["M 292 533 Q 414 548 536 533", "M 288 562 Q 414 578 540 562", "M 320 592 Q 414 606 508 592"], font: 20 },
 };
 const SEP = " · ";
 const FILL = 0.8;

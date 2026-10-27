@@ -212,3 +212,22 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 [data-testid=question-card].stitch-card::after { top: auto; right: auto; left: -8px; bottom: -12px; transform: scaleX(-1) rotate(180deg); }
 /* contrast rule: anything selected sits on moss/wine, so its text is bone */
 [aria-pressed=true]:not([data-testid=sound-toggle]) { color: #F1ECE1; }
+
+/* Husband K: his own SVG, animated only through its labelled groups */
+.hk-fig svg { width: 100%; height: 100%; display: block; }
+.hk-move { transform-origin: 50% 85%; transition: transform .7s ease, opacity .6s; }
+.hk.e-sigh .hk-move { transform: rotate(-3deg); }
+.hk #K-eyes > *, .hk #K-brows > *, .hk #K-mouth { transform-box: fill-box; transform-origin: center; transition: transform .25s ease, opacity .3s ease; }
+.hk.blink #K-eyes > * { transform: scaleY(.1); transition-duration: .1s; }
+.hk.lift #K-brows > * { transform: translateY(-4px); }
+.hk.e-smile #K-mouth, .hk.e-wink #K-mouth, .hk.e-hearts #K-mouth, .hk.e-kiss #K-mouth { opacity: 0; }
+.hk.e-smile #K-eyes > * { transform: scaleY(.72); }
+.hk.e-wink #K-eyes > :nth-child(n+7) { transform: scaleY(.06); }
+.hk.e-wink #K-brows > :nth-child(2) { transform: translateY(-6px) rotate(-6deg); }
+.hk.e-blush #K-eyes > circle { transform: translateY(2.5px); }
+.hk.e-hearts #K-eyes > circle { opacity: 0; }
+.hk.e-sigh #K-eyes > *, .hk.e-kiss #K-eyes > * { transform: scaleY(.06); }
+.hk.e-shy #K-eyes > circle { animation: hk-shy 2.2s ease-in-out; }
+.hk.e-shy #K-brows > * { animation: hk-shybrow 2.2s ease-in-out; }
+@keyframes hk-shy { 20%, 60% { transform: translate(-3px, 2.5px); } 85% { transform: translate(0, -1px); } }
+@keyframes hk-shybrow { 20%, 60% { transform: translateY(2px); } 85% { transform: translateY(-3px); } }

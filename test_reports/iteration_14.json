@@ -1,0 +1,35 @@
+{
+  "summary": "Frontend-only test of the new Husband K inline SVG at 390x844 and 1280x800. Meet /meet/a5yxsmhb: face-cameo renders the new figure (wicker skin, swept hair, teal eyes, smirk, chest, lantern heart) over the misty-forest oval. There is no old egg figure on Meet, /h/:id, the /bands preview, the desktop BuildingHusband panel, the weaving hoop or the share card. band-line-0..2 use fill #F1ECE1 over dark woven strips; their bounding boxes measured inside the oval ellipse at 390. Lines: 'STEADY HAND · HOLDS ME', 'VOICE NOTES · ADVENTURES', 'PET'S NAME'. ribbon-name reads 'meet Hollis' in rgb(241,236,225). Tapping face-tap-target 8 times gave data-emotion blush, hearts, kiss, sigh, shy, smile, wink, blush, back to idle after each tap. This matched at both 390 and 1280, with one frame captured per emotion. The weaving hoop shows the new figure on cloth, fading in by step (faint at ~1.2s, full by ~3.6s), with bands and tags. Share reveal shows the new husband in the card oval, rendered as a 1080x1920 blob. GET /api/husbands/a5yxsmhb/card.jpg?v=6 returned 200 image/jpeg (526 KB). Contrast regression holds: the selected option is rgb(241,236,225) on moss rgb(74,86,65) once its transition settles; the band chips are bone on wine rgb(107,46,54); the badges are ink rgb(42,33,27) on amber rgb(226,203,146); the BuildingHusband caption is bone. There were 0 console or page errors in any run.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet cameo at 390", "issues": ["Band labels are only ~9-10px tall on a phone. They are legible but small, and textLength spacingAndGlyphs squeezing gives uneven kerning, e.g. 'ST EADY'. Consider a slightly larger font or less letterSpacing on the cameo bands."]},
+      {"screen": "BuildingHusband panel / early weaving hoop", "issues": ["All 3 dark band strips are drawn even when fewer text lines exist. At strand V of VII only 2 lines are filled, so the 3rd strip is empty. In the hoop, the strips appear (faded) before BandText shows at step 4. This is cosmetic. Consider rendering strips only for lines that have text."]},
+      {"screen": "Emotions", "issues": ["Hearts: the gold heart irises on the pale sclera are hard to see at 390. Kiss: the floating heart is tiny. Sigh: the rising hearts float above the oval window (not clipped) over the frame. All are minor polish."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: bump the cameo band font size or reduce squeeze on phones for crisper band labels",
+    "Optional: draw band strips only for bands that carry text",
+    "Optional: make the 'hearts' irises more visible (larger or darker outline)"
+  ],
+  "critical_code_review_comments": [
+    "Face.jsx hardcodes filter='url(#hk-glow)' in Eyes instead of using the id prop. It works because StillHusband (hkc) is always idle, but it would break if another id were ever animated.",
+    "Every Face instance reuses the same ids (hk-wk, hk-cameo-win and so on). BuildingHusband renders 2 Faces, so the DOM gets duplicate ids. The defs are identical, so this renders fine today, but it is fragile if the first instance is ever display:none. Consider useId().",
+    "Face.jsx re-subscribes play to the emote bus on every render (useEffect without deps). This is harmless but wasteful."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "seed_data_creation": "The UI flows created 2 new husbands (29b3c8rh, nbmmttak).",
+  "screenshots": [
+    "/app/.screenshots/i14_m390_idle.jpeg", "/app/.screenshots/i14_m390_emo0_blush.jpeg", "/app/.screenshots/i14_m390_emo1_hearts.jpeg", "/app/.screenshots/i14_m390_emo2_kiss.jpeg", "/app/.screenshots/i14_m390_emo3_sigh.jpeg", "/app/.screenshots/i14_m390_emo4_shy.jpeg", "/app/.screenshots/i14_m390_emo5_smile.jpeg", "/app/.screenshots/i14_m390_emo6_wink.jpeg",
+    "/app/.screenshots/i14_d1280_idle.jpeg", "/app/.screenshots/i14_d1280_emo0_blush.jpeg", "/app/.screenshots/i14_d1280_emo1_hearts.jpeg", "/app/.screenshots/i14_d1280_emo2_kiss.jpeg", "/app/.screenshots/i14_d1280_emo3_sigh.jpeg", "/app/.screenshots/i14_d1280_emo4_shy.jpeg", "/app/.screenshots/i14_d1280_emo5_smile.jpeg", "/app/.screenshots/i14_d1280_emo6_wink.jpeg",
+    "/app/.screenshots/i14_d1280_meet.jpeg", "/app/.screenshots/i14_d1280_share_reveal.jpeg", "/app/.screenshots/i14_d1280_building_husband.jpeg", "/app/.screenshots/i14_d1280_bands_preview.jpeg", "/app/.screenshots/i14_d1280_bands.jpeg", "/app/.screenshots/i14_d1280_weave_step2.jpeg", "/app/.screenshots/i14_d1280_weave_step5.jpeg", "/app/.screenshots/i14_m390_bands_preview.jpeg", "/app/.screenshots/i14_m390_weave_early.jpeg", "/app/.screenshots/i14_m390_weave.jpeg", "/app/.screenshots/i14_zoom_band390.jpg"
+  ],
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "/bands auto-preselects 3 chips (3 of 3 chosen), so clicking chips toggles them OFF. Don't click them blindly before Weave him. face-tap-target cycles starting at blush (cycle index 2), and each emotion returns to idle within 1.8-2.5s. Selected option colour transitions, so wait about 1s before reading the computed colour."
+}
