@@ -59,3 +59,4 @@
 .whc .vig{position:absolute;inset:0;pointer-events:none;background:radial-gradient(90% 70% at 50% 50%,transparent 60%,rgba(0,0,0,.45) 100%)}
 .whc.layer-base .dyn{visibility:hidden}.whc.layer-base .vig{display:none}
 .whc.layer-over{background:transparent!important}.whc.layer-over>*:not(.vig){visibility:hidden!important}
+.whc .sky-husband{position:absolute;inset:0;width:100%;height:100%}

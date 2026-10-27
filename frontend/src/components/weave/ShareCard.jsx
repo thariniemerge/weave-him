@@ -1,3 +1,4 @@
+import { StillHusband } from "./Face";
 import { forwardRef } from "react";
 import "./sharecard.css";
 import { CONFIG, siteHost } from "../../content";
@@ -30,7 +31,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
         <div className="t-r">to Order</div>
         <div className="t-sub">Willow &amp; wicker, never jawlines · Miss Austen would approve</div>
       </div>
-      <div className="sky"><div className="sky-shade" /></div>
+      <div className="sky"><StillHusband className="sky-husband" /><div className="sky-shade" /></div>
       <div className="frame-wrap"><img className="frame" src={A("frame-gold.webp")} alt="" /></div>
       {STARS.map(([f, l, t, w, o], i) => (
         <img key={i} className="star" src={A(f)} style={{ left: l, top: t, width: w, opacity: o }} alt="" />

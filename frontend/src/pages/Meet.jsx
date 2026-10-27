@@ -21,8 +21,8 @@ import { motion, useReducedMotion } from "framer-motion";
 export const Cameo = ({ h, alive = false }) => (
   <div className="relative w-full" style={{ aspectRatio: "278 / 260" }} data-testid="meet-cameo">
     <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt={`${h.name}, a wicker husband`} />
-    <BandText band={h.band} kind="cameo" />
     <Face kind="cameo" ambient={alive} onTapCycle={alive} />
+    <BandText band={h.band} kind="cameo" />
     <p data-testid="ribbon-name" className="absolute left-0 right-0 text-center f-cg italic font-semibold text-[26px] text-[#F1ECE1] leading-none" style={{ top: "86.6%", color: "#F1ECE1", textShadow: "0 1px 2px rgba(20,10,12,.7)" }}>
       meet {h.name}
     </p>

@@ -14,12 +14,12 @@ export const BuildingHusband = ({ done }) => {
   return (
     <div className="w-full" data-testid="building-husband">
       <div className="relative w-full" style={{ aspectRatio: "278 / 260" }}>
-        <Art name="meet-cameo" className="absolute inset-0 w-full h-full opacity-[0.16] grayscale" />
+        <div className="absolute inset-0 opacity-[0.16] grayscale"><Art name="meet-cameo" className="absolute inset-0 w-full h-full" /><Face kind="cameo" /></div>
         <div className="absolute inset-0 transition-[clip-path] duration-700 ease-out" style={{ clipPath: `inset(${100 - pct}% 0 0 0)` }}>
           <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt="Your wicker husband, part-woven" />
+          <Face kind="cameo" />
           {band.length > 0 && <BandText band={band} kind="cameo" />}
         </div>
-        <Face kind="cameo" show={done >= 5} />
       </div>
       <p className="f-sc text-center text-[16px] mt-4 text-[color:#F1ECE1]">
         {done ? `${ROMAN[done]} of VII strands woven` : "The basketmaker awaits the first strand"}

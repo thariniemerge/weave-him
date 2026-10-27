@@ -46,8 +46,8 @@ export default function Bands() {
       <PanelOrInline>
         <div className="relative w-full max-w-[300px] lg:max-w-none mx-auto mt-2" style={{ aspectRatio: "278 / 260" }} data-testid="bands-preview">
           <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt="Your wicker husband wearing the chosen strands" />
-          <BandText band={orderBands(labels, picked)} kind="cameo" />
           <Face kind="cameo" />
+          <BandText band={orderBands(labels, picked)} kind="cameo" />
         </div>
       </PanelOrInline>
       <div className="flex flex-wrap justify-center gap-2 mt-3" data-testid="band-choices">

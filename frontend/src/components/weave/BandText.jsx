@@ -4,9 +4,9 @@ import { shortLabel, BAND_MAX } from "../../lib/weave";
 
 // Band geometry traced from the storyboard art (viewBox = art width x 3). Only the top two bands carry text.
 export const BANDS = {
-  cameo: { box: "0 0 834 780", paths: ["M 250 502 Q 417 522 585 502", "M 240 556 Q 417 578 590 556", "M 265 611 Q 417 630 568 611"], font: 24 },
-  // the hoop has no third dark band, so a soft one is stitched in under the label
-  hoop: { box: "0 0 834 837", paths: ["M 240 527 Q 417 545 590 527", "M 215 586 Q 417 602 615 586", "M 262 646 Q 417 662 572 646"], font: 21, strip: true },
+  // bands wrap his chest, following its curve (Husband K)
+  cameo: { box: "0 0 834 780", paths: ["M 250 498 Q 414 524 579 498", "M 252 552 Q 414 578 577 552", "M 286 604 Q 414 628 543 604"], font: 23 },
+  hoop: { box: "0 0 834 837", paths: ["M 250 556 Q 414 582 578 556", "M 252 611 Q 414 636 576 611", "M 282 664 Q 414 688 546 664"], font: 22 },
 };
 const SEP = " · ";
 const FILL = 0.8;
@@ -60,9 +60,6 @@ export function BandText({ band, kind, show = true }) {
         {g.paths.map((d, i) => <path key={i} id={`${id}-${i}`} d={d} ref={(el) => { pathRefs.current[i] = el; }} />)}
       </defs>
       <text ref={probe} x="-9999" y="-9999" fontSize={g.font} style={txt} />
-      {g.strip && lines[2] && (
-        <path d={g.paths[2]} stroke="#2a1810" strokeOpacity="0.82" strokeWidth="34" strokeLinecap="round" fill="none" data-testid="band-strip" />
-      )}
       {lines.map((l, i) => (
         <text key={i} fontSize={g.font} dy="0.34em" fill="#F1ECE1" filter={`url(#${id}-sh)`} style={txt} data-testid={`band-line-${i}`}>
           <textPath href={`#${id}-${i}`} xlinkHref={`#${id}-${i}`} startOffset="50%" textAnchor="middle"

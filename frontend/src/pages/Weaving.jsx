@@ -102,8 +102,8 @@ export default function Weaving() {
           <div className="absolute inset-x-0 top-0 border-b-2 border-dashed border-[color:var(--rose)] transition-[height] duration-500 ease-out"
             style={{ ...cloth, height: `${(1 - p) * 100}%` }} />
         </div>
+        <Face kind="hoop" show={Math.min(1, 0.2 + step * 0.14)} />
         <BandText band={band} kind="hoop" show={step >= 4} />
-        <Face kind="hoop" show={step >= 5} />
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>
