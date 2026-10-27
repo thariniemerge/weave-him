@@ -1,0 +1,20 @@
+{
+  "summary": "Tested the api.js base URL logic and the relative share redirect. The browser run on https://weave-him-bloom.internal.preview.emergentagent.com at 390x844 passed. The husband-counter showed '27 husbands woven by hand'. The full flow went /strand/1 to /strand/7, then /weaving, then /meet/k64tdq6v with vow-1..vow-5 and no vow-6. The share-card text contains '(Weave yours at weave-him-bloom.internal.preview.emergentagent.com)', i.e. window.location.host. Visiting /api/share/{id} landed on /h/{id} on the same host, with 5 vows and weave-your-own-button. All 6 API requests went to the page's own host, and there were no page errors. GET /api/share/{id} returns HTML with meta refresh '0;url=/h/{id}', location.replace(\"/h/{id}\") and href=\"/h/{id}\", all relative. og:image and og:url are still absolute. An unknown id returns 404. The public host gives a Cloudflare 307: curl https://weave-him-bloom.preview.emergentagent.com/ returns HTTP/2 307 with 'location: https://weave-him-bloom.internal.preview.emergentagent.com/' and 'server: cloudflare'. /api/stats on the public host also returns 307 to the .internal /api/stats. This redirect comes from the platform edge, not the app.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": ["/app/backend/tests/test_share_relative.py", "/app/test_reports/pytest/pytest_share.xml"],
+  "action_items": [
+    "No app code fix is needed. The public preview domain issues a Cloudflare-level 307 to the .internal host, including for /api/*. This is platform or ingress configuration that the app cannot override. Tell the user, or redeploy or check the preview environment's routing."
+  ],
+  "critical_code_review_comments": [
+    "frontend/.env REACT_APP_BACKEND_URL itself points to the .internal host. api.js ignores it unless the hosts match, so this is harmless, but the value is protected and was left alone.",
+    "Two outbound navigations are user-initiated shares, not redirects: shareLink uses window.location.origin, which is correct, and Tell.jsx sends window.location.href to sms: or wa.me.",
+    "og:url and og:image use the x-forwarded-host, so they will be absolute .internal URLs when the request is served via .internal. That is expected given the platform redirect."
+  ],
+  "updated_files": ["/app/backend/tests/test_share_relative.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "1 husband (k64tdq6v) created via the UI flow.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run with: SHARE_TEST_ID=<existing id> REACT_APP_BACKEND_URL=... pytest tests/test_share_relative.py -n 0. Without SHARE_TEST_ID the share test is skipped. The public host currently returns a 307 to .internal at Cloudflare."
+}
