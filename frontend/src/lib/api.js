@@ -9,5 +9,10 @@ export const uploadCard = (id, blob) => axios.post(`${API}/husbands/${id}/card`,
 export const shareLink = (id) => `${window.location.origin}/api/share/${id}`;
 
 const cache = {};
-export const rememberHusband = (h) => { cache[h.id] = h; };
+export const rememberHusband = (h) => {
+  cache[h.id] = h;
+  const mine = JSON.parse(localStorage.getItem("weave-him-mine") || "[]");
+  localStorage.setItem("weave-him-mine", JSON.stringify([...mine, h.id].slice(-30)));
+};
+export const isMine = (id) => JSON.parse(localStorage.getItem("weave-him-mine") || "[]").includes(id);
 export const cachedHusband = (id) => cache[id];

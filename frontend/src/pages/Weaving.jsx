@@ -6,7 +6,7 @@ import { HeartsRow } from "../components/weave/StrandHeader";
 import { COPY, ROMAN } from "../content";
 import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete } from "../lib/weave";
-import { createHusband, rememberHusband } from "../lib/api";
+import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { BandLine } from "./Meet";
 
 const STEP_MS = 680;
@@ -47,7 +47,15 @@ export default function Weaving() {
 
   const weave = () => {
     setError(false);
-    createHusband(buildPayload(answers)).then((h) => { rememberHusband(h); setHusband(h); }).catch(() => setError(true));
+    const payload = buildPayload(answers);
+    const sig = JSON.stringify(payload);
+    const last = JSON.parse(sessionStorage.getItem("weave-him-last") || "null");
+    const req = last?.sig === sig ? getHusband(last.id) : createHusband(payload).then((h) => {
+      sessionStorage.setItem("weave-him-last", JSON.stringify({ sig, id: h.id }));
+      rememberHusband(h);
+      return h;
+    });
+    req.then(setHusband).catch(() => setError(true));
   };
   useEffect(() => {
     if (!ready || started.current) return;

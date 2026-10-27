@@ -1,0 +1,43 @@
+{
+  "summary": "First full run at 390x844. Backend: 16/16 pytest pass (stats, create/get husband, validation, card upload, og.jpg, card.png, share HTML). The Claude Sonnet 5.5 vows work (vows_source=llm, ~2-5s), and the template fallback kicked in correctly on an LLM 429 concurrency error. Frontend: found one CRITICAL blocker. On Strand V, moving any slider and then tapping 'Next: what he remembers' left a blank page: the URL changed to /strand/6, but the Temperament <main> stayed at opacity 0 and Strand VI never mounted. Removing the framer-motion `layout` prop from the so-far tags fixed it, and the full flow was retested. Everything else passed: welcome counter and how-it-works sheet, disabled/enabled next button, I/VII roman progress, answers kept on back (option and custom text), 3-step slider captions, so-far tags, remembers max 3 plus custom chip, weaving tags and strand count with auto-navigate, skip-to-him, Meet ribbon/5 vows/number/signature, Share him desktop fallback (1080x1920 PNG download, 'Link copied' toast, /api/share/{id} on the clipboard), card uploaded to backend, Tell recipient and strand chips, signature input, copy link toast, public /h/:id with weave-your-own, friendly not-found for an invalid id. No horizontal overflow and no tap targets under 44px on any screen.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/husbands", "issue": "Strings inside strands, feel and keys can be empty or whitespace and still pass validation; only list length is checked."},
+      {"endpoint": "POST /api/husbands/{id}/card", "issue": "No auth or ownership check and the first upload wins, so anyone who knows the id can upload any PNG and set the OG image permanently."},
+      {"endpoint": "POST /api/husbands (LLM)", "issue": "The Emergent key returns 429 CONCURRENCY_REQUEST_LIMIT when two requests run in parallel. The template fallback covers it, but concurrent users will silently get template vows."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Temperament.jsx (Strand V) -> Strand VI route transition", "issue": "FIXED BY TESTER. After any slider change, tapping next-remembers-button left the page blank: the old <main> stayed at opacity:0 with transform translateY(-8px), and the AnimatePresence mode='wait' exit never finished. Cause: `layout` prop on the so-far tag motion.span chips, whose keys change when sliders move. Removing `layout` fixed it (2/2 reproduced before the fix, 3/3 passed after).", "selector": "[data-testid=next-remembers-button]", "priority": "CRITICAL"}
+    ],
+    "integration_issues": [
+      {"flow": "OG card upload", "issue": "The card is uploaded only from /meet/:id, after a background render of about 5-8s. If the user shares or copies the link and leaves before that finishes, /api/husbands/{id}/og.jpg stays 404 and link previews have no image. Also, anyone visiting /meet/:id (isOwner is always true) can trigger the upload.", "affected_selectors": ["[data-testid=share-him-button]"]}
+    ],
+    "design_issues": [
+      {"screen": "Meet cameo", "issues": ["The band lines on the wicker figure (band-line-0..2) shrink to about 5-7px and can't be read at 390px."]},
+      {"screen": "Weaving", "issues": ["Refreshing /weaving after a husband was created posts again and makes a duplicate husband (counter goes up)."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_weave_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Review the tester's fix in /app/frontend/src/pages/Temperament.jsx (removed `layout` from the so-far tag motion.span). Do not re-add `layout` inside pages wrapped by AnimatePresence mode='wait', or move to a different animation approach.",
+    "Consider uploading the card as soon as it renders and before sharing, or rendering the OG image on the server, so og.jpg is never missing.",
+    "Optional: reject empty strings in HusbandIn strands and feel, and limit card upload to the session that created the husband.",
+    "Optional: make the cameo band text bigger or readable."
+  ],
+  "critical_code_review_comments": [
+    "Meet.jsx useCardPng(h, true): isOwner is hardcoded to true, so any non-public /meet/:id visit uploads the card.",
+    "Weaving.jsx: there is no guard against re-creating a husband on reload; consider caching the created id in sessionStorage.",
+    "server.py llm_vows: a new LlmChat is created per request, which is fine; the 8s timeout and the vows_ok validation work as designed."
+  ],
+  "updated_files": ["/app/frontend/src/pages/Temperament.jsx", "/app/backend/tests/test_weave_api.py"],
+  "success_rate": {"backend": "100%", "frontend": "95% (one critical navigation blocker found and fixed by tester; the rest passes)"},
+  "test_credentials": "None needed (anonymous app)",
+  "seed_data_creation": "About 10 husbands were created during testing (ids include ckx2sdbs, kusp8ysk, 8vvdkfw9), so the stats counter rose from 3 to 11.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run backend tests with -n0, because test_stats_increments fails under xdist parallelism. The sessionStorage key 'weave-him-answers' can be pre-seeded to jump straight to /strand/5, 6 or 7. The Strand V->VI blank-page bug only happens after a slider change; re-check it if Temperament.jsx animations change.",
+  "rca of the issue": "Repro: open /strand/5, change any slider (page.fill on [data-testid=slider-out]), then click next-remembers-button. The URL becomes /strand/6, but the DOM still shows the Temperament page at opacity 0 and Remembers never mounts. Root cause: framer-motion 11.18 with React 19. The so-far chips are `motion.span layout` with keys t+i, and those keys change when a slider step changes. During the route exit, the layout-animated children keep the parent AnimatePresence (mode='wait') from finishing its exit, so the next route never renders. Fix: remove `layout` (applied by the tester)."
+}

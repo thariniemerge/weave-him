@@ -61,7 +61,17 @@ class HusbandIn(BaseModel):
     @field_validator("strands", "remembers", "band", "remember_keys")
     @classmethod
     def _cl(cls, v):
-        return [clip(x) for x in v]
+        v = [clip(x) for x in v]
+        if any(not x for x in v):
+            raise ValueError("empty strand")
+        return v
+
+    @field_validator("feel")
+    @classmethod
+    def _f(cls, v):
+        if not clip(v):
+            raise ValueError("empty feel")
+        return clip(v)
 
 
 class Husband(BaseModel):
@@ -136,12 +146,22 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
     key = os.environ.get("EMERGENT_LLM_KEY")
     if not key:
         return None
-    chat = LlmChat(api_key=key, session_id=f"vows-{uuid.uuid4()}", system_message=SYSTEM_PROMPT).with_model(
-        "anthropic", "claude-sonnet-5-5")
     msg = ("His seven strands:\n" + "\n".join(f"- {s}" for s in p.strands) +
            f"\nHe remembers: {', '.join(p.remembers) or 'the small things'}.\nHe should make her feel: {p.feel}.\n" +
            slider_words(p.sliders))
-    raw = await asyncio.wait_for(chat.send_message(UserMessage(text=msg)), timeout=8)
+
+    async def attempt():
+        for i in range(3):
+            chat = LlmChat(api_key=key, session_id=f"vows-{uuid.uuid4()}", system_message=SYSTEM_PROMPT).with_model(
+                "anthropic", "claude-sonnet-5-5")
+            try:
+                return await chat.send_message(UserMessage(text=msg))
+            except Exception as e:
+                if i == 2 or "429" not in str(e):
+                    raise
+                await asyncio.sleep(0.6 * (i + 1))
+
+    raw = await asyncio.wait_for(attempt(), timeout=8)
     m = re.search(r"\[.*\]", raw, re.S)
     vows = [clip(v, 200) for v in json.loads(m.group(0))] if m else None
     return vows if vows_ok(vows) else None

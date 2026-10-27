@@ -4,7 +4,7 @@ import { X, Share } from "lucide-react";
 import { Page, Pill, Art } from "../components/weave/ui";
 import { ShareCard } from "../components/weave/ShareCard";
 import { COPY, CONFIG, ROMAN } from "../content";
-import { cachedHusband, getHusband, shareLink, uploadCard } from "../lib/api";
+import { cachedHusband, getHusband, isMine, shareLink, uploadCard } from "../lib/api";
 import { renderCard, shareCard } from "../lib/card";
 import { useAnswers } from "../lib/store";
 import { useFitText } from "../hooks/useFitText";
@@ -12,7 +12,7 @@ import { useFitText } from "../hooks/useFitText";
 const BAND_POS = [{ top: "64.2%", w: "38%" }, { top: "71%", w: "44%" }, { top: "77.8%", w: "48%" }];
 
 export const BandLine = ({ text, pos, i, max = 9 }) => {
-  const [ref] = useFitText([text], { max, min: 5, step: 0.5, width: "auto" });
+  const [ref] = useFitText([text], { max, min: 7, step: 0.5, width: "auto" });
   return (
     <div ref={ref} data-testid={`band-line-${i}`} className="absolute left-1/2 -translate-x-1/2 text-center f-sc font-semibold text-[color:#f3e3c4] whitespace-nowrap overflow-hidden leading-none"
       style={{ top: pos.top, width: pos.w, letterSpacing: "0.12em" }}>{text}</div>
@@ -83,7 +83,7 @@ export default function Meet({ isPublic = false }) {
   const [h, setH] = useState(() => cachedHusband(id) || null);
   const [missing, setMissing] = useState(false);
   const [busy, setBusy] = useState(false);
-  const { ref, blob, fontsReady } = useCardPng(isPublic ? null : h, true);
+  const { ref, blob, fontsReady } = useCardPng(isPublic ? null : h, isMine(id));
 
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => setMissing(true)); }, [id, h]);
   useEffect(() => { if (h) document.title = `Meet ${h.name} · Weave Him`; }, [h]);

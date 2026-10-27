@@ -53,7 +53,7 @@ export default function Temperament() {
       <div className="mt-5 flex flex-wrap justify-center items-center gap-2" data-testid="so-far-tags">
         <span className="f-sc text-[12px] mr-1">{COPY.wovenFrom}</span>
         {tags.map((t, i) => (
-          <motion.span key={t + i} layout initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+          <motion.span key={t + i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
             className="f-cg italic text-[16px] px-3 py-1 rounded-full border border-[color:#b8956a]" style={{ background: CHIP_TINTS[i % 5] }}>
             {t}
           </motion.span>

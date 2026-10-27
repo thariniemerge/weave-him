@@ -11,7 +11,7 @@ export function AnswersProvider({ children }) {
   });
   useEffect(() => { sessionStorage.setItem(KEY, JSON.stringify(answers)); }, [answers]);
   const set = (k, v) => setAnswers((a) => ({ ...a, [k]: v }));
-  const reset = () => setAnswers(blank());
+  const reset = () => { sessionStorage.removeItem("weave-him-last"); setAnswers(blank()); };
   return <Ctx.Provider value={{ answers, set, reset }}>{children}</Ctx.Provider>;
 }
 
