@@ -10,13 +10,15 @@ import Weaving from "./pages/Weaving";
 import Meet from "./pages/Meet";
 import Tell from "./pages/Tell";
 import CardPage from "./pages/CardPage";
+import { Layout } from "./components/weave/Layout";
+import { musicForRoute } from "./lib/sound";
 
 function AnimatedRoutes() {
   const location = useLocation();
-  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; }, [location.pathname]);
+  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); }, [location.pathname]);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
-    <div className="mx-auto w-full max-w-[430px] overflow-x-hidden">
+    <Layout>
     <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Welcome />} />
@@ -28,7 +30,7 @@ function AnimatedRoutes() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
-    </div>
+    </Layout>
   );
 }
 

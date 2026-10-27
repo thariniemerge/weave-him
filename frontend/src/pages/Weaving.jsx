@@ -8,6 +8,8 @@ import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete } from "../lib/weave";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { BandText } from "../components/weave/BandText";
+import { Face } from "../components/weave/Face";
+import { PanelOrInline } from "../components/weave/Layout";
 import { play, startLoop, stopLoop } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 
@@ -87,6 +89,7 @@ export default function Weaving() {
     <Page className="items-center">
       <SoundToggle className="absolute right-4 top-4" />
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
+      <PanelOrInline>
       <div className="relative w-full mt-3" style={{ aspectRatio: "294 / 295" }} data-testid="weaving-hoop">
         <Art name="weave-hoop" className="absolute inset-0 w-full h-full" alt="An embroidery hoop where a wicker figure is being woven" />
         <div className="absolute rounded-full overflow-hidden" style={{ left: "13.6%", top: "11.4%", width: "72.8%", height: "72.6%" }}>
@@ -94,8 +97,10 @@ export default function Weaving() {
             style={{ ...cloth, height: `${(1 - p) * 100}%` }} />
         </div>
         <BandText band={band} kind="hoop" show={step >= 4} />
+        <Face kind="hoop" show={step >= 5} />
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
+      </PanelOrInline>
       <h1 className="f-cg font-bold italic text-[32px] mt-3 text-center">{COPY.weaving}</h1>
       <p data-testid="weaving-strand-count" className="f-sc text-[14px] mt-1">Strand {ROMAN[Math.max(1, step)]} of VII</p>
       <div className="mt-3"><HeartsRow current={Math.min(step + 1, 7)} done={step} size="w-[26px]" /></div>

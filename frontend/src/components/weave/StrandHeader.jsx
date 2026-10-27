@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { ROMAN } from "../../content";
 import { Art, SoundToggle } from "./ui";
 import { play } from "../../lib/sound";
+import { PanelArt } from "./Layout";
+import { BuildingHusband } from "./PanelFigures";
 
 export const HeartsRow = ({ current, done, size = "w-[22px]" }) => (
   <div className="flex items-center gap-[3px]" data-testid="hearts-progress">
@@ -17,6 +19,7 @@ export const StrandHeader = ({ n, back }) => {
   const nav = useNavigate();
   return (
     <header className="flex items-center justify-between h-12 mb-3 relative z-10">
+      <PanelArt><BuildingHusband done={n - 1} /></PanelArt>
       <button data-testid="back-button" aria-label="Back" onClick={() => { play("page"); back ? nav(back) : nav(-1); }}
         className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)] transition-colors">
         <ChevronLeft className="w-6 h-6" strokeWidth={1.6} />

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
-import { Art, Pill, Page, Footer, SoundToggle, Credit } from "../components/weave/ui";
-import { play, enterWelcome, leaveWelcome } from "../lib/sound";
-import { COPY, CONFIG } from "../content";
+import { Art, Pill, Page, SoundToggle } from "../components/weave/ui";
+import { PanelOrInline } from "../components/weave/Layout";
+import { play } from "../lib/sound";
+import { COPY } from "../content";
 import { getStats } from "../lib/api";
 import { useAnswers } from "../lib/store";
 
@@ -36,8 +37,7 @@ export default function Welcome() {
   const [count, setCount] = useState(null);
   const [how, setHow] = useState(false);
   useEffect(() => { getStats().then((d) => setCount(d.total)).catch(() => setCount(null)); }, []);
-  useEffect(() => { enterWelcome(); return () => leaveWelcome(); }, []);
-  const start = () => { leaveWelcome(); play("page"); reset(); nav("/strand/1"); };
+  const start = () => { play("page"); reset(); nav("/strand/1"); };
 
   return (
     <Page className="pt-4">
@@ -51,7 +51,9 @@ export default function Welcome() {
         </button>
         <SoundToggle className="-mr-2 ml-1" />
       </header>
-      <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[40dvh] object-contain -mt-1" />
+      <PanelOrInline>
+        <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[40dvh] lg:max-h-[82vh] object-contain -mt-1" />
+      </PanelOrInline>
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>
       <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[68px] leading-[0.95] tracking-[0.01em]">{COPY.wordmark}</h1>
       <Art name="divider" className="w-full mt-1" />
@@ -66,7 +68,6 @@ export default function Welcome() {
       <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#5A3D34]">
         {COPY.counter(count ?? "…")}
       </p>
-      <Footer><Credit text={CONFIG.CREDIT_LINE} /></Footer>
       <HowItWorks open={how} onOpenChange={setHow} />
     </Page>
   );

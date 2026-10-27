@@ -136,8 +136,7 @@ function unlock() {
 ["pointerdown", "keydown", "touchend"].forEach((e) => window.addEventListener(e, unlock, { passive: true }));
 
 // ---------- Welcome music: decoded AudioBuffer, looped seamlessly ----------
-const MUSIC_VOL = 0.22;
-const music = { wanted: false, raw: null, buffer: null, src: null, gain: null, offset: 0, t0: 0, loading: null };
+const music = { wanted: false, level: 0.22, raw: null, buffer: null, src: null, gain: null, offset: 0, t0: 0, loading: null, duckUntil: 0 };
 
 function loadMusic() {
   if (music.loading) return music.loading;
@@ -158,7 +157,7 @@ async function musicOn() {
   const src = ctx.createBufferSource(), g = ctx.createGain();
   src.buffer = music.buffer; src.loop = true;
   const now = ctx.currentTime;
-  g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(MUSIC_VOL, now + 3);
+  g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(music.level, now + 3);
   src.connect(g).connect(ctx.destination);
   src.start(0, music.offset % music.buffer.duration);
   Object.assign(music, { src, gain: g, t0: now });
@@ -175,12 +174,33 @@ function musicOff(fade = 1.2) {
   music.src = null;
 }
 
-export function enterWelcome() {
-  music.wanted = true;
-  if (music.raw) musicOn();
-  else setTimeout(() => (window.requestIdleCallback || setTimeout)(loadMusic), 800); // after first paint
+function rampTo(v, sec) {
+  if (!music.gain) return;
+  const g = music.gain.gain, now = ctx.currentTime;
+  g.cancelScheduledValues(now); g.setValueAtTime(g.value, now); g.linearRampToValueAtTime(v, now + sec);
 }
-export function leaveWelcome() { music.wanted = false; musicOff(1.2); }
+
+// One soundtrack for the whole app; quieter while she's answering or weaving
+export function musicForRoute(path) {
+  music.wanted = !path.startsWith("/card/");
+  const quiet = path.startsWith("/strand") || path.startsWith("/weaving");
+  music.level = quiet ? 0.12 : 0.22;
+  if (!music.wanted) return musicOff(0.4);
+  if (!music.loading) setTimeout(() => (window.requestIdleCallback || setTimeout)(loadMusic), 800); // after first paint
+  if (performance.now() > music.duckUntil) rampTo(music.level, 1.2);
+  musicOn();
+}
+
+// Dip under the reveal flourishes, then swell back
+export function duckMusic(hold = 1.6) {
+  if (!music.gain) return;
+  music.duckUntil = performance.now() + (0.3 + hold + 1.5) * 1000;
+  const g = music.gain.gain, now = ctx.currentTime;
+  g.cancelScheduledValues(now); g.setValueAtTime(g.value, now);
+  g.linearRampToValueAtTime(0.06, now + 0.3);
+  g.setValueAtTime(0.06, now + 0.3 + hold);
+  g.linearRampToValueAtTime(music.level, now + 0.3 + hold + 1.5);
+}
 document.addEventListener("visibilitychange", () => (document.hidden ? musicOff(0.3) : musicOn()));
 
 const ready = () => !muted && ctx && ctx.state === "running";

@@ -25,9 +25,9 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 3
+CARD_VERSION = 4
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
-DEFAULT_CREDIT_LINE = "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent"
+DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
 ID_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
@@ -53,15 +53,15 @@ class CardText(BaseModel):
 
 
 class HusbandIn(BaseModel):
-    strands: List[str] = Field(min_length=7, max_length=7)
+    strands: List[str] = Field(min_length=7, max_length=24)
     keys: Dict[str, str] = {}
     sliders: Dict[str, int] = {}
     remembers: List[str] = Field(default=[], max_length=3)
     remember_keys: List[str] = Field(default=[], max_length=3)
     feel: str
-    band: List[str] = Field(default=[], max_length=8)
+    band: List[str] = Field(default=[], max_length=24)
     card: CardText
-    threads: List[Thread] = Field(default=[], max_length=10)
+    threads: List[Thread] = Field(default=[], max_length=20)
     site: str = Field(default="", max_length=80)
     credit: str = Field(default="", max_length=120)
 
@@ -127,14 +127,16 @@ def pick_name(strands: List[str]) -> str:
 
 
 def template_vows(p: HusbandIn) -> List[str]:
-    k = p.keys
-    order = [k.get("q1"), *(p.remember_keys[:1]), k.get("q3"), k.get("q4") or k.get("q2"), k.get("q7")]
+    k = {q: (v or "").split(",") for q, v in p.keys.items()}
+    first = lambda q: k.get(q, [""])[0]  # noqa: E731
+    extra = [i for q in ("q1", "q2", "q3", "q4", "q7") for i in k.get(q, [])[1:]]
+    order = [first("q1"), *(p.remember_keys[:1]), first("q3"), first("q4") or first("q2"), first("q7"), *extra, first("q2")]
     vows = []
     for key in order:
         v = VOW_TEMPLATES.get(key or "")
         if v and v not in vows:
             vows.append(v)
-    for key in [k.get("q2"), *p.remember_keys[1:]]:
+    for key in [first("q2"), *p.remember_keys[1:]]:
         v = VOW_TEMPLATES.get(key or "")
         if len(vows) < 5 and v and v not in vows:
             vows.insert(len(vows) - 1, v)
@@ -211,7 +213,7 @@ def render_for(h: "Husband", host: str = "") -> bytes:
     site = h.site or host
     if not site or re.search(r"preview\.emergentagent\.com|localhost", site):
         site = PREVIEW_SITE_LABEL
-    credit = h.credit if h.credit and "[Inspired-by" not in h.credit else DEFAULT_CREDIT_LINE
+    credit = DEFAULT_CREDIT_LINE
     return render_card(h.name, h.number, h.card.line1, h.card.line2, h.card.woven, site, credit)
 
 
@@ -278,7 +280,7 @@ async def read_husband(hid: str):
 
 
 def reweave_fallback(h: Husband) -> List[str]:
-    keys = [*h.keys.values(), *h.remember_keys]
+    keys = [*(i for v in h.keys.values() for i in v.split(",")), *h.remember_keys]
     pool = [VOW_TEMPLATES[k] for k in keys if k in VOW_TEMPLATES] + list(VOW_TEMPLATES.values()) + GENERIC_VOWS
     used = {w for v in h.vows for w in re.findall(r"[a-z']{5,}", v.lower())}
     return [v for v in dict.fromkeys(pool) if v not in h.vows and not (set(re.findall(r"[a-z']{5,}", v.lower())) - {"always", "never"}) & used]

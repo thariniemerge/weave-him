@@ -1,23 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { X, Share } from "lucide-react";
-import { Page, Pill, Art, SoundToggle, Credit } from "../components/weave/ui";
+import { Page, Pill, Art, SoundToggle } from "../components/weave/ui";
+import { PanelOrInline } from "../components/weave/Layout";
 import { VowsCard } from "../components/weave/VowsCard";
 import { CardPreview } from "../components/weave/CardPreview";
-import { play } from "../lib/sound";
+import { play, duckMusic } from "../lib/sound";
 import { ShareCard } from "../components/weave/ShareCard";
-import { COPY, CONFIG } from "../content";
+import { COPY } from "../content";
 import { cachedHusband, getCardBlob, getHusband, isMine, shareLink } from "../lib/api";
 import { renderCard, shareCard, saveCard, loadCardFonts, copyText, isIOS } from "../lib/card";
 import { ShareReveal } from "../components/weave/ShareReveal";
 import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
 import { BandText } from "../components/weave/BandText";
+import { Face, emote } from "../components/weave/Face";
 
-export const Cameo = ({ h }) => (
+export const Cameo = ({ h, alive = false }) => (
   <div className="relative w-full" style={{ aspectRatio: "278 / 260" }} data-testid="meet-cameo">
     <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt={`${h.name}, a wicker husband`} />
     <BandText band={h.band} kind="cameo" />
+    <Face kind="cameo" ambient={alive} onTapCycle={alive} />
     <p data-testid="ribbon-name" className="absolute left-0 right-0 text-center f-cg italic font-semibold text-[26px] text-[color:var(--parchment)] leading-none" style={{ top: "86.6%" }}>
       meet {h.name}
     </p>
@@ -57,7 +60,12 @@ export default function Meet({ isPublic = false }) {
 
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => setMissing(true)); }, [id, h]);
   useEffect(() => { if (isPublic && h) document.title = `Meet ${h.name} · Weave Him`; }, [h, isPublic]);
-  useEffect(() => { if (h?.id) play("harp"); }, [h?.id]);
+  useEffect(() => {
+    if (!h?.id) return;
+    play("harp"); duckMusic();
+    const t = setTimeout(() => emote("smile"), 700);
+    return () => clearTimeout(t);
+  }, [h?.id]);
 
   const [reveal, setReveal] = useState(false);
   const onShare = () => { play("paper"); blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
@@ -85,7 +93,7 @@ export default function Meet({ isPublic = false }) {
         </div>
       </header>
       <p className="f-sc text-center text-[13px] text-[color:#5A3D34] mt-1">{isPublic ? COPY.readyPublic : COPY.ready}</p>
-      <Cameo h={h} />
+      <PanelOrInline><Cameo h={h} alive /></PanelOrInline>
       <p className="f-cg italic text-center text-[18px] mt-3 mb-5">
         {COPY.biceps[0]}<span className="hl">{COPY.biceps[1]}</span>{COPY.biceps[2]}
       </p>
@@ -96,7 +104,7 @@ export default function Meet({ isPublic = false }) {
         ) : (
           <>
             <CardPreview url={url} name={h.name} onOpen={() => setReveal(true)} />
-            <button data-testid="share-him-button" onClick={() => setReveal(true)} className="pill pill-primary">
+            <button data-testid="share-him-button" onClick={() => { emote("wink"); setReveal(true); }} className="pill pill-primary">
               <Share className="w-5 h-5" strokeWidth={1.8} /><span>{COPY.share}</span>
             </button>
             <button data-testid="in-your-life-button" onClick={() => { play("page"); nav(`/tell/${h.id}`); }} className="pill pill-secondary">{COPY.inLife}</button>
@@ -106,7 +114,6 @@ export default function Meet({ isPublic = false }) {
       </div>
       <ShareReveal open={reveal} onClose={() => setReveal(false)} name={h.name} url={url}
         onSave={onSave} onShare={onShare} onCopy={onCopy} isIOS={isIOS()} />
-      {isPublic && <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-6"><Credit text={CONFIG.CREDIT_LINE} /></p>}
       {!isPublic && fallback && (
         <div aria-hidden className="fixed top-0 pointer-events-none" style={{ left: -20000 }}>
           <ShareCard ref={ref} husband={h} fontsReady={fontsReady} />

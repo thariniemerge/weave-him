@@ -139,3 +139,9 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
+
+/* Desktop split: content column is centred vertically, not stretched */
+.desk-col > main { min-height: auto; padding-top: 7vh; padding-bottom: 7vh; }
+.desk-col > main .mt-auto { margin-top: 2rem; }
+/* Tablet: wider column, slightly larger type */
+@media (min-width: 768px) and (max-width: 1023px) { .tablet-col { zoom: 1.12; } }

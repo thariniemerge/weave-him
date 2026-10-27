@@ -1,6 +1,7 @@
 import { Volume2, VolumeX } from "lucide-react";
 import { setMuted, useMuted } from "../../lib/sound";
 import { motion } from "framer-motion";
+import { EmergentBadge } from "./Layout";
 
 export const Art = ({ name, className = "", alt = "", ...p }) => (
   <img src={`/art/${name}.svg`} alt={alt} draggable={false} className={`select-none ${className}`} {...p} />
@@ -22,9 +23,10 @@ export const Page = ({ children, className = "" }) => (
   <motion.main
     initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
     transition={{ duration: 0.32, ease: "easeOut" }}
-    className={`relative min-h-[100dvh] px-6 pt-5 pb-8 flex flex-col ${className}`}
+    className={`relative min-h-[100dvh] px-6 pt-5 pb-6 flex flex-col ${className}`}
   >
     {children}
+    <div className="flex justify-center mt-6 lg:hidden"><EmergentBadge /></div>
   </motion.main>
 );
 

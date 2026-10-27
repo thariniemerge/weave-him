@@ -8,6 +8,8 @@ import { cachedHusband, getHusband, shareLink } from "../lib/api";
 import { copyText } from "../lib/card";
 import { play } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
+import { PanelArt } from "../components/weave/Layout";
+import { Cameo } from "./Meet";
 
 const STRAND_TINTS = ["var(--peony)", "var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)"];
 const greetingFor = (to, his) => {
@@ -62,6 +64,7 @@ export default function Tell() {
 
   return (
     <Page>
+      <PanelArt><Cameo h={h} /></PanelArt>
       <button data-testid="back-button" aria-label="Back" onClick={() => { play("page"); nav(`/meet/${h.id}`); }} className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)]">
         <ChevronLeft className="w-6 h-6" strokeWidth={1.6} />
       </button>

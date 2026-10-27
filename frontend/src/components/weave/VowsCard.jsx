@@ -6,6 +6,7 @@ import { Art } from "./ui";
 import { COPY, ROMAN } from "../../content";
 import { reweaveVow } from "../../lib/api";
 import { play } from "../../lib/sound";
+import { emote } from "./Face";
 
 const Quill = () => (
   <motion.span className="absolute -top-3 left-0 text-[color:var(--rose)] pointer-events-none"
@@ -71,6 +72,7 @@ export const VowsCard = ({ h, setH, canEdit }) => {
     try {
       const nh = await reweaveVow(h.id, i);
       setH(nh);
+      emote("hearts");
       play("quill", { rate: 1.1 });
       if (nh.reweaves_left === 0) setOpen(i);
     } catch (e) {

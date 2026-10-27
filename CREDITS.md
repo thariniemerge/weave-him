@@ -3,7 +3,7 @@
 ## Music
 | Track | Where it plays | Source / licence |
 |---|---|---|
-| welcome-theme (`frontend/public/audio/welcome-theme.mp3`, plus `.ogg` transcoded from it) | Welcome screen only. It is a seamless Web Audio loop at volume 0.22, fades in over 3s on the first tap and fades out over 1.2s when she leaves | Original score, made for Weave Him. No licence needed |
+| welcome-theme (`frontend/public/audio/welcome-theme.mp3`, plus `.ogg` transcoded from it) | Plays across the whole app as one seamless Web Audio loop. It sits at 0.22 on Welcome, Meet him and the letter screen, and 0.12 during the questions and weaving. It dips to 0.06 under the reveal flourishes and fades in over 3s on the first tap | Original score, made for Weave Him. No licence needed |
 
 ## Sound
 Every sound in Weave Him is **synthesised live in the browser with the Web Audio API** (`frontend/src/lib/sound.js`).
@@ -26,6 +26,9 @@ The master level is about -18 dB, and the page turn is the loudest sound. Sound 
 
 ## Fonts
 Grenze Gotisch, Cormorant Garamond, Cormorant SC and EB Garamond come from Google Fonts and are self-hosted in `frontend/public/fonts`. All are SIL Open Font License 1.1.
+
+## Badge
+The Emergent logo in the "Built with Emergent" badge comes from emergent.sh.
 
 ## Images
 - The share-card assets (frame, sky, sun, stars, scrolls) were supplied by the project owner.

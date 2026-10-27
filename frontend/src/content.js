@@ -3,8 +3,9 @@ export const CONFIG = {
   // Leave empty to use the current domain (without https:// or www.)
   SITE_URL: "",
   // *word* is shown in italics
-  CREDIT_LINE: "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent",
-  CARD_CREDIT_LINE: "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent",
+  CREDIT_LINE: "Built with Emergent",
+  CREDIT_URL: "https://emergent.sh",
+  CARD_CREDIT_LINE: "Built with Emergent",
   // Printed on the share card while running on a preview address (before publishing)
   PREVIEW_SITE_LABEL: "weavehim.[domain]",
 };
@@ -18,59 +19,60 @@ export const COPY = {
   howItWorks: "How it works",
   howSteps: [
     { title: "Answer", body: "Seven little questions, seven strands. Not one of them about his looks." },
-    { title: "Weave", body: "The basketmaker weaves your answers into willow & wicker, strand by strand." },
-    { title: "Meet him", body: "He arrives with an 1800s name and five vows, written just for you." },
+    { title: "Weave", body: "The basketmaker weaves my answers into willow & wicker, strand by strand." },
+    { title: "Meet him", body: "He arrives with an 1800s name and five vows, written just for me." },
   ],
   kicker: "hand-woven for the Season",
   wordmark: "Weave Him",
   tagline: ["He's made of willow & wicker.", "So make him of what matters."],
   steps: ["Answer", "Weave", "Meet him"],
-  cta: "Commission your husband",
+  cta: "Commission my husband",
   counter: (n) => `${n} ${n === 1 ? "husband" : "husbands"} woven by hand · two minutes`,
   orderTitle: "Order for one husband",
-  spinOwn: "Or, spin your own thread",
+  spinOwn: "Or, spin my own thread",
   spinPlaceholder: "He…",
   asideA: "There's no box for height on this form.",
   asideB: "That's rather the point.",
-  soFar: "Your husband so far",
+  soFar: "My husband so far",
   weaveStrand: "Weave this strand",
   temperTitle: ["Tune his ", "temperament"],
   temperSub: "slide the woven heart along the thread",
   wovenFrom: "So far he's woven from",
   comingTogether: "He's coming together…",
   nextRemembers: "Next: what he remembers",
-  remembersTitle: ["What he ", "remembers"],
+  remembersTitle: ["What does he ", "remember", " about me?"],
   remembersSub: "pick up to three, he'll never forget them",
-  remembersOwn: "Spin your own",
+  remembersOwn: "Spin my own",
   remembersOwnPlaceholder: "He remembers…",
-  nextFeel: "Next: how he makes you feel",
+  nextFeel: "Next: how he makes me feel",
   weaveHim: "Weave him",
   weaving: "The basketmaker is weaving…",
-  weavingAside: ["Every strand is one of your answers.", "Not one of them is about his ", "jawline", "."],
+  weavingAside: ["Every strand is one of my answers.", "Not one of them is about his ", "jawline", "."],
   skip: "Skip to him",
-  ready: "Your commission is ready",
+  ready: "My commission is ready",
   readyPublic: "A commission, woven by hand",
   biceps: ["Seven strands. Not one of them about his ", "biceps", "."],
   vowsNo: "His vows · No.",
   dearest: "dearest reader, he promises…",
   yours: "Yours, woven by hand,",
   share: "Share him",
-  inLife: "Is he already in your life?",
+  inLife: "Is he already in my life?",
   again: "Weave another",
   weaveOwn: "Weave your own",
-  tellTitle: ["Is he already ", "in your life?"],
+  tellTitle: ["Is he already ", "in my life?"],
   tellSub: "Some of these strands already exist. Tell the man who's been weaving them.",
   sendTo: "Send to",
-  strandGave: "The strand he gave you",
+  strandGave: "The strand he gave me",
   letterBody: (s) => ["You're woven into my wicker husband. Your strand: ", s, ". Thought you should know."],
-  herName: "Sign with your name",
+  herName: "Sign with my name",
   withLove: "With love,",
   hisName: "His name (optional)",
   sendText: "Send as a text",
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
-  disclaimer: "Weave Him is a fan-made tribute and isn't affiliated with or endorsed by the makers of Wicker.",
+  disclaimer: "A fan-made tribute, not affiliated with the makers of Wicker.",
+  upToThree: "up to three",
   shareText: (name) => `Meet ${name}, my wicker husband, woven by hand from what matters.`,
   cardThumb: "His story card",
   cardThumbSub: "tap to view · 1080 × 1920",
@@ -92,7 +94,7 @@ export const RECIPIENTS = [
 // Single-choice strands. strand = tag label, tag = "so far" chip, band = band word, sentence = letter form
 export const QUESTIONS = [
   {
-    n: 1, key: "q1", text: "When you've had a *terrible* day, he…",
+    n: 1, key: "q1", text: "When I've had a *terrible* day, he…",
     options: [
       { id: "coffee", label: "Brings me coffee without asking", strand: "coffee, unasked", tag: "coffee-bringer", band: "COFFEE", sentence: "you bring me coffee before I even think to ask" },
       { id: "vent", label: "Lets me vent. No fixing.", strand: "lets me vent", tag: "good listener", band: "LETS ME VENT", sentence: "you let me vent, and you never try to fix it" },
@@ -110,7 +112,7 @@ export const QUESTIONS = [
     ],
   },
   {
-    n: 3, key: "q3", text: "When you're *nervous* before something big, he…",
+    n: 3, key: "q3", text: "When I'm *nervous* before something big, he…",
     options: [
       { id: "rehearse", label: "Rehearses it with me", strand: "patience", tag: "patient rehearser", band: "PATIENCE", sentence: "you rehearse it with me, as many times as it takes" },
       { id: "won", label: "Tells me I've already won", strand: "faith in me", tag: "believer", band: "FAITH IN ME", sentence: "you tell me I've already won" },
@@ -128,7 +130,7 @@ export const QUESTIONS = [
     ],
   },
   {
-    n: 7, key: "q7", text: "How should he make you *feel*?", kicker: "The final strand",
+    n: 7, key: "q7", text: "How should he make me *feel*?", kicker: "The final strand",
     options: [
       { id: "safe", label: "Safe harbour", strand: "safe harbour", tag: "safe harbour", band: "SAFE HARBOUR", sentence: "you make me feel safe, like a harbour in a storm" },
       { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", tag: "amuser", band: "AMUSED", sentence: "you keep me endlessly amused" },
@@ -140,7 +142,7 @@ export const QUESTIONS = [
 
 export const SLIDERS = [
   {
-    key: "out", title: "When you're out together", left: "Quiet company", right: "Constant banter", tint: "#CCD9E2", def: 75,
+    key: "out", title: "When we're out together", left: "Quiet company", right: "Constant banter", tint: "#CCD9E2", def: 75,
     steps: [
       { tag: "quiet company", caption: "He's happy to say nothing at all, together." },
       { tag: "easy company", caption: "A good word, then a good silence." },
@@ -151,26 +153,26 @@ export const SLIDERS = [
     key: "love", title: "How he shows his love", left: "Small daily rituals", right: "Grand gestures", tint: "#E4DCEB", def: 25,
     steps: [
       { tag: "ritual-keeper", caption: "Coffee on the nightstand, every single morning." },
-      { tag: "note-leaver", caption: "A note in your coat pocket, now and then." },
+      { tag: "note-leaver", caption: "A note in my coat pocket, now and then." },
       { tag: "grand-gesturer", caption: "He'll hire a string quartet. For a Tuesday." },
     ],
   },
   {
-    key: "feel", title: "With him, you feel", left: "Safe and steady", right: "Swept off your feet", tint: "#EBD9A6", def: 50,
+    key: "feel", title: "With him, I feel", left: "Safe and steady", right: "Swept off my feet", tint: "#EBD9A6", def: 50,
     steps: [
       { tag: "steady", caption: "The porch light is always on." },
       { tag: "steady & sly", caption: "Steady hands, and a little mischief." },
-      { tag: "sweeping", caption: "He'll ask you to dance in the kitchen." },
+      { tag: "sweeping", caption: "He'll ask me to dance in the kitchen." },
     ],
   },
 ];
 
 export const REMEMBERS = [
-  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S BIRTHDAY", sentence: "you always remember Mom's birthday" },
+  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S DAY", sentence: "you always remember Mom's birthday" },
   { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee" },
   { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time" },
-  { id: "song", label: "My favourite song", short: "my favourite song", band: "FAVOURITE SONG", sentence: "you never forget my favourite song" },
-  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "CHILDHOOD PET", sentence: "you remember the name of my childhood pet" },
+  { id: "song", label: "My favourite song", short: "my favourite song", band: "OUR SONG", sentence: "you never forget my favourite song" },
+  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "PET'S NAME", sentence: "you remember the name of my childhood pet" },
   { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises" },
 ];
 

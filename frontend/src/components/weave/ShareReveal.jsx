@@ -3,7 +3,8 @@ import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { Download, Share, X } from "lucide-react";
 import { COPY } from "../../content";
-import { play } from "../../lib/sound";
+import { play, duckMusic } from "../../lib/sound";
+import { useDesktop } from "./Layout";
 
 const DUST = Array.from({ length: 14 }, (_, i) => ({
   left: 12 + ((i * 53) % 76), top: 30 + ((i * 37) % 55), size: 2 + (i % 3), dx: ((i % 5) - 2) * 9,
@@ -37,6 +38,7 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
   useEffect(() => {
     if (!open) { setRevealed(false); setDust(false); return; }
     play("reveal");
+    duckMusic(1.8);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e) => e.key === "Escape" && onClose();
@@ -51,12 +53,13 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [open, url, dur, reduce]);
 
-  const size = useMemo(() => ({ height: "min(calc(100dvh - 210px), calc((100vw - 40px) * 16 / 9), 860px)", aspectRatio: "9 / 16" }), []);
+  const desk = useDesktop();
+  const size = useMemo(() => ({ height: desk ? "calc(100dvh - 72px)" : "min(calc(100dvh - 210px), calc((100vw - 40px) * 16 / 9), 860px)", aspectRatio: "9 / 16" }), [desk]);
   if (!open) return null;
 
   return createPortal(
     <motion.div data-testid="share-reveal" role="dialog" aria-modal="true" aria-label={`${name}'s story card`}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center px-5 py-4 bg-[#21150f]/85 backdrop-blur-md"
+      className="fixed inset-0 z-50 flex flex-col lg:flex-row items-center justify-center lg:gap-14 px-5 py-4 bg-[#21150f]/85 backdrop-blur-md"
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} onClick={() => revealed && onClose()}>
       <p className="absolute top-4 left-0 right-0 text-center f-sc text-[12px] text-[#cdb79c] pointer-events-none">Tap to close</p>
       <button data-testid="share-reveal-close" aria-label="Close" onClick={onClose}
@@ -81,11 +84,11 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
         )}
         {dust && <Dust />}
       </motion.div>
-      <motion.div className="w-full max-w-[400px] mt-4"
+      <motion.div className="w-full max-w-[400px] lg:w-[300px] mt-4 lg:mt-0"
         initial={{ opacity: 0, y: 10 }} animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }} transition={{ duration: 0.35 }}
         data-testid="share-reveal-actions" onClick={(e) => e.stopPropagation()}>
         <fieldset disabled={!revealed} className="contents">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-1 gap-3">
           <button data-testid="reveal-save-button" onClick={onSave} className="pill pill-primary !min-h-[50px] !text-[18px]">
             <Download className="w-5 h-5" strokeWidth={1.7} /><span>{COPY.saveImage}</span>
           </button>

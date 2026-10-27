@@ -4,7 +4,7 @@ import { StrandHeader, WovenProgress } from "../components/weave/StrandHeader";
 import { QuestionCard } from "../components/weave/QuestionCard";
 import { COPY, QUESTIONS } from "../content";
 import { useAnswers } from "../lib/store";
-import { resolveChoice } from "../lib/weave";
+import { resolveChoices } from "../lib/weave";
 import Temperament from "./Temperament";
 import Remembers from "./Remembers";
 import { play } from "../lib/sound";
@@ -24,7 +24,7 @@ function Question({ n }) {
   const { answers, set } = useAnswers();
   const q = QUESTIONS.find((x) => x.n === n);
   const value = answers[q.key];
-  const ok = !!resolveChoice(q.key, value);
+  const ok = resolveChoices(q.key, value).length > 0;
   return (
     <Page>
       <StrandHeader n={n} back={prevPath(n)} />
