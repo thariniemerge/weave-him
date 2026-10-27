@@ -63,7 +63,7 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} onClick={() => revealed && onClose()}>
       <p className="absolute top-4 left-0 right-0 text-center f-sc text-[12px] text-[#cdb79c] pointer-events-none">Tap to close</p>
       <button data-testid="share-reveal-close" aria-label="Close" onClick={onClose}
-        className="absolute top-2 right-2 w-11 h-11 rounded-full flex items-center justify-center text-[#f3e3c4] hover:bg-white/10">
+        className="z-30 absolute top-2 right-2 w-11 h-11 rounded-full flex items-center justify-center text-[#f3e3c4] hover:bg-white/10">
         <X className="w-6 h-6" strokeWidth={1.5} />
       </button>
       <motion.div className="relative rounded-xl overflow-hidden shadow-[0_30px_80px_-20px_rgba(0,0,0,.9)] ring-1 ring-[#A8823F]/60 bg-[#16201A]"

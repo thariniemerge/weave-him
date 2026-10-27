@@ -1,0 +1,55 @@
+{
+  "summary": "Tested the Willow & Mist retheme on both backend and frontend. I clicked through the whole flow at 390x844 and again at 1280x800: Welcome -> strands I-VII (multi-select x2, slider via keyboard, 2 remembers chips) -> /bands -> /weaving -> /meet (new husbands 5kuxfwhc and m7y79x9j) -> share reveal (Save, Share, Video and Copy all visible) -> Tell -> public /h/:id. There were 0 console errors and no horizontal overflow (scrollWidth equals innerWidth everywhere). At 1280x800 every question screen, strands 5 and 6, and /bands fit in 800px with the CTA above the fold. At 390 the strand-cta-bar is position:fixed at y 750-844. These theme checks passed: body bg rgb(230,225,214); .pill-primary uses the wine gradient (rgb 107,46,54 at 55%); a settled selected option is rgb(74,86,65) with bone text; unselected chips are bone with a dashed rgb(154,163,138) border; the wordmark is IM Fell English italic with text 'weave him'; the signature is Grenze Gotisch and no other element uses Grenze; every .f-mark uses IM Fell English; question titles keep their capitals. Also: .mist-layer runs at 52s; .grain-layer has opacity 0.06; at 1280 art-panel has forest-panel with bg rgb(38,48,42); falling-leaves exists on Welcome, Meet and /h/ but not on strands; leaves are removed and the mist animation is none under reduced motion. Backend: card.jpg returns 200 at 1080x1920, and pixel (40,960) is (56,64,53), a dark green. I found 2 bugs: (1) the BuildingHusband caption on the dark desktop panel is ink on forest and almost invisible; (2) the share-reveal close X on phone is covered by the card image and cannot be clicked.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "tests/test_weave_api.py", "issue": "Two legacy tests are out of date and are not app bugs. test_strand_count_validation[8] expects 422, but the multi-select schema now allows 7-24 strands. test_stats_increments is racy under xdist."},
+      {"endpoint": "/api/husbands/{id}/card.jpg", "issue": "The card text still shows a placeholder: '(Weave yours at weavehim.[domain])'."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "BuildingHusband caption (desktop art panel, PanelFigures.jsx)", "issue": "Measured colour is rgb(42,33,27) (ink) on the forest panel rgb(38,48,42), so 'The basketmaker awaits the first strand' / 'N of VII strands woven' is nearly invisible. Root cause: index.css line 181 '.f-sc { color: inherit; }' comes after the Tailwind utilities, so it overrides every text-[color:...] class on .f-sc elements. Even without the override, the intended #4A5641 would also be dark on the forest panel.", "selector": "[data-testid=building-husband] p.f-sc", "priority": "HIGH"},
+      {"component": "ShareReveal close button (phone 390x844)", "issue": "The close X sits at (338,8), and the card image covers it: elementFromPoint returns share-reveal-image, so Playwright's click timed out. Users can only close by tapping the backdrop. The button has no z-index, so it needs relative z-10/z-20. Closing works at 1280.", "selector": "[data-testid=share-reveal-close]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "All .f-sc labels", "issues": ["Because of the same '.f-sc{color:inherit}' rule, kicker labels, '0/60', 'None of VII strands', remembers-count and so on all render in ink instead of their intended moss/rose/grey. Contrast is fine on fog and bone (ink), but the colour intent is lost."]},
+      {"screen": "Question card / stitch-card", "issues": ["The new fern corner (.stitch-card::after at top-right) overlaps the wine 'W' wax seal on question cards, which looks cluttered at both sizes."]},
+      {"screen": "Welcome & Meet cameo art", "issues": ["Both cameos still have pink roses, daisies and a gingham check behind the welcome arch. The welcome oval is dark, but the 'misty pines' are not really visible. This is fine if the florals in the hero art were meant to stay."]},
+      {"screen": "Phone strand screens", "issues": ["The 'Your husband so far / None of VII strands' row peeks out right under the fixed CTA bar (y~768) and is half covered until the user scrolls. Minor."]},
+      {"screen": "Option select", "issues": ["Text turns bone immediately while the background fades over 150ms, so there is a very brief bone-on-bone flash. 'duration-250' is not a default Tailwind class, so the duration falls back to 150ms. Cosmetic only."]}
+    ]
+  },
+  "screenshots": [
+    "/app/.screenshots/i12_welcome_390.png (initial auto shot is in the tool output; the welcome phone image is the first script's error_*.jpeg, which shows the welcome screen)",
+    "/app/.screenshots/i12_question_390.jpeg",
+    "/app/.screenshots/i12_meet_390.jpeg",
+    "/app/.screenshots/i12_share_390.jpeg",
+    "/app/.screenshots/i12_tell_390.jpeg",
+    "/app/.screenshots/i12_welcome_1280.jpeg",
+    "/app/.screenshots/i12_question_1280.jpeg",
+    "/app/.screenshots/i12_meet_1280.jpeg",
+    "/app/.screenshots/i12_share_1280.jpeg",
+    "/app/.screenshots/i12_public_1280.jpeg",
+    "/app/.screenshots/iter12_card.jpg"
+  ],
+  "test_report_links": ["/app/backend/tests/test_iter12_willow_card.py", "/app/test_reports/pytest/pytest_iter12.xml"],
+  "action_items": [
+    "Remove or scope the '.f-sc { color: inherit; }' rule in index.css (line 181) so the Tailwind colour utilities work again.",
+    "Give the BuildingHusband caption a light colour on the forest panel, e.g. #C9CEC1 or #E6E1D6.",
+    "Add a z-index (e.g. 'z-20') to [data-testid=share-reveal-close] so it sits above the card image on phones.",
+    "Optional: move the stitch-card fern corner so it does not collide with the W seal, and replace the '[domain]' placeholder on the card."
+  ],
+  "critical_code_review_comments": [
+    "index.css: '.f-sc { color: inherit; }' is unlayered CSS placed after the Tailwind utilities, so it beats every text-[color:..] on .f-sc elements (16+ usages). This is a regression from the retheme.",
+    "index.css: 'main h1 { font-family: IM Fell !important; text-transform: lowercase }' is a broad override. Question titles only escape it through a test-id selector; a class would be more robust.",
+    "QuestionCard: 'duration-250' is not in the default Tailwind scale and has no effect."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter12_willow_card.py"],
+  "success_rate": {"backend": "100% (7/7 new tests; the 2 legacy failures are stale tests)", "frontend": "~90% (2 bugs: caption contrast and phone close button)"},
+  "seed_data_creation": "Created husbands 5kuxfwhc (390 flow) and m7y79x9j (1280 flow) through the real UI flow. The test POSTs in test_weave_api also create husbands.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Welcome CTA is commission-button. Option selected state is aria-pressed=true; wait at least 200ms before reading colours because of the transition. Share reveal: share-him-button -> share-reveal-image; at 390 close by clicking the backdrop or (after the fix) share-reveal-close. The card pixel check is in test_iter12_willow_card.py; run it with -n0. Template vows are in use (LLM budget). Verify the caption colour with getComputedStyle on [data-testid=building-husband] p."
+}

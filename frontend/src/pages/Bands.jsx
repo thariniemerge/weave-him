@@ -55,7 +55,7 @@ export default function Bands() {
           const i = picked.indexOf(l);
           return (
             <motion.button key={l} type="button" whileTap={{ scale: 0.95 }} onClick={() => toggle(l)} aria-pressed={i >= 0} data-testid={`band-choice-${l.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-              className={`relative min-h-[44px] pl-4 pr-4 rounded-full f-sc text-[14px] font-semibold tracking-[0.06em] transition-colors duration-200 ${i >= 0 ? "bg-[color:var(--rose)] text-[color:var(--parchment)] border border-[color:#4F1F27]" : "border border-dashed border-[color:#9AA38A] bg-[color:var(--paper)]"}`}>
+              className={`relative min-h-[44px] pl-4 pr-4 rounded-full f-sc text-[14px] font-semibold tracking-[0.06em] transition-colors duration-200 ${i >= 0 ? "bg-[color:var(--rose)] text-[color:var(--paper)] border border-[color:#4F1F27]" : "border border-dashed border-[color:#9AA38A] bg-[color:var(--paper)]"}`}>
               {i >= 0 && <span className="absolute -top-2 -left-1 w-5 h-5 rounded-full bg-[color:var(--ochre)] text-[color:var(--ink)] text-[11px] flex items-center justify-center border border-[color:#7D7462]">{i + 1}</span>}
               {l}
             </motion.button>

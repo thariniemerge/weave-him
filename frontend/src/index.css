@@ -178,7 +178,6 @@ button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid 
 }
 
 /* ---------- Willow & Mist atmosphere ---------- */
-.f-sc { color: inherit; }
 main h1 { font-family: "IM Fell English", Georgia, serif !important; font-style: italic; font-weight: 400 !important; text-transform: lowercase; letter-spacing: 0.005em; }
 main h1 .italic { font-style: italic; }
 .mist-layer { position: fixed; inset: -20%; z-index: 0; pointer-events: none; opacity: 0.55;
@@ -209,3 +208,7 @@ img[src*="/art/heart"] { filter: drop-shadow(0 0 5px rgba(240, 201, 120, 0.65));
 @media (prefers-reduced-motion: reduce) { .mist-layer, .forest-panel::before { animation: none; } .leaf-fall { display: none; } }
 /* questions are in her own voice ("I've…"), so keep their capitals */
 main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-transform: none; }
+/* the question card already wears a wax seal top-right: tuck the fern bottom-left there */
+[data-testid=question-card].stitch-card::after { top: auto; right: auto; left: -8px; bottom: -12px; transform: scaleX(-1) rotate(180deg); }
+/* contrast rule: anything selected sits on moss/wine, so its text is bone */
+[aria-pressed=true] { color: #F1ECE1; }

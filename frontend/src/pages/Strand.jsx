@@ -31,7 +31,7 @@ function Question({ n }) {
       <StrandHeader n={n} back={prevPath(n)} />
       <QuestionCard key={q.key} q={q} value={value} onChange={(v) => set(q.key, v)} />
       <Aside />
-      <div className="relative mt-auto lg:hidden">
+      <div className="relative mt-auto hidden">
         <Art name="corner-wedgwood" className="absolute -left-10 -top-8 w-12 opacity-80 -scale-x-100 pointer-events-none" />
         <WovenProgress done={n - 1} />
       </div>

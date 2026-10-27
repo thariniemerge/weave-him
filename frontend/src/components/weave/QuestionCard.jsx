@@ -13,7 +13,7 @@ const SHAKE = { x: [0, -7, 7, -5, 5, 0], transition: { duration: 0.4 } };
 const Option = ({ opt, i, active, onPick, shake }) => (
   <motion.button animate={shake ? SHAKE : { x: 0 }}
     data-testid={`option-${opt.id}`} onClick={onPick} aria-pressed={active}
-    className={`w-full min-h-[56px] flex items-center justify-between gap-3 pl-5 pr-3 py-2 rounded-full text-left transition-[background-color,transform,box-shadow] duration-250 active:scale-[0.985] ${active ? "bg-[color:var(--moss)] text-[color:var(--paper)] shadow-[0_8px_16px_-8px_rgba(38,48,42,.85)] border border-[color:#33402f]" : "border border-dashed border-[color:#9AA38A]"}`}
+    className={`w-full min-h-[56px] flex items-center justify-between gap-3 pl-5 pr-3 py-2 rounded-full text-left transition-[background-color,color,transform,box-shadow] duration-300 active:scale-[0.985] ${active ? "bg-[color:var(--moss)] text-[color:var(--paper)] shadow-[0_8px_16px_-8px_rgba(38,48,42,.85)] border border-[color:#33402f]" : "border border-dashed border-[color:#9AA38A]"}`}
     style={active ? undefined : { background: TINTS[i % 4] }}
   >
     <span className="f-body font-semibold text-[16px] leading-tight">{opt.label}</span>
@@ -44,7 +44,7 @@ export const QuestionCard = ({ q, value, onChange }) => {
       <Art name="floral-card" className="absolute -top-5 -left-4 w-14" />
       <div className="absolute -top-5 -right-4 w-14 h-14 rounded-full bg-[color:var(--rose)] border-[3px] border-[color:var(--paper)] shadow-[0_0_0_1.5px_#4F1F27,0_4px_10px_-4px_rgba(42,33,27,.6)] flex items-center justify-center">
         <span className="absolute inset-[4px] rounded-full border border-dashed border-[color:rgba(246,239,228,.6)]" />
-        <span className="f-mark text-[26px] leading-none text-[color:var(--parchment)]">W</span>
+        <span className="f-mark text-[26px] leading-none text-[color:var(--paper)]">W</span>
       </div>
       <p className="f-sc text-center text-[13px] text-[color:#4A5641]">{q.kicker || COPY.orderTitle}</p>
       <div className="flex items-center justify-center gap-2 my-2 text-[color:var(--rose)]">

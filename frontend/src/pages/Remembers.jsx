@@ -40,13 +40,13 @@ export default function Remembers() {
           {REMEMBERS.map((r, i) => (
             <Chip key={r.id} data-testid={`remember-chip-${r.id}`} active={has(r.id)} tint={has(r.id) ? "var(--rose)" : TINTS[i]}
               disabled={!has(r.id) && full} onClick={() => toggle(r.id)}
-              className={`f-body font-semibold text-[16px] ${has(r.id) ? "text-[color:var(--parchment)]" : ""} disabled:opacity-60`}>
+              className={`f-body font-semibold text-[16px] ${has(r.id) ? "text-[color:var(--paper)]" : ""} disabled:opacity-60`}>
               <span className="flex items-center gap-2">{has(r.id) && <Art name="heart" className="w-5 h-5" />}{r.label}</span>
             </Chip>
           ))}
           {custom && (
             <Chip active tint="var(--rose)" data-testid="remember-chip-custom" onClick={() => set("remembers", picks.filter((p) => !p.custom))}
-              className="f-cg italic text-[17px] text-[color:var(--parchment)]">
+              className="f-cg italic text-[17px] text-[color:var(--paper)]">
               <span className="flex items-center gap-2">{custom.custom}<X className="w-4 h-4" /></span>
             </Chip>
           )}
@@ -64,7 +64,7 @@ export default function Remembers() {
           </div>
         )}
       </section>
-      <div className="mt-auto pt-8 lg:hidden">
+      <div className="mt-auto pt-8 hidden">
         <WovenProgress done={5} />
       </div>
       <StrandCTA data-testid="next-feel-button" disabled={!picks.length} onClick={() => { play("page"); nav("/strand/7"); }}>{COPY.nextFeel}</StrandCTA>

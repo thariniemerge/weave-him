@@ -78,7 +78,7 @@ export default function Tell() {
       <div className="flex flex-wrap gap-2.5">
         {RECIPIENTS.map((r) => (
           <Chip key={r.id} data-testid={`recipient-${r.id}`} active={to.id === r.id} tint={r.tint} onClick={() => { play("pluck"); setTo(r); }}
-            className={`f-body font-semibold text-[17px] min-w-[96px] ${to.id === r.id && r.id === "partner" ? "text-[color:var(--parchment)]" : ""}`}>
+            className={`f-body font-semibold text-[17px] min-w-[96px] ${to.id === r.id && r.id === "partner" ? "text-[color:var(--paper)]" : ""}`}>
             {r.label}
           </Chip>
         ))}
