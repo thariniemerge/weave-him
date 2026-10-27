@@ -257,6 +257,7 @@ async def share_page(hid: str, request: Request):
     host = request.headers.get("x-forwarded-host") or request.headers.get("host")
     base = f"{proto}://{host}"
     page = f"{base}/h/{h.id}"
+    rel = f"/h/{h.id}"
     title = escape(f"Meet {h.name}, a wicker husband woven by hand")
     desc = escape(f"Woven from {', '.join(h.card.woven)}. {h.vows[0]}")
     img = f"{base}/api/husbands/{h.id}/og.jpg"
@@ -265,8 +266,8 @@ async def share_page(hid: str, request: Request):
 <meta property="og:description" content="{desc}"><meta property="og:url" content="{page}">
 <meta property="og:image" content="{img}"><meta property="og:image:width" content="720"><meta property="og:image:height" content="1280">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="{img}">
-<meta http-equiv="refresh" content="0;url={page}"></head>
-<body style="background:#F6EFE4"><a href="{page}">Meet {escape(h.name)}</a><script>location.replace({json.dumps(page)})</script></body></html>"""
+<meta http-equiv="refresh" content="0;url={rel}"></head>
+<body style="background:#F6EFE4"><a href="{rel}">Meet {escape(h.name)}</a><script>location.replace({json.dumps(rel)})</script></body></html>"""
 
 
 app.include_router(api)

@@ -1,6 +1,9 @@
 import axios from "axios";
 
-export const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
+// Same-origin unless the configured backend shares this page's host (never call another domain)
+const BASE = process.env.REACT_APP_BACKEND_URL;
+const sameHost = (() => { try { return new URL(BASE).host === window.location.host; } catch { return false; } })();
+export const API = `${sameHost ? BASE : ""}/api`;
 
 export const getStats = () => axios.get(`${API}/stats`).then((r) => r.data);
 export const createHusband = (payload) => axios.post(`${API}/husbands`, payload, { timeout: 20000 }).then((r) => r.data);
