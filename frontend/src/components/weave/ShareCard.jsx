@@ -15,13 +15,12 @@ const wovenLines = ([a, b, c]) => [`${a}, ${b},`, `& ${c}`];
 
 export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, layer = "full", site, credit }, ref) {
   const { name, number, card } = husband;
-  const [nameRef] = useFitText([name, fontsReady], { max: 104, min: 40, width: 440 });
-  const [strRef] = useFitText([card.line1, card.line2, fontsReady], { max: 20, min: 12, step: 1, width: 400 });
+  const [nameRef] = useFitText([name, fontsReady], { max: 64, min: 30, width: 300 });
   const [wfRef] = useFitText([card.woven.join(), fontsReady], { max: 29, min: 16, step: 1, width: 524 });
   const [urlRef] = useFitText([fontsReady], { max: 19, min: 11, step: 1, width: 524 });
   const [l1, l2] = wovenLines(card.woven);
   return (
-    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp?v=2")})` }}>
+    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp?v=3")})` }}>
       <div className="amb" />
       <div className="amb-sky" />
       <div className="damask" />
@@ -36,16 +35,11 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
       {STARS.map(([f, l, t, w, o], i) => (
         <img key={i} className="star" src={A(f)} style={{ left: l, top: t, width: w, opacity: o }} alt="" />
       ))}
-      <div className="o-meet">Meet</div>
+      {/* Meet + his name sit in the frame's bottom cartouche; nothing covers him inside the oval */}
+      <div className="cart" data-testid="share-card-meet">Meet</div>
       <div className="o-name dyn" ref={nameRef} data-testid="share-card-name">
         <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{name.toUpperCase()}</span>
       </div>
-      <div className="o-rule"><i /><b /><i /></div>
-      <div className="o-strands dyn" ref={strRef}>
-        <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{card.line1}</span><br />
-        <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{card.line2}</span>
-      </div>
-      <div className="cart">a wicker husband,<br />woven by hand</div>
       <div className="band bot">
         <div className="stat s1"><div className="n">07</div><div className="l">Strands</div></div>
         <img className="scroll" src={A("gold-scroll-left.webp")} style={{ left: 262 }} alt="" />

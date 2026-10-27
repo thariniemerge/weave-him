@@ -12,7 +12,9 @@ export const emote = (name) => subs.forEach((f) => f(name));
 
 // The oval/hoop window in each art, and where his 400x500 figure sits (percent of the art box)
 const SPOTS = {
-  cameo: { box: "0 0 834 780", clip: <ellipse cx="414.5" cy="392" rx="210" ry="256" />, bg: "mist", cx: 414.5, cy: 392,
+  // cameo: `open` is the frame's innermost ring; he's 122% of its width, bottom-anchored and dropped 10%
+  cameo: { box: "0 0 834 780", clip: <ellipse cx="414.5" cy="392" rx="230" ry="317" />, bg: "mist", cx: 414.5, cy: 392, tapY: 320,
+    open: { left: "22.12%", top: "9.62%", width: "55.16%", height: "81.28%" },
     fig: { left: "19.72%", top: "10.19%", width: "59.95%", height: "80.13%", clipPath: "ellipse(42% 41% at 50% 50%)" } },
   hoop: { box: "0 0 834 837", clip: <circle cx="414" cy="426" r="301" />, bg: "cloth", cx: 414, cy: 426,
     fig: { left: "17.69%", top: "11.11%", width: "63.91%", height: "79.57%", clipPath: "ellipse(56.5% 45.2% at 50% 50%)" } },
@@ -138,24 +140,36 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
   const op = typeof show === "number" ? show : show ? 1 : 0;
   const cls = `hk e-${e}${blink && e === "idle" ? " blink" : ""}${lift && e === "idle" ? " lift" : ""}`;
 
+  const figure = (
+    <>
+      <div className="hk-fig absolute inset-0" dangerouslySetInnerHTML={{ __html: RAW }} />
+      <svg viewBox="0 0 400 500" className="absolute inset-0 w-full h-full" aria-hidden><Overlay e={e} n={n} /></svg>
+    </>
+  );
   return (
     <div className={`absolute inset-0 ${cls} ${onTapCycle ? "" : "pointer-events-none"}`} data-testid={`face-${kind}`} data-emotion={e}>
-      <svg viewBox={spot.box} className="absolute inset-0 w-full h-full" aria-hidden>
-        <BackDefs id={`hkb-${kind}`} />
-        <clipPath id={`hkb-${kind}-win`}>{spot.clip}</clipPath>
-        <g clipPath={`url(#hkb-${kind}-win)`}><Backdrop id={`hkb-${kind}`} kind={spot.bg} /></g>
-      </svg>
-      <div className="hk-move absolute" style={{ ...spot.fig, opacity: op, transition: "opacity .6s" }}>
-        <div className="hk-fig absolute inset-0" dangerouslySetInnerHTML={{ __html: RAW }} />
-        <svg viewBox="0 0 400 500" className="absolute inset-0 w-full h-full" aria-hidden><Overlay e={e} n={n} /></svg>
-      </div>
+      {spot.open ? (
+        <div className="absolute overflow-hidden rounded-[50%]" data-testid={`opening-${kind}`}
+          style={{ ...spot.open, background: "radial-gradient(75% 60% at 50% 30%, #DCE2D2 0%, #A9B49E 55%, #5E6B59 100%)" }}>
+          <div className="hk-move absolute" style={{ left: "-11%", width: "122%", bottom: "-10%", aspectRatio: "400 / 500", opacity: op, transition: "opacity .6s" }}>{figure}</div>
+        </div>
+      ) : (
+        <>
+          <svg viewBox={spot.box} className="absolute inset-0 w-full h-full" aria-hidden>
+            <BackDefs id={`hkb-${kind}`} />
+            <clipPath id={`hkb-${kind}-win`}>{spot.clip}</clipPath>
+            <g clipPath={`url(#hkb-${kind}-win)`}><Backdrop id={`hkb-${kind}`} kind={spot.bg} /></g>
+          </svg>
+          <div className="hk-move absolute" style={{ ...spot.fig, opacity: op, transition: "opacity .6s" }}>{figure}</div>
+        </>
+      )}
       <svg viewBox={spot.box} className="absolute inset-0 w-full h-full" aria-hidden={!onTapCycle}>
         <g style={{ opacity: op, transition: "opacity .6s" }}>
           {BANDS[kind].paths.map((d, i) => (
             <path key={i} d={d} stroke="#4F1F27" strokeOpacity=".5" strokeWidth={BANDS[kind].font + 9} fill="none" strokeLinecap="round" data-testid={i === 2 ? "band-strip" : undefined} />
           ))}
         </g>
-        {onTapCycle && <ellipse cx={spot.cx} cy={spot.cy - 110} rx="110" ry="140" fill="transparent" style={{ cursor: "pointer" }} onClick={tap} data-testid="face-tap-target" />}
+        {onTapCycle && <ellipse cx={spot.cx} cy={spot.tapY || spot.cy - 110} rx="110" ry="140" fill="transparent" style={{ cursor: "pointer" }} onClick={tap} data-testid="face-tap-target" />}
       </svg>
     </div>
   );
@@ -163,10 +177,10 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
 
 // Still portrait for the share card: the same figure file, idle, filling the card's oval
 export const StillHusband = ({ className }) => (
-  <div className={className} aria-hidden data-testid="card-husband">
+  <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%" }}>
     <svg viewBox="0 0 523.5 757.2" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
       <BackDefs id="hkc" /><g transform="scale(.628 .9)"><Backdrop id="hkc" kind="mist" /></g>
     </svg>
-    <div className="hk-fig absolute" style={{ left: "-9.51%", top: "-1.44%", width: "119%", height: "102.9%" }} dangerouslySetInnerHTML={{ __html: RAW }} />
+    <div className="hk-fig absolute" style={{ left: "-11%", width: "122%", bottom: "-10%", aspectRatio: "400 / 500" }} dangerouslySetInnerHTML={{ __html: RAW }} />
   </div>
 );

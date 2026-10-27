@@ -98,23 +98,14 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     card = base.copy()
     new = lambda: Image.new("L", (W, H), 0)  # noqa: E731
 
-    # Name
+    # "Meet" is static in the base layer; his name sits under it in the frame's bottom cartouche
     nm = name.upper()
-    s = fit([nm], "cg", 104, 40, 2, 440, 0.06)
-    nm = clamp_lines([nm], "cg", s, 440, 0.06)[0]
+    s = fit([nm], "cg", 64, 30, 2, 300, 0.06)
+    nm = clamp_lines([nm], "cg", s, 300, 0.06)[0]
     f, ls = font("cg", s), s * 0.06
     m = new()
-    draw_line(m, nm, f, (W + ls - text_width(nm, f, ls)) / 2, content_baseline(f, 932, s), ls)
-    paint(card, m, hexrgb("F1ECE1"), [(0, 4, 18, (20, 10, 5, .75)), (0, 0, 1, (255, 240, 210, .6))])
-
-    # Strands under the name
-    s = fit([line1, line2], "sc600", 20, 12, 1, 400, 0.12)
-    line1, line2 = clamp_lines([line1, line2], "sc600", s, 400, 0.12)
-    f, ls, lh = font("sc600", s), s * 0.12, s * 1.45
-    m = new()
-    for i, t in enumerate([line1, line2]):
-        draw_line(m, t, f, 540 - text_width(t, f, ls) / 2, content_baseline(f, 1070 + i * lh, lh), ls)
-    paint(card, m, hexrgb("E2DCC8"), [(0, 2, 8, (10, 5, 3, .8))])
+    draw_line(m, nm, f, (W + ls - text_width(nm, f, ls)) / 2, content_baseline(f, 1312 + (64 - s) / 2, s), ls)
+    paint(card, m, hexrgb("F1ECE1"), [(0, 2, 10, (10, 6, 4, .8)), (0, 0, 1, (255, 240, 210, .5))])
 
     # His number 04✦17
     f, ls = font("cg", 112), 2.24

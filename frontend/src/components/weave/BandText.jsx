@@ -5,7 +5,7 @@ import { shortLabel, BAND_MAX } from "../../lib/weave";
 // Band geometry traced from the storyboard art (viewBox = art width x 3). Only the top two bands carry text.
 export const BANDS = {
   // thin ribbons across his upper chest only (Husband K), so his face and abs stay visible
-  cameo: { box: "0 0 834 780", paths: ["M 296 490 Q 414 505 533 490", "M 292 520 Q 414 536 537 520", "M 322 550 Q 414 564 507 550"], font: 20 },
+  cameo: { box: "0 0 834 780", paths: ["M 262 520 Q 414 538 567 520", "M 258 551 Q 414 569 571 551", "M 290 582 Q 414 598 539 582"], font: 20 },
   hoop: { box: "0 0 834 837", paths: ["M 292 533 Q 414 548 536 533", "M 288 562 Q 414 578 540 562", "M 320 592 Q 414 606 508 592"], font: 20 },
 };
 const SEP = " · ";
@@ -39,9 +39,10 @@ export function BandText({ band, kind, show = true }) {
         const len = pathRefs.current[i]?.getTotalLength() || 0;
         let natural = 0;
         if (probe.current) { probe.current.textContent = lines[i]; natural = probe.current.getComputedTextLength(); }
-        if (!natural) natural = lines[i].length * g.font * 0.68; // estimate if the font isn't measurable yet
+        const est = lines[i].length * g.font * 0.72; // generous estimate in case the font isn't measurable yet
         const cap = len * (i === 2 ? FILL_LOW : FILL);
-        return natural > cap ? cap : null; // squeeze only when it would be too wide
+        // always pin the width: a textPath silently drops glyphs that run past the path's ends
+        return Math.min(Math.max(natural, est * 0.85), cap);
       }));
     };
     document.fonts.load('600 20px "Cormorant SC"').then(() => document.fonts.ready).then(run);
@@ -50,7 +51,7 @@ export function BandText({ band, kind, show = true }) {
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const id = `band-${kind}`;
-  const txt = { fontFamily: "'Cormorant SC', serif", fontWeight: 600, letterSpacing: "0.08em" };
+  const txt = { fontFamily: "'Cormorant SC', serif", fontWeight: 600, letterSpacing: "0.04em" };
   return (
     <svg viewBox={g.box} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500" style={{ opacity: show ? 1 : 0 }} aria-hidden data-testid={`band-text-${kind}`}>
       <defs>
