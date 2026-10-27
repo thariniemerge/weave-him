@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" viewBox="16 20 20 20">
+<defs>
+<clipPath id="clip_150">
+<path transform="matrix(.24,0,0,.24,0,0)" d="M68.75 87.5H143.75V162.5H68.75Z" clip-rule="evenodd" />
+</clipPath>
+<clipPath id="clip_151">
+<path transform="matrix(.45000003,0,0,.45000003,25.5,30)" d="M0 15C-7 10-18 3-18-6-18-13-12-17-7-17-3-17-1-14 0-12 1-14 3-17 7-17 12-17 18-13 18-6 18 3 7 10 0 15Z" />
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_150)">
+<g clip-path="url(#clip_151)">
+<g transform="matrix(1,0,0,1.0000017,16,20.119994)">
+<image id="image_152" width="19" height="19" xlink:href="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABMAAAATCAIAAAD9MqGbAAAACXBIWXMAAA7EAAAO xAGVKw4bAAADwElEQVR4nE2TaVfaeBSH840GyB7CGkBR2jLV086ZeVVFkC1h38GK y1jtqTsoECAECKtgXbDTOjOnn6xXpy/mfXLv//d77oOcudTtmKHsJS7W1IPc3NE7 Vc2Hy3HT6aq6FdFVAnR5Td1LW45X1dV1tJu2nKyomgIjCiwih+iHvRdK0tSL0v+e /CYGqau0YfbB2RLo++2FYc6qROi/D5frPDNKaL9+Wm7y9M2mbfLejsCkYcpQD1IN L3r93lZyozJPDDKmigftJ3RSiBG96CTPlT2Y5MfGee7SgypRbTuqQypebJSzioK2 7sdvdl6eu9F2iBkW5i/XsUHaLEX0og+/Li6WPLgUJCebixcerJcwthMmROLJu+J8 O6bvhshvH3+t+Ylhgr3ZXmgGyc8b1l7K1BbILx9eigGqH6Fney/qAXKaM49yFgQK UOL6ip+sejTjvBWKafjxbtJYWlN3oqzI0xW3ZpjlzlwaeHY/w5271HKIaYZZpMmT tzsOOWbshKhvh28qPnKY1N/svmrAzs15Jc3JAvXlYKkaoHpRZrb/WoSdBeswP4fA huu8uRXWykF8tmOvePFehJ5uWCD2JGPsxHStAH63NVf1EV2BuCnOQexRUtdPGZHT VZUc1ZfWibJL3ctYD9/9UvXirZgRuEkh9tJPlVxqJcUdragu3ZpO0ny8omrwdI3X Iu0w89f+KyVl7seY7+e/14P0JGt8OHjdCtGz3cVR3qZEmX+O3zYE7TjJPh6+kQQa Gp0WF5CaFx2nDTCm6UMB8YUH7QjkKGt64pzQQYqGD70uWACSHMAnBUtlHe3HtJAC gU8HGa4aZGpebFp0nLo0Ek/1s7ayG+0lTfWQDkZcbdjP3FgjgI8KdjiVTkwPcZAW T91v2ztxQzdMPX5aqvlJKOBu1wGc4Qn9tBk6/3rgFIP0IMY87Duh8+sCN87bkAu3 ppcwVP1kbV1zVbCCAFKAUFKmslvTjbF1gQHOoyx3voY2fBiALa1pOmFGirBIPUB8 Li5IUX0LbuXj8gVQibPTLYfoJyYbNigTls/2nJc+shumb/90Ap5xlutnrUgT/tyw yBG2zRMPe46qD+9HGTh94DzNmboJvRwk7nfskEIJkbfbdtGPg0yDtAk5f/JT/9PP rBX8FJ/8NJ6tqlphthKgnv3knvz0oN2U+WQV/KTBkP94OoH1M88/xJ88l555Okb5 uf/x1D0evX3iuQU8F5G6F7vKGGAM6HdbtAG3rkCOc2aABCXLEW3Th0EcuMp2EIer rHqxQVyrxHU/ABtS4kTYCTrsAAAAAElFTkSuQmCC" />
+</g>
+</g>
+<path transform="matrix(.45000003,0,0,.45000003,25.5,30)" stroke-width="1.5" stroke-linecap="butt" stroke-miterlimit="4" stroke-linejoin="miter" fill="none" stroke="#5c3a1a" d="M0 15C-7 10-18 3-18-6-18-13-12-17-7-17-3-17-1-14 0-12 1-14 3-17 7-17 12-17 18-13 18-6 18 3 7 10 0 15Z" />
+</g>
+</g>
+</svg>

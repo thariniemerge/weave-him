@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="18" height="18" viewBox="72 20 18 18">
+<defs>
+<clipPath id="clip_16">
+<path transform="matrix(.24,0,0,.24,0,0)" d="M300 84.375H368.75V153.125H300Z" clip-rule="evenodd" />
+</clipPath>
+<clipPath id="clip_17">
+<path transform="matrix(.4125,0,0,.4125,80.25,28.5)" d="M0 15C-7 10-18 3-18-6-18-13-12-17-7-17-3-17-1-14 0-12 1-14 3-17 7-17 12-17 18-13 18-6 18 3 7 10 0 15Z" />
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_16)">
+<g clip-path="url(#clip_17)">
+<g transform="matrix(1.0000001,0,0,.999998,72,20)">
+<image id="image_18" width="17" height="17" xlink:href="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAIAAAC0D9CtAAAACXBIWXMAAA7EAAAO xAGVKw4bAAAC00lEQVR4nF3TZ1fTYBQH8Hwk26RN0p0OdpnieKstdCbdky6QKaKA SvdImraku1URxKMfzfuAvvHlPSfnuff/uzeYFNFMD5YbHHV7slb20L2Ybry3xHPU 3elG0U32E4ZhbkHwUfdnmyU3Odwx9tJzWItV9pNMzUWM08aiU9H2kd24AcpJxlRw EB0/dR3T113ENGcuOojrIN2OaLGaW9mKma625FLScmmT171kM2LMb8m7qdmL17IG S/MhQ2Eb76fnoOR9qnpAh3XD6umbRZ4lvx9ZKx6qF9WOc/MCR94dL8Mw/ZhumJlt ctSPt6tlmC1h6KcsWNVFiGH9lV12HWOgT82tEEI66CMljPAwtG0EtAVomzRforZU 3afB4OEvh6uCj747Xa946X5cP9m3Qnl/9rTkpoZJZrS72PTTPz88K3uoUco0yM5j IqvsJRjoNkoZC06ixZHSg8E4Y8pvE20/1YnqoJxmzYgkQLfDWgy6t+Pm/DbeS818 tOPQXYya/oa2ySG0EGaKDhyeh8kFv5oP6TEppJrsLSCDwyVkENGMcnMCS94eWR8N BukZRHKyAgaDuL63Y8EqTqL5YNCJMRc2WdWt4IM6RBI3nr96UvMgg7xdJiXNiISl aj41Bi99O16DlPfvNqqsapAwfDlYESH0+00UescIZyEGVL/OX1S81DhthrPAmqyy m2AqThwZOAiRI2HxVSc+ToMB3vI9GuCTLMoMBi0waLBkJ2mBryH0py2C52gggTMZ Qmg7LvhVYtRYchIgDkJiQCOEDZgUVE1253kvebO/UPaQcBaj7OwjScmlhO310xZE crxcdithe7BcZCCE9J9tsk6UgZRV138GyrpfC6WUMEFZ91JVTo0B383JOqSE0DVO PUoyXw9XWyj0cziLcco03be2gqrfly+rXnqascCQWNOrkOLIAP6N/D8DRJKGY0cG 7YgOkWSQQdtPiyHtHw9Jg48KzPb2AAAAAElFTkSuQmCC" />
+</g>
+</g>
+<path transform="matrix(.4125,0,0,.4125,80.25,28.5)" stroke-width="1.5" stroke-linecap="butt" stroke-miterlimit="4" stroke-linejoin="miter" fill="none" stroke="#5c3a1a" d="M0 15C-7 10-18 3-18-6-18-13-12-17-7-17-3-17-1-14 0-12 1-14 3-17 7-17 12-17 18-13 18-6 18 3 7 10 0 15Z" />
+</g>
+</g>
+</svg>

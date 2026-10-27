@@ -1,0 +1,45 @@
+import { motion } from "framer-motion";
+
+export const Art = ({ name, className = "", alt = "", ...p }) => (
+  <img src={`/art/${name}.svg`} alt={alt} draggable={false} className={`select-none ${className}`} {...p} />
+);
+
+// Renders "*word*" as a madder-rose italic accent
+export const Accent = ({ text, className = "text-[color:var(--rose)] italic" }) => (
+  <>{text.split(/(\*[^*]+\*)/).map((s, i) => (s.startsWith("*") ? <span key={i} className={className}>{s.slice(1, -1)}</span> : s))}</>
+);
+
+export const Pill = ({ children, variant = "primary", icon = true, className = "", ...p }) => (
+  <button className={`pill pill-${variant} ${className}`} {...p}>
+    {icon && variant === "primary" && <Art name="heart" className="w-7 h-7 drop-shadow" />}
+    <span>{children}</span>
+  </button>
+);
+
+export const Page = ({ children, className = "" }) => (
+  <motion.main
+    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
+    transition={{ duration: 0.32, ease: "easeOut" }}
+    className={`relative min-h-[100dvh] px-6 pt-5 pb-8 flex flex-col ${className}`}
+  >
+    {children}
+  </motion.main>
+);
+
+export const SmallCaps = ({ children, className = "" }) => (
+  <p className={`f-sc text-[13px] text-[color:#5A3D34] ${className}`}>{children}</p>
+);
+
+export const Chip = ({ active, tint = "var(--wisteria)", children, className = "", ...p }) => (
+  <button
+    className={`min-h-[44px] px-5 rounded-full border transition-[background-color,transform,box-shadow] duration-200 active:scale-[0.97] ${active ? "border-[color:#7d2e3e] ring-1 ring-[color:var(--rose)] shadow-[0_4px_10px_-6px_rgba(58,36,32,.6)]" : "border-dashed border-[color:#b8956a]"} ${className}`}
+    style={{ background: active ? tint : `color-mix(in srgb, ${tint} 55%, var(--paper))` }}
+    {...p}
+  >
+    {children}
+  </button>
+);
+
+export const Footer = ({ children }) => (
+  <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-2">{children}</p>
+);
