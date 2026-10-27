@@ -11,7 +11,7 @@ export const BuildingHusband = ({ done }) => {
   return (
     <div className="w-full" data-testid="building-husband">
       <div className="w-full max-w-[440px] mx-auto">
-        <Medallion band={band} progress={done / 7} label="Your wicker husband, part-woven" />
+        <Medallion band={band} strands={done} finished={false} label="Your wicker husband, part-woven" />
       </div>
       <p className="f-sc text-center text-[16px] mt-4 text-[color:#F1ECE1]">
         {done ? `${ROMAN[done]} of VII strands woven` : "The basketmaker awaits the first strand"}

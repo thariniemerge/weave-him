@@ -10,7 +10,6 @@ const fit = (tp, max) => {
   tp.removeAttribute("textLength"); tp.removeAttribute("lengthAdjust");
   if (tp.getComputedTextLength() > max) { tp.setAttribute("textLength", max); tp.setAttribute("lengthAdjust", "spacingAndGlyphs"); }
 };
-const REVEAL_TOP = 84, REVEAL_BOTTOM = 600;
 
 function useTexts(root, p, name, lines) {
   const key = `${name}|${lines.join("|")}`;
@@ -32,22 +31,47 @@ function useTexts(root, p, name, lines) {
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-function useReveal(root, p, progress, named) {
+// Reveal line (top of the woven part) per answered strand, by his anatomy: lower abs, upper abs, chest,
+// shoulders, neck, chin, then face and hair. Shared across screens so the line only ever grows upward.
+const LEVELS = [600, 572, 546, 470, 432, 416, 392, 84];
+let lastStrands = null;
+
+function useReveal(root, p, strands, finished, named) {
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
-    const weaving = progress != null && progress < 1;
-    const fig = q("figure");
-    if (progress == null) fig.removeAttribute("mask"); else fig.setAttribute("mask", `url(#${p}reveal-mask)`);
-    const y = REVEAL_TOP + (REVEAL_BOTTOM - REVEAL_TOP) * (1 - Math.min(1, progress ?? 1));
-    [q("reveal-rect"), q("reveal-edge")].forEach((el) => { el.style.transform = `translateY(${y}px)`; });
-    q("reveal-edge").style.opacity = weaving && progress > 0 ? 1 : 0;
-    [q("bands"), q("heart")].forEach((el) => { el.style.opacity = weaving ? 0 : 1; });
-    q("ribbon").style.opacity = !weaving && named ? 1 : 0;
-  }, [progress, named]); // eslint-disable-line react-hooks/exhaustive-deps
+    const fig = q("figure"), rect = q("reveal-rect"), edge = q("reveal-edge");
+    const late = [q("bands"), q("heart")], ribbon = q("ribbon");
+    if (strands == null) {
+      fig.removeAttribute("mask");
+      edge.style.opacity = 0;
+      late.forEach((el) => { el.style.opacity = 1; });
+      ribbon.style.opacity = named ? 1 : 0;
+      return;
+    }
+    fig.setAttribute("mask", `url(#${p}reveal-mask)`);
+    const y = LEVELS[strands];
+    if (!rect.dataset.y) {
+      // first paint of this instance: start from the last level any screen showed (never from top or bottom)
+      const from = lastStrands != null && lastStrands < strands ? LEVELS[lastStrands] : y;
+      [rect, edge].forEach((el) => { el.style.transition = "none"; el.style.transform = `translateY(${from}px)`; });
+      rect.getBoundingClientRect();
+      [rect, edge].forEach((el) => { el.style.transition = ""; });
+    }
+    [rect, edge].forEach((el) => { el.style.transform = `translateY(${y}px)`; });
+    rect.dataset.y = y;
+    lastStrands = strands;
+    const edgeOn = strands > 0 && !(strands === 7 && finished);
+    edge.style.transitionDelay = edgeOn ? "0s" : "0s, .8s";
+    edge.style.opacity = edgeOn ? 1 : 0;
+    late.forEach((el) => { el.style.transitionDelay = finished ? ".8s" : "0s"; el.style.opacity = finished ? 1 : 0; });
+    ribbon.style.transitionDelay = finished ? ".8s" : "0s";
+    ribbon.style.opacity = finished && named ? 1 : 0;
+  }, [strands, finished, named]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 // medallion-K.svg as one piece: frame, portrait, bands and ribbon. He moves only through K's own groups.
-export function Medallion({ name, band, alive = false, progress, testid = "medallion", label }) {
+// `strands` (0-7) weaves him bottom-up; `finished` adds the heart, bands and ribbon.
+export function Medallion({ name, band, alive = false, strands, finished = true, testid = "medallion", label }) {
   const reduce = useReducedMotion();
   const [[p, html]] = useState(() => scoped(MEDALLION));
   const root = useRef(null);
@@ -60,7 +84,7 @@ export function Medallion({ name, band, alive = false, progress, testid = "medal
   }, [e, blink, lift, reduce]);
   useLayoutEffect(() => { if (!reduce && (e === "kiss" || e === "hearts")) floatHearts(parts.current); }, [n]); // eslint-disable-line react-hooks/exhaustive-deps
   useTexts(root, p, name, bandLines(band));
-  useReveal(root, p, progress, !!name);
+  useReveal(root, p, strands, finished, !!name);
   return (
     <div className="medallion relative w-full" data-testid={testid} data-emotion={reduce ? "smile" : e} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
       <div ref={root} />

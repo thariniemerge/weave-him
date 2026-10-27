@@ -95,7 +95,7 @@ export default function Weaving() {
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <PanelOrInline>
       <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
-        <div className="w-[72%] mx-auto"><Medallion band={band} progress={p} name={p >= 1 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven from the bottom up" /></div>
+        <div className="w-[72%] mx-auto"><Medallion band={band} strands={7} finished={step >= 7} name={step >= 7 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>

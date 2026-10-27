@@ -215,7 +215,7 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 
 /* medallion-K: one SVG; he moves only through his K-* groups */
 .medallion svg { width: 100%; height: auto; display: block; }
-.medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .4s ease; }
+.medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .8s cubic-bezier(0,0,.2,1), opacity .4s ease; }
 .medallion [id$="-bands"], .medallion [id$="-heart"], .medallion [id$="-ribbon"] { transition: opacity .8s ease; }
 .mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; }
 .mk-float .mk-fl { animation: mk-rise 1.9s ease-out forwards; }

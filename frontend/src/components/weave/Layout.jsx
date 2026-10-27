@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+import { useLocation } from "react-router-dom";
+import { BuildingHusband } from "./PanelFigures";
 import { useReducedMotion } from "framer-motion";
 import { Art } from "./ui";
 
@@ -68,6 +70,7 @@ export const FallingLeaves = () => {
 export function Layout({ children }) {
   const desk = useDesktop();
   const [panel, setPanel] = useState(null);
+  const strand = Number(useLocation().pathname.match(/^\/strand\/(\d)/)?.[1] || 0);
   return (
     <PanelCtx.Provider value={panel}>
       <div className="mist-layer" aria-hidden />
@@ -76,7 +79,11 @@ export function Layout({ children }) {
       {desk ? (
         <div className="relative z-10 grid grid-cols-2 min-h-[100dvh]" data-testid="desktop-layout">
           <aside className="forest-panel sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
-            <div ref={setPanel} className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center" />
+            <div className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center">
+              {/* one husband for all seven strands, so he is never remounted between questions */}
+              {strand > 0 && <BuildingHusband done={strand - 1} />}
+              <div ref={setPanel} className="w-full flex flex-col items-center" />
+            </div>
           </aside>
           <div className="flex justify-center px-8">
             <div className="desk-col w-full max-w-[560px] min-h-[100dvh] flex flex-col justify-center">{children}</div>

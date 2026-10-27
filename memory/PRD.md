@@ -51,3 +51,4 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 ## Backlog
 - P2: Band-3 short label can read weakly (e.g. "REMEMBERS").
 - P2: The mute setting defaults to ON for reduced-motion users, so the intro sound only plays once they unmute.
+- 2026-06 reveal fix: the desktop strand panel husband (BuildingHusband) is now rendered once in Layout, so it isn't remounted between questions. The reveal levels follow his anatomy (LEVELS in Medallion.jsx: lower abs, upper abs, chest, shoulders, neck, chin, then face). The level is shared at module scope, so a new instance starts from the last level and only grows upward over 0.8s. Medallion props are now `strands` and `finished`. Bands weaves the face in (from VI to VII), then the heart and bands appear. Weaving starts fully revealed. Check script: /app/scripts/record_strands.py.
