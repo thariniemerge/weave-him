@@ -1,0 +1,47 @@
+{
+  "summary": "Iteration 8: tested the third band label only, frontend only. Checked the cameo on /meet/a5yxsmhb at 390x844 and 1280x800, ran two new UI flows (390 and 1280) with feel picks Safe harbour, Truly seen and Never alone, checked the weaving hoop, tested legacy and alias records, and smoke-tested Meet, the reveal, Tell and Welcome. Every requested check passes and there were no console errors. One design note: with the current band order, SAFE HAVEN (or any feel label) can never reach the third band from a fresh UI flow.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Third band selection (BandText + buildPayload)", "issues": ["buildPayload puts rem[0] at band index 4, and every remembers label is 12 chars or fewer. So band-line-2 is always the first remembers pick (e.g. PET'S NAME), never a feel label like SAFE HAVEN, for any husband made in the UI. This matches the rule 'not already on the top two bands'. If the user expects the feel strand to show, change the order."]},
+      {"screen": "Meet cameo at 390", "issues": ["Cosmetic and already existing: 'STEADY HAND' on band 0 is squeezed with spacingAndGlyphs, and at 390 there is a visible gap between 'ST' and 'EADY'."]}
+    ]
+  },
+  "passed_checks": [
+    "a5yxsmhb at 390: band-line-0 'STEADY HAND · HOLDS ME', band-line-1 'VOICE NOTES · ADVENTURES', band-line-2 'PET'S NAME' (10 chars, 2 words, not repeated). No textLength on line 2 (natural 150 < cap 167). Width/path = 0.495. x 341-492 inside the path range 265-568. Line 2 bottom at 348.3 < ribbon top at 364.5.",
+    "a5yxsmhb at 1280 (panel cameo): same lines. Line 2 width 153 (ratio 0.503). Bottom at 550.5 < ribbon top at 575.3. There is exactly one band-text-cameo svg.",
+    "UI flow at 390 (husband 9tydc9zj): POST 200. The band includes SAFE HAVEN. The hoop shows 3 lines with opacity 1 about 4s into weaving. All lines are inside weaving-hoop. Line 2 'PET'S NAME' is centred on band-strip (strip x 131-259, text x 167-223, strip centre y 340, text y 336-347). The meet cameo shows the same 3 lines.",
+    "UI flow at 1280 (husband zywdzkfc): the desktop panel hoop shows 3 lines plus the strip, all inside the hoop. The meet cameo matches.",
+    "Legacy records: band [.., 'SAFE HARBOUR', ..] shows 'SAFE HAVEN' on line 2 (alias works). A joined-lines record with the long label 'REMEMBERS EVERYTHING ALWAYS' gives line 2 'REMEMBERS'. A 4-label record has no line 2.",
+    "Regression: meet has 5 vows and ribbon 'meet Hollis'. The share reveal opens and closes with Escape. 'In your life' goes to /tell/a5yxsmhb and renders. The welcome counter works. No console or page errors."
+  ],
+  "screenshots": [
+    "/app/test_reports/img/iter8/m390_cameo.jpeg",
+    "/app/test_reports/img/iter8/d1280_cameo.jpeg",
+    "/app/test_reports/img/iter8/m390_hoop.jpeg",
+    "/app/test_reports/img/iter8/d1280_hoop.jpeg",
+    "/app/test_reports/img/iter8/d1280_weaving_full.jpeg",
+    "/app/test_reports/img/iter8/m390_new_cameo.jpeg",
+    "/app/test_reports/img/iter8/d1280_new_cameo.jpeg",
+    "/app/test_reports/img/iter8/m390_alias_cameo.jpeg",
+    "/app/test_reports/img/iter8/m390_reveal.jpeg",
+    "/app/test_reports/img/iter8/m390_tell.jpeg"
+  ],
+  "test_report_links": ["/app/tests/iter8_band.py", "/app/tests/iter8_alias_seed.py"],
+  "action_items": [
+    "Optional: if SAFE HAVEN or the feel strand should be able to reach the third band, change the band order in buildPayload (rem[0] is index 4) or prefer q7 in BandText's 'low' selection."
+  ],
+  "critical_code_review_comments": [
+    "BandText computes toLabels(band) twice (labels and all). Use one call and slice it.",
+    "In BandText, the 'low' fallback shortLabel(all[4]) can't run, because toLabels already shortens every label to 12 chars or fewer and shortLabel returns at most 2 words. That branch is dead code.",
+    "band-strip getBoundingClientRect does not include the stroke width (34), so tests must compare centres, not containment."
+  ],
+  "updated_files": ["/app/tests/iter8_band.py", "/app/tests/iter8_alias_seed.py"],
+  "success_rate": {"backend": "n/a (skipped)", "frontend": "100%"},
+  "seed_data_creation": "UI husbands 9tydc9zj (390) and zywdzkfc (1280). API legacy-band husbands wz5te3ma (alias SAFE HARBOUR), h5mm2xnt (joined/long), nsyrawv2 (4 labels). Their strands start with 'TEST_alias strand'.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "To measure bands: band-line-N getBBox() in viewBox units, and #band-{cameo|hoop}-N getTotalLength(). Cameo path 2 spans x 265-568 (len about 304). Hoop bands become visible (svg opacity 1) about 4s into /weaving. Ribbon: the visible [data-testid=ribbon-name]."
+}

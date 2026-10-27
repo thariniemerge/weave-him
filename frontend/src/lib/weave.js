@@ -57,8 +57,8 @@ export function buildPayload(a) {
   const remStrand = `remembers ${rem.map((r) => r.short).join(" & ")}`;
   const all = [q1, q2, q3, q4];
   const strands = [...all.flat().map((o) => o.strand), temper, remStrand, ...q7.map((o) => o.strand)];
-  const firsts = [q3[0], q1[0], q4[0], q2[0], rem[0], q7[0]];
-  const rest = [...q3.slice(1), ...q1.slice(1), ...q4.slice(1), ...q2.slice(1), ...rem.slice(1), ...q7.slice(1)];
+  const firsts = [q3[0], q1[0], q4[0], q2[0], q7[0], rem[0]];
+  const rest = [...q3.slice(1), ...q1.slice(1), ...q4.slice(1), ...q2.slice(1), ...q7.slice(1), ...rem.slice(1)];
   const ids = (l) => l.map((o) => o.id).join(",");
   return {
     strands,
