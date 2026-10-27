@@ -1,0 +1,36 @@
+{
+  "summary": "Iteration 6 tested all 7 requested items. All passed. Backend: 11/11 pytest pass (tests/test_iter6_card_music.py). /assets/oval-sky.webp?v=2 is a 1100x1600 WebP of 150,906 bytes, and ShareCard.jsx references ?v=2. welcome-theme.ogg (OggS) and .mp3 are served as real audio, not the HTML fallback. CREDITS.md has 'Original score, made for Weave Him'. CARD_VERSION=3 and PREVIEW_SITE_LABEL='weavehim.[domain]'. card.jpg for the existing husbands 284b7xvg and ws5g2waz is a 1080x1920 JPEG of about 600KB. Visual check of the card: the oval shows the wicker figure under the dark lower gradient; the name (EDMUND / ELLIS) is readable; the site line reads '(Weave yours at weavehim.[domain])' on one line; the credit 'Inspired by Wicker, in cinemas now · An unofficial fan creation · Built on Emergent' is one line at the bottom with Wicker in italics. og.jpg is 720x1280. Unknown id returns 404. The share page og:image is correct. Frontend at 390x844 (Save tested at 1920). Music: the wordmark painted at 0.22s, and the single /audio/welcome-theme.ogg request came at about 0.98s. It was fetched only once over leave/return/mute cycles. An AudioContext spy showed a loop source starting after the first click, with ctx running and decodeAudioData called once. Commission moves to /strand/1 in 0.05s and the source is stopped (wanted=false). Returning to Welcome restarts it. Mute stops it and unmute resumes it on Welcome. With localStorage weave-him-muted='1', clicks and keys never start the music. With document.hidden + visibilitychange, it stops when hidden and restarts when visible on Welcome, and does not restart on /strand/1. No console or page errors. Credit: the Welcome footer and the public /h/:id page show the credit with Wicker in an <i>. The How it works sheet has [data-testid=fan-disclaimer] with the exact text. Share reveal: clicks on the backdrop and the action area at t≈0.25s do NOT close it; reveal-save-button is disabled early and enabled after about 1.6s. After the reveal, a backdrop click, X and Escape each close it. Copy link shows the 'Link copied' toast. On desktop, Save downloads ellis-woven-by-hand.jpg (1080x1920 JPEG, 618KB, credit on one line). Tell: the long strand 'Extraordinarilylongword...' now wraps (span right edge 342 vs card 366, doc width 390, no overflow). Regression: a full UI flow (7 strands) reached /meet/2hdvvbe5 with band text lines, and the reveal works.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Share card oval", "issues": ["Carried over from iteration 5: with a long custom strand, the strand lines under the name are very small (about 12px on a 1080 card), so they are close to illegible in the thumbnail."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_iter6_card_music.py", "/app/test_reports/pytest/pytest_iter6.xml"],
+  "screenshots": [
+    "/app/test_reports/img/iter6_card_284b7xvg.jpg",
+    "/app/test_reports/img/iter6_card_ws5g2waz.jpg",
+    "/app/test_reports/img/iter6_saved_ellis-woven-by-hand.jpg",
+    "/app/test_reports/img/iter6_reveal_390.jpg",
+    "/app/test_reports/img/iter6_reveal_mid_390.jpg",
+    "/app/test_reports/img/iter6_reveal_desktop.jpg",
+    "/app/test_reports/img/iter6_howitworks.jpg",
+    "/app/test_reports/img/iter6_tell_long.jpg"
+  ],
+  "action_items": [],
+  "critical_code_review_comments": [
+    "sound.js loadMusic: on a fetch failure, music.loading stays as a resolved promise and raw stays null, so the music never retries in that session. Optional: reset music.loading = null in the catch.",
+    "In dev, React StrictMode runs the Welcome effect as enter/leave/enter on return. That gives start, stop (1.2s fade) and start, so two sources overlap briefly. Production is not affected.",
+    "Escape closes the ShareReveal even during the reveal; only the backdrop click is gated by `revealed`. This is acceptable, but note the inconsistency.",
+    "render_for uses h.credit whenever it isn't the '[Inspired-by' placeholder. A husband saved with an older custom credit string would keep that text. The current DB only has the placeholder, empty or the new line, so this is fine now.",
+    "The music is fetched even when muted (it never plays). This is fine, but it costs about 290KB on muted visits."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter6_card_music.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Created husband 2hdvvbe5 (Silas) via the UI full flow.",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=... pytest tests/test_iter6_card_music.py -n 0. Music spy: subclass window.AudioContext in add_init_script and count createBufferSource().start/stop where buffer.duration > 10 (only the music is that long). Fake a hidden tab by overriding document.hidden with defineProperty and dispatching visibilitychange. The owner meet page needs localStorage 'weave-him-tokens' = {ws5g2waz: 'hxpAdtQE1wBYNQW5NUdbX-Ha'}. The public /h/:id page has no share-him-button."
+}

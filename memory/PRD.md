@@ -18,6 +18,13 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Meet screen with the band text, ribbon, vows card and wax seal. Tell screen with the letter preview, Web Share/sms/WhatsApp fallback and copy link.
 - Share card copied exactly from the template at 1080×1920 with pixelRatio 1. It waits for fonts and images, and long text auto-shrinks to fit. Web Share with files, or download + copy link + toast. The card is uploaded for OG previews.
 
+## Iteration 2 (2026-06)
+- Each card is drawn on the server when he's created (Pillow over static layers from /app/scripts/build_card_layers.sh) and served as card.png, card.jpg (q88) and og.jpg. CARD_VERSION=3.
+- Vow reweaving: up to 3 per husband, protected by an edit token. Share reveal overlay with Save / Share / Copy link. Card thumbnail on the meet screen.
+- Web Audio sound effects and Welcome-only music (welcome-theme.ogg/.mp3), with a mute toggle. See /app/CREDITS.md.
+- Band labels on SVG textPath that fit each band. Letter card: sign-off and optional his-name greeting. No em dashes anywhere. Favicons, page titles, Wicker credit line and fan disclaimer.
+- The new oval-sky.webp shows the wicker husband. On preview hosts the card prints the site as "weavehim.[domain]".
+
 ## Backlog
 - P1: Server-side rendering of the OG card, so previews exist even if the creator leaves the page before the card finishes rendering.
 - P2: Rate limiting on POST /api/husbands. Option to make share links point to /h/{id} directly once a custom domain with SSR or edge meta is set.
