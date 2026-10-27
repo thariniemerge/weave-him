@@ -5,7 +5,7 @@ import { shortLabel, BAND_MAX } from "../../lib/weave";
 // Band geometry traced from the storyboard art (viewBox = art width x 3). Only the top two bands carry text.
 export const BANDS = {
   // thin ribbons across his upper chest only (Husband K), so his face and abs stay visible
-  cameo: { box: "0 0 834 780", paths: ["M 262 520 Q 414 538 567 520", "M 258 551 Q 414 569 571 551", "M 290 582 Q 414 598 539 582"], font: 20 },
+  cameo: { box: "0 0 834 780", paths: ["M 272 486 Q 414 502 557 486", "M 270 512 Q 414 528 559 512", "M 300 538 Q 414 552 529 538"], font: 19, clip: "ellipse(24.7% 33.08% at 49.7% 50.26%)" },
   hoop: { box: "0 0 834 837", paths: ["M 292 533 Q 414 548 536 533", "M 288 562 Q 414 578 540 562", "M 320 592 Q 414 606 508 592"], font: 20 },
 };
 const SEP = " · ";
@@ -53,7 +53,7 @@ export function BandText({ band, kind, show = true }) {
   const id = `band-${kind}`;
   const txt = { fontFamily: "'Cormorant SC', serif", fontWeight: 600, letterSpacing: "0.04em" };
   return (
-    <svg viewBox={g.box} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500" style={{ opacity: show ? 1 : 0 }} aria-hidden data-testid={`band-text-${kind}`}>
+    <svg viewBox={g.box} className="absolute inset-0 w-full h-full pointer-events-none transition-opacity duration-500" style={{ opacity: show ? 1 : 0, ...(g.clip ? { clipPath: g.clip, WebkitClipPath: g.clip } : {}) }} aria-hidden data-testid={`band-text-${kind}`}>
       <defs>
         <filter id={`${id}-sh`} x="-5%" y="-40%" width="110%" height="180%">
           <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor="#120805" floodOpacity="0.85" />

@@ -1,0 +1,39 @@
+{
+  "summary": "Tested the Meet cameo alignment, band text, share card and emotions. (A) Meet /meet/a5yxsmhb at 390x844, 768x1024 and 1280x800: [data-testid=opening-cameo] exists with computed border-radius 50%, overflow hidden and the misty radial-gradient background. An art-only overlay (i16_opening_outline_768.png) shows that the opening covers the art's old inner window and its pale grey ring, and that its edge sits on the inner edge of the sage ring. The frame now reads: dotted ring, then sage ring, then mist. There is no extra pale oval. His hair is inside the top of the opening (at 1280, hair top 266 vs opening top 207). A pixel scan of the shoulders (i16_shoulder_scan.py) found skin reaching both sides of the opening from about 74% of its height downward (gap 0-10px) at all 3 widths. band-line-0..2 all have lengthAdjust=spacingAndGlyphs. Their textLength values are 244.6/305.7 (=0.80), 250.95/313.7 (=0.80) and 122-124/249.7 (≈0.49, cap 0.55). Every char extent lies within the path, and the zoomed screenshots show all letters ('STEADY HAND · HOLDS ME', 'VOICE NOTES · ADVENTURES', 'PET'S NAME'). All band bboxes are above the ribbon-name top (at 1280: bottom 530 vs 575; at 768: 522 vs 573; at 390: 334 vs 364). (B) The share reveal at 390 and 1280 loads the server card blob (1080x1920). There is no text inside the oval. 'Meet' + HOLLIS sit in the bottom cartouche and the footer reads 'Built with Emergent'. GET /api/husbands/a5yxsmhb/card.jpg?v=8 returned 200 image/jpeg 1080x1920. Long names in render_card shrink correctly: BARTHOLOMEW → 36px (302px wide); 'Maximilian-Fitzwilliam' reaches the 30px minimum and is clipped to 'MAXIMILIAN-FIT…'. All 12 real NAMES fit at ≥50px. (C) Emotions: taps on face-tap-target changed data-emotion to blush → hearts → kiss at 390 and 1280. There were 0 console errors and 0 page errors. Backend card regression: 19/20 tests pass. The 1 failure is a stale test: test_card_stored_at_creation expects the card doc right after POST, but the card is now generated in a background task.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/husbands (tests/test_server_card_reweave.py::test_card_stored_at_creation)", "issue": "This test is outdated, not an app bug. store_card runs via asyncio.create_task, so the cards doc doesn't exist yet when the test checks right after creation. The test should poll or retry for a few seconds."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet cameo", "issues": [
+        "Compared with husband-K-reference.png (i16_side_by_side.png), he sits smaller and lower. His shoulder line starts at about 72% of the opening height (about 62% in the reference), so mist shows above both shoulders. The pecs and abs are mostly covered by the 3 wine band strips and the ribbon. This is acceptable for the 'meet' ribbon request, but it is less full than the reference.",
+        "The wine band strips stick out slightly past his shoulder silhouette at the left and right ends, over the mist. This is most visible at 768.",
+        "At 390 the band text is about 10-12px tall, and spacingAndGlyphs gives slightly uneven kerning ('ADVEN TURES'). All letters are present."
+      ]},
+      {"screen": "Share card", "issues": ["On preview, the site line shows the placeholder '(Weave yours at weavehim.[domain])' because of PREVIEW_SITE_LABEL. This is intended for preview; confirm it's replaced in production."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/i16_longname_render.py", "/app/backend/tests/i16_shoulder_scan.py", "/app/test_reports/pytest/i16_card.xml"],
+  "action_items": [
+    "Update test_server_card_reweave.py::test_card_stored_at_creation to poll for the background-generated card (about 5s).",
+    "Optional polish: shorten the cameo band strips so they don't overhang his shoulders. Consider scaling the figure up or raising it slightly so his shoulders and pecs look more like the reference."
+  ],
+  "critical_code_review_comments": [
+    "Face.jsx: SPOTS.cameo.clip/fig/bg are now dead code for cameo, since the `open` branch is used. Remove them to avoid confusion.",
+    "Face.jsx: the inline radial-gradient in the opening duplicates the BackDefs mist colours. Extract a constant.",
+    "BandText.jsx: `est * 0.85` is a lower bound on textLength. If the font isn't measurable, textLength can exceed the natural width and stretch short labels. It is capped at 80%, so it's safe, but this explains why the band-3 textLength differs between 390 (123.9) and 768/1280 (122.4).",
+    "card_render.py: the name fit uses step 2 and a 1.01 tolerance (BARTHOLOMEW comes out 302px in a 300px box). The client useFitText could pick a different size, so the server and client cards may differ by one step. This is minor."
+  ],
+  "updated_files": ["/app/backend/tests/i16_longname_render.py", "/app/backend/tests/i16_shoulder_scan.py"],
+  "success_rate": {"backend": "95% (19/20, 1 stale test)", "frontend": "100% of requested checks pass (design notes only)"},
+  "seed_data_creation": "The backend regression tests created TEST husbands through POST /api/husbands. No other data was created.",
+  "screenshots": ["/app/.screenshots/i16_meet_390.png", "/app/.screenshots/i16_meet_768.png", "/app/.screenshots/i16_meet_1280.png", "/app/.screenshots/i16_side_by_side.png", "/app/.screenshots/i16_band_zoom.png", "/app/.screenshots/i16_art_only_768.png", "/app/.screenshots/i16_opening_outline_768.png", "/app/.screenshots/i16_reveal_390.jpeg", "/app/.screenshots/i16_reveal_1280.jpeg", "/app/.screenshots/i16_card_v8.jpg", "/app/.screenshots/i16_card_name_Bartholomew.png", "/app/.screenshots/i16_card_name_Maximilian-Fitzwilliam.png", "/app/.screenshots/i16_card_longname_full.png"],
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "The cameo uses the `open` branch in Face.jsx: a div with rounded-[50%] and overflow hidden; the figure is .hk-move at 122% width, bottom -10%. Run i16_shoulder_scan.py <png> <opening x y w h relative to the meet-cameo screenshot> to measure the shoulder gaps. The share reveal uses the server card (card.jpg?v=8); the client ShareCard only renders on fallback. The server picks names from 12 NAMES, so long names can only be tested by calling render_card directly."
+}

@@ -13,8 +13,8 @@ export const emote = (name) => subs.forEach((f) => f(name));
 // The oval/hoop window in each art, and where his 400x500 figure sits (percent of the art box)
 const SPOTS = {
   // cameo: `open` is the frame's innermost ring; he's 122% of its width, bottom-anchored and dropped 10%
-  cameo: { box: "0 0 834 780", clip: <ellipse cx="414.5" cy="392" rx="230" ry="317" />, bg: "mist", cx: 414.5, cy: 392, tapY: 320,
-    open: { left: "22.12%", top: "9.62%", width: "55.16%", height: "81.28%" },
+  cameo: { box: "0 0 834 780", clip: <ellipse cx="414.5" cy="392" rx="206" ry="258" />, bg: "mist", cx: 414.5, cy: 392, tapY: 300,
+    open: { left: "25%", top: "17.18%", width: "49.4%", height: "66.15%" }, boxClip: "ellipse(24.7% 33.08% at 49.7% 50.26%)",
     fig: { left: "19.72%", top: "10.19%", width: "59.95%", height: "80.13%", clipPath: "ellipse(42% 41% at 50% 50%)" } },
   hoop: { box: "0 0 834 837", clip: <circle cx="414" cy="426" r="301" />, bg: "cloth", cx: 414, cy: 426,
     fig: { left: "17.69%", top: "11.11%", width: "63.91%", height: "79.57%", clipPath: "ellipse(56.5% 45.2% at 50% 50%)" } },
@@ -150,7 +150,7 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
     <div className={`absolute inset-0 ${cls} ${onTapCycle ? "" : "pointer-events-none"}`} data-testid={`face-${kind}`} data-emotion={e}>
       {spot.open ? (
         <div className="absolute overflow-hidden rounded-[50%]" data-testid={`opening-${kind}`}
-          style={{ ...spot.open, background: "radial-gradient(75% 60% at 50% 30%, #DCE2D2 0%, #A9B49E 55%, #5E6B59 100%)" }}>
+          style={{ ...spot.open, clipPath: "ellipse(50% 50% at 50% 50%)", WebkitClipPath: "ellipse(50% 50% at 50% 50%)", isolation: "isolate", background: "radial-gradient(75% 60% at 50% 30%, #DCE2D2 0%, #A9B49E 55%, #5E6B59 100%)" }}>
           <div className="hk-move absolute" style={{ left: "-11%", width: "122%", bottom: "-10%", aspectRatio: "400 / 500", opacity: op, transition: "opacity .6s" }}>{figure}</div>
         </div>
       ) : (
@@ -163,7 +163,8 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
           <div className="hk-move absolute" style={{ ...spot.fig, opacity: op, transition: "opacity .6s" }}>{figure}</div>
         </>
       )}
-      <svg viewBox={spot.box} className="absolute inset-0 w-full h-full" aria-hidden={!onTapCycle}>
+      <svg viewBox={spot.box} className="absolute inset-0 w-full h-full" aria-hidden={!onTapCycle}
+        style={spot.boxClip ? { clipPath: spot.boxClip, WebkitClipPath: spot.boxClip } : undefined}>
         <g style={{ opacity: op, transition: "opacity .6s" }}>
           {BANDS[kind].paths.map((d, i) => (
             <path key={i} d={d} stroke="#4F1F27" strokeOpacity=".5" strokeWidth={BANDS[kind].font + 9} fill="none" strokeLinecap="round" data-testid={i === 2 ? "band-strip" : undefined} />
@@ -177,7 +178,7 @@ export function Face({ kind = "cameo", ambient = false, show = true, onTapCycle 
 
 // Still portrait for the share card: the same figure file, idle, filling the card's oval
 export const StillHusband = ({ className }) => (
-  <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%" }}>
+  <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%", clipPath: "ellipse(50% 50% at 50% 50%)", WebkitClipPath: "ellipse(50% 50% at 50% 50%)" }}>
     <svg viewBox="0 0 523.5 757.2" preserveAspectRatio="none" className="absolute inset-0 w-full h-full">
       <BackDefs id="hkc" /><g transform="scale(.628 .9)"><Backdrop id="hkc" kind="mist" /></g>
     </svg>
