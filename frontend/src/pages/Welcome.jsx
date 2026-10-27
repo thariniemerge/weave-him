@@ -47,7 +47,7 @@ export default function Welcome() {
           {COPY.howItWorks}
         </button>
       </header>
-      <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full -mt-1" />
+      <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[40dvh] object-contain -mt-1" />
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>
       <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[68px] leading-[0.95] tracking-[0.01em]">{COPY.wordmark}</h1>
       <Art name="divider" className="w-full mt-1" />

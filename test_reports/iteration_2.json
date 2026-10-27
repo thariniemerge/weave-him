@@ -1,0 +1,25 @@
+{
+  "summary": "Checked that the preview loads, then ran a smoke test. The public preview URL returned 200 in 0.08s with curl. In the browser, the Welcome screen loaded in about 0.5s at both 390x844 and 1920x800, with no timeout. wordmark, commission-button and husband-counter ('26 husbands woven by hand') were present. GET /api/stats returned 200 with an int total. In the full UI flow, Strands I-VII led to /weaving and then /meet/:id, which showed exactly 5 vows (vow-1..vow-5, no vow-6). /h/:id loaded with 5 vows and weave-your-own-button. There were no page errors. After the raw_decode fix, 5 of 5 sequential POST /api/husbands calls returned vows_source='llm' in about 2s each, and the vows from the UI run were LLM-written too. There were no new 'Extra data' errors (the 3 'LLM vows failed' log lines predate this run). The template fallback was not forced live. Code review shows template_vows unchanged and still used on any exception, None result or failed vows_ok.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Welcome at 1920x800", "issues": ["The commission-button and husband-counter sit below the fold on short desktop viewports. Users must scroll to reach the main CTA, so consider a more compact hero on wide or short screens."]},
+      {"screen": "Welcome at 390x844", "issues": ["The husband-counter line is right at the bottom edge and slightly clipped."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_vows_source.py", "/app/backend/tests/test_weave_api.py", "/app/test_reports/pytest/pytest_vows.xml"],
+  "action_items": ["Optional: bring the CTA above the fold on short desktop viewports."],
+  "critical_code_review_comments": [
+    "llm_vows: raw.find('[') picks the first '[' anywhere. If the model writes a bracket in prose before the JSON array, raw_decode fails and vows fall back to the template. That is acceptable but could be made sturdier by trying each '[' position.",
+    "llm_vows: if the reply has no '[', vows stays None and the template is used, which is correct.",
+    "The 8s asyncio.wait_for wraps the 429 retries, so heavy contention falls back to the template quickly. That is fine."
+  ],
+  "updated_files": ["/app/backend/tests/test_vows_source.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "Added about 6 husband documents (5 from the API vows test, 1 from the UI flow).",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Run pytest with -n 0, because pytest.ini enables xdist. test_vows_source.py posts sequentially, since the LLM key allows only 1 concurrent request. The generic UI flow works: on each /strand/n, click the first [data-testid^=option-] if any; on strand 6, click the first remember-chip-*; then click weave-strand-button, next-remembers-button or next-feel-button."
+}
