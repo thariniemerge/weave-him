@@ -16,6 +16,19 @@ export function shortLabel(t) {
   return one || (words[0] || "").slice(0, BAND_MAX);
 }
 
+// Up to three band lines: two labels on each of the top bands, one short label on the low band
+const SEP = " · ";
+const ALIAS = { "SAFE HARBOUR": "SAFE HAVEN", "CHILDHOOD PET": "PET'S NAME", "FAVOURITE SONG": "OUR SONG", "MOM'S BIRTHDAY": "MOM'S DAY" };
+export function bandLines(band = []) {
+  const all = [...new Set(band.flatMap((b) => b.split(SEP)).map((s) => s.trim()).filter(Boolean)
+    .map((s) => ALIAS[s] || s).map((s) => (s.length > BAND_MAX ? shortLabel(s) : s)))];
+  const lines = [all.slice(0, 2), all.slice(2, 4)].filter((l) => l.length).map((l) => l.join(SEP));
+  const low = all.slice(4).find((l) => l.split(" ").length <= 2) || (all[4] ? shortLabel(all[4]) : null);
+  if (low && lines.length === 2) lines.push(low);
+  return lines;
+}
+
+
 export const MAX_PICKS = 3;
 // Her chosen band strands lead, in the order she tapped them
 export const orderBands = (labels, pick = []) => [...(pick || []).filter((l) => labels.includes(l)), ...labels.filter((l) => !(pick || []).includes(l))];

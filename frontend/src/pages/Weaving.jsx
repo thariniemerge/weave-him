@@ -7,8 +7,7 @@ import { COPY, ROMAN } from "../content";
 import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete } from "../lib/weave";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
-import { BandText } from "../components/weave/BandText";
-import { Face } from "../components/weave/Face";
+import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
 import { play, startLoop, stopLoop } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
@@ -23,7 +22,6 @@ const TAGS = [
   { pos: { right: "2%", top: "33%" }, rot: -5, bg: "var(--peony)" },
   { pos: { left: "31%", top: "86%" }, rot: -2, bg: "var(--ochre)" },
 ];
-const cloth = { backgroundColor: "#fcfbf8", backgroundImage: "linear-gradient(rgba(180,170,210,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(180,170,210,.22) 1px, transparent 1px)", backgroundSize: "7px 7px" };
 
 const Tag = ({ text, i, shown }) => {
   const t = TAGS[i];
@@ -31,7 +29,7 @@ const Tag = ({ text, i, shown }) => {
     <motion.span data-testid={`hoop-tag-${i}`}
       initial={false} animate={shown ? { opacity: 1, scale: 1, y: 0, rotate: t.rot } : { opacity: 0, scale: 0.6, y: -24, rotate: t.rot * 3 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      className={`absolute z-20 max-w-[34%] px-2.5 py-1 rounded-md border border-[color:#7D7462] shadow-[0_4px_8px_-4px_rgba(42,33,27,.55)] f-cg italic text-[14px] leading-tight [overflow-wrap:anywhere] line-clamp-2 ${t.light ? "text-[color:var(--paper)]" : ""}`}
+      className={`absolute z-20 max-w-[30%] px-2.5 py-1 rounded-md border border-[color:#7D7462] shadow-[0_4px_8px_-4px_rgba(42,33,27,.55)] f-cg italic text-[14px] leading-tight [overflow-wrap:anywhere] line-clamp-2 ${t.light ? "text-[color:var(--paper)]" : ""}`}
       style={{ ...t.pos, background: t.bg }}>
       {text}
     </motion.span>
@@ -70,7 +68,7 @@ export default function Weaving() {
   useEffect(() => { startLoop("rustle"); return () => stopLoop(); }, []);
   // Warm up everything Meet him needs so nothing pops in late
   useEffect(() => {
-    ["meet-cameo", "vow-strip", "wax-seal", "heart", "heart-empty"].forEach((n) => { new Image().src = `/art/${n}.svg`; });
+    ["vow-strip", "wax-seal", "heart", "heart-empty"].forEach((n) => { new Image().src = `/art/${n}.svg`; });
     ["400 40px 'Grenze Gotisch'", "500 20px 'Cormorant Garamond'", "italic 400 20px 'Cormorant Garamond'", "600 20px 'Cormorant SC'", "400 20px 'EB Garamond'"]
       .forEach((f) => document.fonts.load(f).catch(() => {}));
   }, []);
@@ -96,14 +94,8 @@ export default function Weaving() {
       <SoundToggle className="absolute right-4 top-4" />
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <PanelOrInline>
-      <div className="relative w-full mt-3" style={{ aspectRatio: "294 / 295" }} data-testid="weaving-hoop">
-        <Art name="weave-hoop" className="absolute inset-0 w-full h-full" alt="An embroidery hoop where a wicker figure is being woven" />
-        <div className="absolute rounded-full overflow-hidden" style={{ left: "13.6%", top: "11.4%", width: "72.8%", height: "72.6%" }}>
-          <div className="absolute inset-x-0 top-0 border-b-2 border-dashed border-[color:var(--rose)] transition-[height] duration-500 ease-out"
-            style={{ ...cloth, height: `${(1 - p) * 100}%` }} />
-        </div>
-        <Face kind="hoop" show={Math.min(1, 0.2 + step * 0.14)} />
-        <BandText band={band} kind="hoop" show={step >= 4} />
+      <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
+        <div className="w-[72%] mx-auto"><Medallion band={band} progress={p} name={p >= 1 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven from the bottom up" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>

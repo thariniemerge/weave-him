@@ -6,7 +6,7 @@ import { Art } from "./ui";
 import { COPY, ROMAN } from "../../content";
 import { reweaveVow } from "../../lib/api";
 import { play } from "../../lib/sound";
-import { emote } from "./Face";
+import { emote } from "../../lib/face";
 
 const Quill = () => (
   <motion.span className="absolute -top-3 left-0 text-[color:var(--rose)] pointer-events-none"

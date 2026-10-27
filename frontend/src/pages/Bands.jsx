@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { motion } from "framer-motion";
-import { Page, Art, SoundToggle } from "../components/weave/ui";
-import { BandText } from "../components/weave/BandText";
-import { Face } from "../components/weave/Face";
+import { Page, SoundToggle } from "../components/weave/ui";
+import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { useAnswers } from "../lib/store";
@@ -44,10 +43,8 @@ export default function Bands() {
       </h1>
       <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
       <PanelOrInline>
-        <div className="relative w-full max-w-[300px] lg:max-w-none mx-auto mt-2" style={{ aspectRatio: "278 / 260" }} data-testid="bands-preview">
-          <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt="Your wicker husband wearing the chosen strands" />
-          <Face kind="cameo" />
-          <BandText band={orderBands(labels, picked)} kind="cameo" />
+        <div className="w-full max-w-[230px] lg:max-w-[440px] mx-auto mt-2" data-testid="bands-preview">
+          <Medallion band={orderBands(labels, picked)} label="Your wicker husband wearing the chosen strands" />
         </div>
       </PanelOrInline>
       <div className="flex flex-wrap justify-center gap-2 mt-3" data-testid="band-choices">

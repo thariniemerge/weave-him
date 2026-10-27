@@ -1,11 +1,11 @@
-import { StillHusband } from "./Face";
+import { CardPortrait } from "./Medallion";
 import { forwardRef } from "react";
 import "./sharecard.css";
 import { CONFIG, siteHost } from "../../content";
 import { useFitText } from "../../hooks/useFitText";
 import { Credit } from "./ui";
 
-const A = (f) => `/assets/${f}`;
+const A = (f) => `/assets/${f}?v=4`;
 const STARS = [
   ["gold-star-1.webp", 62, 262, 58, 1], ["gold-star-2.webp", 120, 330, 30, 0.85], ["gold-star-1.webp", 960, 238, 46, 1],
   ["gold-star-2.webp", 66, 1452, 40, 1], ["gold-star-1.webp", 972, 1430, 56, 1], ["gold-star-2.webp", 930, 1480, 26, 0.85],
@@ -20,7 +20,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
   const [urlRef] = useFitText([fontsReady], { max: 19, min: 11, step: 1, width: 524 });
   const [l1, l2] = wovenLines(card.woven);
   return (
-    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp?v=3")})` }}>
+    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp")})` }}>
       <div className="amb" />
       <div className="amb-sky" />
       <div className="damask" />
@@ -30,7 +30,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
         <div className="t-r">to Order</div>
         <div className="t-sub">Willow &amp; wicker, never jawlines · Miss Austen would approve</div>
       </div>
-      <div className="sky"><StillHusband className="sky-husband" /><div className="sky-shade" /></div>
+      <div className="sky"><CardPortrait className="sky-husband" /><div className="sky-shade" /></div>
       <div className="frame-wrap"><img className="frame" src={A("frame-gold.webp")} alt="" /></div>
       {STARS.map(([f, l, t, w, o], i) => (
         <img key={i} className="star" src={A(f)} style={{ left: l, top: t, width: w, opacity: o }} alt="" />

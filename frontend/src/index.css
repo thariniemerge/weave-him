@@ -213,21 +213,13 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 /* contrast rule: anything selected sits on moss/wine, so its text is bone */
 [aria-pressed=true]:not([data-testid=sound-toggle]) { color: #F1ECE1; }
 
-/* Husband K: his own SVG, animated only through its labelled groups */
-.hk-fig svg { width: 100%; height: 100%; display: block; }
-.hk-move { transform-origin: 50% 85%; transition: transform .7s ease, opacity .6s; }
-.hk.e-sigh .hk-move { transform: rotate(-3deg); }
-.hk #K-eyes > *, .hk #K-brows > *, .hk #K-mouth { transform-box: fill-box; transform-origin: center; transition: transform .25s ease, opacity .3s ease; }
-.hk.blink #K-eyes > * { transform: scaleY(.1); transition-duration: .1s; }
-.hk.lift #K-brows > * { transform: translateY(-4px); }
-.hk.e-smile #K-mouth, .hk.e-wink #K-mouth, .hk.e-hearts #K-mouth, .hk.e-kiss #K-mouth { opacity: 0; }
-.hk.e-smile #K-eyes > * { transform: scaleY(.72); }
-.hk.e-wink #K-eyes > :nth-child(n+7) { transform: scaleY(.06); }
-.hk.e-wink #K-brows > :nth-child(2) { transform: translateY(-6px) rotate(-6deg); }
-.hk.e-blush #K-eyes > circle { transform: translateY(2.5px); }
-.hk.e-hearts #K-eyes > circle { opacity: 0; }
-.hk.e-sigh #K-eyes > *, .hk.e-kiss #K-eyes > * { transform: scaleY(.06); }
-.hk.e-shy #K-eyes > circle { animation: hk-shy 2.2s ease-in-out; }
-.hk.e-shy #K-brows > * { animation: hk-shybrow 2.2s ease-in-out; }
-@keyframes hk-shy { 20%, 60% { transform: translate(-3px, 2.5px); } 85% { transform: translate(0, -1px); } }
-@keyframes hk-shybrow { 20%, 60% { transform: translateY(2px); } 85% { transform: translateY(-3px); } }
+/* medallion-K: one SVG; he moves only through his K-* groups */
+.medallion svg { width: 100%; height: auto; display: block; }
+.medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .6s cubic-bezier(.2,.7,.2,1), opacity .4s ease; }
+.medallion [id$="-bands"], .medallion [id$="-heart"], .medallion [id$="-ribbon"] { transition: opacity .8s ease; }
+.mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.mk-float .mk-fl { animation: mk-rise 1.9s ease-out forwards; }
+.mk-float > :nth-child(2) .mk-fl { animation-delay: .35s; }
+.mk-float > :nth-child(3) .mk-fl { animation-delay: .7s; }
+@keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -120px) scale(calc(var(--s) * 1.25)); } }
+@media (prefers-reduced-motion: reduce) { .mk-float .mk-fl { animation: none; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }

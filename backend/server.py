@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 8
+CARD_VERSION = 10
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -360,7 +360,7 @@ async def share_page(hid: str, request: Request):
     rel = f"/h/{h.id}"
     title = escape(f"Meet {h.name} · Weave Him")
     desc = escape(f"Woven from {', '.join(h.card.woven)}. {h.vows[0]}")
-    img = f"{base}/api/husbands/{h.id}/og.jpg"
+    img = f"{base}/api/husbands/{h.id}/og.jpg?v={CARD_VERSION}"
     return f"""<!doctype html><html><head><meta charset="utf-8"><title>{title}</title>
 <meta property="og:type" content="website"><meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}"><meta property="og:url" content="{page}">

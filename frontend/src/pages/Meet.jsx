@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { X, Share } from "lucide-react";
-import { Page, Pill, Art, SoundToggle } from "../components/weave/ui";
+import { Page, Pill, SoundToggle } from "../components/weave/ui";
 import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
 import { VowsCard } from "../components/weave/VowsCard";
 import { CardPreview } from "../components/weave/CardPreview";
@@ -14,18 +14,13 @@ import { makeCardVideo, canMakeVideo } from "../lib/cardVideo";
 import { ShareReveal } from "../components/weave/ShareReveal";
 import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
-import { BandText } from "../components/weave/BandText";
-import { Face, emote } from "../components/weave/Face";
+import { Medallion } from "../components/weave/Medallion";
+import { emote } from "../lib/face";
 import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
-  <div className="relative w-full" style={{ aspectRatio: "278 / 260" }} data-testid="meet-cameo">
-    <Art name="meet-cameo" className="absolute inset-0 w-full h-full" alt={`${h.name}, a wicker husband`} />
-    <Face kind="cameo" ambient={alive} onTapCycle={alive} />
-    <BandText band={h.band} kind="cameo" />
-    <p data-testid="ribbon-name" className="absolute left-0 right-0 text-center f-cg italic font-semibold text-[26px] text-[#F1ECE1] leading-none" style={{ top: "86.6%", color: "#F1ECE1", textShadow: "0 1px 2px rgba(20,10,12,.7)" }}>
-      meet {h.name}
-    </p>
+  <div className="w-full max-w-[330px] lg:max-w-[440px] mx-auto" data-testid="meet-cameo">
+    <Medallion name={h.name} band={h.band} alive={alive} />
   </div>
 );
 
