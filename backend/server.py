@@ -162,8 +162,12 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
                 await asyncio.sleep(0.6 * (i + 1))
 
     raw = await asyncio.wait_for(attempt(), timeout=8)
-    m = re.search(r"\[.*\]", raw, re.S)
-    vows = [clip(v, 200) for v in json.loads(m.group(0))] if m else None
+    start = raw.find("[")
+    try:
+        vows, _ = json.JSONDecoder().raw_decode(raw[start:]) if start >= 0 else (None, 0)
+    except ValueError:
+        vows = None
+    vows = [clip(v, 200) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
     return vows if vows_ok(vows) else None
 
 
