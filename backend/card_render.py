@@ -1,6 +1,7 @@
 """Server-side share card: static layers (rendered from the client card) + dynamic text drawn to match its CSS."""
 import io
 import math
+import re
 from functools import lru_cache
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
@@ -147,11 +148,18 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     draw_line(m, url, f2, 348, 1738 + 2 * lh + 8 + a2, s2 * 0.12)
     paint(card, m, hexrgb("5A3D34"))
 
-    # Credit line
-    f = font("cgi", 21)
-    a3, d3 = f.getmetrics()
+    # Credit line: upright, *word* in italics, one line
+    parts = [(t[1:-1], "cgi") if t.startswith("*") else (t, "cg") for t in re.split(r"(\*[^*]+\*)", credit) if t]
+    size = 19
+    while size > 12 and sum(text_width(t, font(k, size), size * 0.02) for t, k in parts) > 960:
+        size -= 1
+    total = sum(text_width(t, font(k, size), size * 0.02) for t, k in parts)
+    a3, d3 = font("cg", size).getmetrics()
+    x, bl = 540 - total / 2, 1872 + (48 - (a3 + d3)) / 2 + a3
     m = new()
-    draw_line(m, credit, f, 540 - text_width(credit, f, 0.42) / 2, 1872 + (48 - (a3 + d3)) / 2 + a3, 0.42)
+    for t, k in parts:
+        draw_line(m, t, font(k, size), x, bl, size * 0.02)
+        x += text_width(t, font(k, size), size * 0.02)
     paint(card, m, hexrgb("cdb79c"))
 
     card.alpha_composite(over)

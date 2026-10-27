@@ -2,12 +2,16 @@
 export const CONFIG = {
   // Leave empty to use the current domain (without https:// or www.)
   SITE_URL: "",
-  CREDIT_LINE: "[Inspired-by credit line] · Built on Emergent",
-  CARD_CREDIT_LINE: "[Inspired-by credit] · Built on Emergent",
+  // *word* is shown in italics
+  CREDIT_LINE: "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent",
+  CARD_CREDIT_LINE: "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent",
+  // Printed on the share card while running on a preview address (before publishing)
+  PREVIEW_SITE_LABEL: "weavehim.[domain]",
 };
 
+const isPreviewHost = (h) => /preview\.emergentagent\.com|localhost|127\.0\.0\.1/.test(h);
 export const siteHost = () =>
-  (CONFIG.SITE_URL || window.location.host).replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
+  (CONFIG.SITE_URL || (isPreviewHost(window.location.host) ? CONFIG.PREVIEW_SITE_LABEL : window.location.host)).replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
 
 export const COPY = {
   guild: "The Weavers' Guild",
@@ -66,6 +70,7 @@ export const COPY = {
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
+  disclaimer: "Weave Him is a fan-made tribute and isn't affiliated with or endorsed by the makers of Wicker.",
   shareText: (name) => `Meet ${name}, my wicker husband, woven by hand from what matters.`,
   cardThumb: "His story card",
   cardThumbSub: "tap to view · 1080 × 1920",

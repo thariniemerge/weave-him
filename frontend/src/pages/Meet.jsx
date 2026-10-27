@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { X, Share } from "lucide-react";
-import { Page, Pill, Art, SoundToggle } from "../components/weave/ui";
+import { Page, Pill, Art, SoundToggle, Credit } from "../components/weave/ui";
 import { VowsCard } from "../components/weave/VowsCard";
 import { CardPreview } from "../components/weave/CardPreview";
 import { play } from "../lib/sound";
@@ -106,7 +106,7 @@ export default function Meet({ isPublic = false }) {
       </div>
       <ShareReveal open={reveal} onClose={() => setReveal(false)} name={h.name} url={url}
         onSave={onSave} onShare={onShare} onCopy={onCopy} isIOS={isIOS()} />
-      {isPublic && <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-6">{CONFIG.CREDIT_LINE}</p>}
+      {isPublic && <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-6"><Credit text={CONFIG.CREDIT_LINE} /></p>}
       {!isPublic && fallback && (
         <div aria-hidden className="fixed top-0 pointer-events-none" style={{ left: -20000 }}>
           <ShareCard ref={ref} husband={h} fontsReady={fontsReady} />

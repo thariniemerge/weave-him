@@ -131,9 +131,57 @@ function init() {
 
 function unlock() {
   init();
-  ctx?.resume?.().then(() => { if (loop?.pending) startLoop(loop.name); }).catch(() => {});
+  ctx?.resume?.().then(() => { if (loop?.pending) startLoop(loop.name); musicOn(); }).catch(() => {});
 }
 ["pointerdown", "keydown", "touchend"].forEach((e) => window.addEventListener(e, unlock, { passive: true }));
+
+// ---------- Welcome music: decoded AudioBuffer, looped seamlessly ----------
+const MUSIC_VOL = 0.22;
+const music = { wanted: false, raw: null, buffer: null, src: null, gain: null, offset: 0, t0: 0, loading: null };
+
+function loadMusic() {
+  if (music.loading) return music.loading;
+  const ogg = new Audio().canPlayType('audio/ogg; codecs="vorbis"');
+  music.loading = fetch(ogg ? "/audio/welcome-theme.ogg" : "/audio/welcome-theme.mp3")
+    .then((r) => r.arrayBuffer()).then((b) => { music.raw = b; musicOn(); }).catch(() => {});
+  return music.loading;
+}
+
+async function musicOn() {
+  if (!music.wanted || muted || music.src || music.starting || document.hidden || !ctx || ctx.state !== "running" || !music.raw) return;
+  if (!music.buffer) {
+    music.starting = true;
+    try { music.buffer = await ctx.decodeAudioData(music.raw.slice(0)); } catch { music.starting = false; return; }
+    music.starting = false;
+    if (!music.wanted || muted || music.src || document.hidden) return;
+  }
+  const src = ctx.createBufferSource(), g = ctx.createGain();
+  src.buffer = music.buffer; src.loop = true;
+  const now = ctx.currentTime;
+  g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(MUSIC_VOL, now + 3);
+  src.connect(g).connect(ctx.destination);
+  src.start(0, music.offset % music.buffer.duration);
+  Object.assign(music, { src, gain: g, t0: now });
+}
+
+function musicOff(fade = 1.2) {
+  if (!music.src) return;
+  const { src, gain } = music, now = ctx.currentTime;
+  music.offset = (music.offset + now - music.t0) % music.buffer.duration;
+  gain.gain.cancelScheduledValues(now);
+  gain.gain.setValueAtTime(gain.gain.value, now);
+  gain.gain.linearRampToValueAtTime(0, now + fade);
+  src.stop(now + fade + 0.05);
+  music.src = null;
+}
+
+export function enterWelcome() {
+  music.wanted = true;
+  if (music.raw) musicOn();
+  else setTimeout(() => (window.requestIdleCallback || setTimeout)(loadMusic), 800); // after first paint
+}
+export function leaveWelcome() { music.wanted = false; musicOff(1.2); }
+document.addEventListener("visibilitychange", () => (document.hidden ? musicOff(0.3) : musicOn()));
 
 const ready = () => !muted && ctx && ctx.state === "running";
 
@@ -167,7 +215,8 @@ export function setMuted(m) {
   muted = m;
   localStorage.setItem(KEY, m ? "1" : "0");
   if (m && loop?.src) { const n = loop.name; stopLoop(); loop = { name: n, pending: true }; }
-  else if (!m) { unlock(); }
+  if (m) musicOff(0.4);
+  else unlock();
   subs.forEach((f) => f());
 }
 

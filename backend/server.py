@@ -25,7 +25,9 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 2
+CARD_VERSION = 3
+PREVIEW_SITE_LABEL = "weavehim.[domain]"
+DEFAULT_CREDIT_LINE = "Inspired by *Wicker*, in cinemas now · An unofficial fan creation · Built on Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
 ID_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
@@ -206,8 +208,11 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
 
 
 def render_for(h: "Husband", host: str = "") -> bytes:
-    return render_card(h.name, h.number, h.card.line1, h.card.line2, h.card.woven,
-                       h.site or host or "weavehim", h.credit or DEFAULT_CREDIT)
+    site = h.site or host
+    if not site or re.search(r"preview\.emergentagent\.com|localhost", site):
+        site = PREVIEW_SITE_LABEL
+    credit = h.credit if h.credit and "[Inspired-by" not in h.credit else DEFAULT_CREDIT_LINE
+    return render_card(h.name, h.number, h.card.line1, h.card.line2, h.card.woven, site, credit)
 
 
 async def store_card(h: "Husband", host: str = "") -> dict:

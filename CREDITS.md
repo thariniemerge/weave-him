@@ -1,8 +1,13 @@
 # Credits
 
+## Music
+| Track | Where it plays | Source / licence |
+|---|---|---|
+| welcome-theme (`frontend/public/audio/welcome-theme.mp3`, plus `.ogg` transcoded from it) | Welcome screen only. It is a seamless Web Audio loop at volume 0.22, fades in over 3s on the first tap and fades out over 1.2s when she leaves | Original score, made for Weave Him. No licence needed |
+
 ## Sound
 Every sound in Weave Him is **synthesised live in the browser with the Web Audio API** (`frontend/src/lib/sound.js`).
-The app ships no audio files: 0 KB of audio, generated once after the first tap.
+The sound effects use no audio files. They are generated once, after the first tap.
 
 | Sound | Where it plays | How it's made | Source / licence |
 |---|---|---|---|
@@ -14,6 +19,7 @@ The app ships no audio files: 0 KB of audio, generated once after the first tap.
 | Harp flourish | Reveal of him (1.7s) | Five-note D-major Karplus–Strong arpeggio | Original, synthesised in code · CC0 1.0 |
 | Quill scratch | Each vow appearing; reweaving a vow | High-passed noise in three strokes | Original, synthesised in code · CC0 1.0 |
 | Wax-seal press | Signature and seal appearing | Pitch-dropping sine thump plus low-passed noise | Original, synthesised in code · CC0 1.0 |
+| Share reveal | The card rising in the share overlay (~2.2s) | A low timpani swell and roll, then a harp glissando and a bell shimmer | Original, synthesised in code · CC0 1.0 |
 | Paper rustle | Share, Save image, Copy link, Send as a text | Short band-passed noise crinkles | Original, synthesised in code · CC0 1.0 |
 
 The master level is about -18 dB, and the page turn is the loudest sound. Sound starts only after the first tap. It is muted by default when the device prefers reduced motion. Where supported (`navigator.audioSession.type = "ambient"`), it respects the phone's silent switch. The speaker icon's choice is saved in localStorage (`weave-him-muted`).

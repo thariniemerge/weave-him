@@ -1,0 +1,42 @@
+{
+  "summary": "Iteration 5 tested all of A-D plus regressions. Backend: 12/12 pytest pass (test_iter5_bloom.py): the undash unit test, LLM vows from create and reweave contain no em/en dashes, card.jpg is a 1080x1920 JPEG of about 600KB (under 1MB), the long custom strand is cut with an ellipsis in the ticket stub, the /api/share title is 'Meet {Name} · Weave Him', a legacy joined band is stored as is, the 4 favicon files return 200 (not HTML), and index.html has the 4 links, theme-color #9C3D4F and the title. Frontend at 390x844, full flow with the 60-char custom answer, market, won, fixing, song+pet, amused: the cameo has 3 lines (FAITH IN ME / WRITES POEMS / FIXES THINGS). Each line is about 10.7px real size, sits inside the band ends and ends above the ribbon (lowest line bottom 348.6 < ribbon top 364.5). The hoop has 2 lines at 9.02px. Hoop tag-0 with the long text is clamped (line-clamp-2, no horizontal overflow). A legacy 'PATIENCE · COFFEE' band renders as split labels. Tell: greetings are correct for empty and 'Tom' with every recipient; the placeholder and 'With love,' are correct; the navigator.share text ends with 'With love,' when the name is empty and 'With love,\\nJane' when filled; no em dash; no API request contains the names. Share overlay: actions have opacity 0 and pointer-events none early, then become clickable. On desktop, Save downloads edmund-woven-by-hand.jpg (1080x1920 JPEG) with no share call. On desktop, Share downloads the card, copies the link and shows the 'Link copied' toast. Copy link shows the toast. The image fits fully at 390x844 and 1920x800. Close works via X, Escape and backdrop; the card-thumbnail opens the overlay; body overflow is restored; no 'Pressing his card'. Reduced motion works. Emulated iOS (UA + canShare stubs): the hint is shown, Save calls share with files only, Share sends files+text+title, and the sheet never opens automatically. document.title is correct on every screen. Reweave UI, sound toggle and the public /h/:id page work. No page errors.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ShareReveal", "issue": "During the ~1.6s reveal, a tap where the hidden action buttons will appear closes the overlay. The actions wrapper has pointer-events:none, so the click lands on the backdrop root (onClick=onClose). Reproduced: mouse click at the reveal-save-button position at t=0.3s closes share-reveal. Fix: ignore backdrop onClose until revealed, or keep pointer-events on the wrapper (stopPropagation) and only disable the buttons.", "selector": "[data-testid=share-reveal-actions]", "priority": "MEDIUM"},
+      {"component": "Tell letter", "issue": "A long unbroken custom strand (e.g. 'Extraordinarilylongwordthatneverends') in the highlighted letter-strand span runs past the letter card (span right edge 378px vs card right 366px at 390w). The card's overflow-hidden clips it. Fix: add [overflow-wrap:anywhere] or break-words to the letter-strand span.", "selector": "[data-testid=letter-strand]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet cameo at 390px", "issues": ["With long labels, pairs don't fit at 9px, so only 1 label per band shows (3 of 6 answers). This matches the spec (greedy, max 3 bands) and is noted for information."]},
+      {"screen": "Server card (card.jpg)", "issues": ["With a 60-char custom strand, line1 in the oval shrinks to very small text before the ellipsis. It is legible at 1080px but tiny in the thumbnail. Consider using the shortLabel for line1 or cutting earlier."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_iter5_bloom.py", "/app/test_reports/pytest/pytest_iter5.xml"],
+  "screenshots": [
+    "/app/test_reports/img/iter5_cameo_band_390.jpg",
+    "/app/test_reports/img/iter5_hoop_390.jpg",
+    "/app/test_reports/img/iter5_legacy_cameo.jpg",
+    "/app/test_reports/img/iter5_reveal_mid_desktop.jpg",
+    "/app/test_reports/img/iter5_reveal_mid_390.jpg",
+    "/app/test_reports/img/iter5_reveal_actions_desktop.jpg",
+    "/app/test_reports/img/iter5_reveal_actions_390.jpg",
+    "/app/test_reports/img/iter5_tell.jpg",
+    "/app/test_reports/img/iter5_card_long.jpg"
+  ],
+  "action_items": [
+    "ShareReveal: prevent the backdrop click from closing the overlay before the reveal completes (or when the click lands on the hidden actions area)",
+    "Tell.jsx: add overflow-wrap:anywhere to [data-testid=letter-strand] so long custom words wrap"
+  ],
+  "critical_code_review_comments": [
+    "BandText.layout silently drops a label that doesn't fit even alone at the minimum size (b-- then continue). That's fine, but shortLabel guarantees <=14 chars so it rarely triggers.",
+    "src/constants/testIds/index.js has an em dash in a code comment only (not user copy).",
+    "Meet.jsx sets 'Meet {Name} · Weave Him' only when isPublic. App.js resets it on route change for non-/h routes; verified it resets after leaving /h/:id via weave-your-own."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter5_bloom.py"],
+  "success_rate": {"backend": "100%", "frontend": "95%"},
+  "seed_data_creation": "Created husbands 284b7xvg (Edmund, created in the UI with the long custom answer), ws5g2waz (Ellis, created via API with the long custom answer, edit_token hxpAdtQE1wBYNQW5NUdbX-Ha, 1 reweave left) and a49g75st (legacy joined band).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: REACT_APP_BACKEND_URL=... pytest tests/test_iter5_bloom.py -n 0 (pytest.ini adds xdist args, so pass -n 0; run sequentially because LLM concurrency is 1). To mark a husband as 'mine' in the UI, set localStorage 'weave-him-tokens' = {id: edit_token} via add_init_script. To emulate iOS, override navigator.userAgent and stub navigator.canShare/share in an init script. Vows open on a click on vow-N, then reweave-button-N. In page.evaluate, pass arrow functions, not bare statements."
+}

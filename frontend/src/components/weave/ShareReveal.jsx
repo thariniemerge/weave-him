@@ -57,7 +57,7 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
   return createPortal(
     <motion.div data-testid="share-reveal" role="dialog" aria-modal="true" aria-label={`${name}'s story card`}
       className="fixed inset-0 z-50 flex flex-col items-center justify-center px-5 py-4 bg-[#21150f]/85 backdrop-blur-md"
-      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} onClick={onClose}>
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} onClick={() => revealed && onClose()}>
       <p className="absolute top-4 left-0 right-0 text-center f-sc text-[12px] text-[#cdb79c] pointer-events-none">Tap to close</p>
       <button data-testid="share-reveal-close" aria-label="Close" onClick={onClose}
         className="absolute top-2 right-2 w-11 h-11 rounded-full flex items-center justify-center text-[#f3e3c4] hover:bg-white/10">
@@ -81,9 +81,10 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
         )}
         {dust && <Dust />}
       </motion.div>
-      <motion.div className="w-full max-w-[400px] mt-4" onClick={(e) => e.stopPropagation()}
+      <motion.div className="w-full max-w-[400px] mt-4"
         initial={{ opacity: 0, y: 10 }} animate={revealed ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }} transition={{ duration: 0.35 }}
-        style={{ pointerEvents: revealed ? "auto" : "none" }} data-testid="share-reveal-actions">
+        data-testid="share-reveal-actions" onClick={(e) => e.stopPropagation()}>
+        <fieldset disabled={!revealed} className="contents">
         <div className="grid grid-cols-2 gap-3">
           <button data-testid="reveal-save-button" onClick={onSave} className="pill pill-primary !min-h-[50px] !text-[18px]">
             <Download className="w-5 h-5" strokeWidth={1.7} /><span>{COPY.saveImage}</span>
@@ -97,6 +98,7 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
         <div className="text-center">
           <button data-testid="reveal-copy-link" onClick={onCopy} className="text-link !text-[#f3d58a]">Copy link</button>
         </div>
+        </fieldset>
       </motion.div>
     </motion.div>,
     document.body

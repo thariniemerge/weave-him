@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import "./sharecard.css";
 import { CONFIG, siteHost } from "../../content";
 import { useFitText } from "../../hooks/useFitText";
+import { Credit } from "./ui";
 
 const A = (f) => `/assets/${f}`;
 const STARS = [
@@ -19,7 +20,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
   const [urlRef] = useFitText([fontsReady], { max: 19, min: 11, step: 1, width: 524 });
   const [l1, l2] = wovenLines(card.woven);
   return (
-    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp")})` }}>
+    <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp?v=2")})` }}>
       <div className="amb" />
       <div className="amb-sky" />
       <div className="damask" />
@@ -61,7 +62,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
         </div>
         <div className="seal"><span>W</span></div>
       </div>
-      <div className="credit dyn">{credit || CONFIG.CARD_CREDIT_LINE}</div>
+      <div className="credit dyn" style={{ fontSize: 19 }}><Credit text={credit || CONFIG.CARD_CREDIT_LINE} /></div>
       <div className="grain" />
       <div className="vig" />
     </div>

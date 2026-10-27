@@ -25,7 +25,7 @@ const Letter = ({ greeting, sentence, name, setName }) => (
       <p data-testid="letter-greeting" className="f-mark text-[40px] leading-none text-[color:var(--rose)]">{greeting}</p>
       <p className="f-body text-[18px] leading-[1.6] mt-3">
         {COPY.letterBody(sentence)[0]}
-        <span className="hl font-semibold" data-testid="letter-strand">{sentence}</span>
+        <span className="hl font-semibold [overflow-wrap:anywhere]" data-testid="letter-strand">{sentence}</span>
         {COPY.letterBody(sentence)[2]}
       </p>
       <p className="f-cg italic text-[19px] mt-4" data-testid="letter-sign-off">{COPY.withLove}</p>

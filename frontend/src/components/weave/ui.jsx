@@ -42,6 +42,10 @@ export const Chip = ({ active, tint = "var(--wisteria)", children, className = "
   </button>
 );
 
+export const Credit = ({ text }) => (
+  <span className="not-italic">{text.split(/(\*[^*]+\*)/).map((s, i) => (s.startsWith("*") ? <i key={i}>{s.slice(1, -1)}</i> : s))}</span>
+);
+
 export const Footer = ({ children }) => (
   <p className="f-cg italic text-center text-[14px] text-[color:#6b4f45] mt-2">{children}</p>
 );

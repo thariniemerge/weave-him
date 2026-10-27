@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
-import { Art, Pill, Page, Footer, SoundToggle } from "../components/weave/ui";
-import { play } from "../lib/sound";
+import { Art, Pill, Page, Footer, SoundToggle, Credit } from "../components/weave/ui";
+import { play, enterWelcome, leaveWelcome } from "../lib/sound";
 import { COPY, CONFIG } from "../content";
 import { getStats } from "../lib/api";
 import { useAnswers } from "../lib/store";
@@ -24,6 +24,7 @@ const HowItWorks = ({ open, onOpenChange }) => (
             </li>
           ))}
         </ol>
+        <p data-testid="fan-disclaimer" className="f-cg italic text-[13px] leading-snug text-[color:#6b4f45] mt-7">{COPY.disclaimer}</p>
       </div>
     </DrawerContent>
   </Drawer>
@@ -35,7 +36,8 @@ export default function Welcome() {
   const [count, setCount] = useState(null);
   const [how, setHow] = useState(false);
   useEffect(() => { getStats().then((d) => setCount(d.total)).catch(() => setCount(null)); }, []);
-  const start = () => { play("page"); reset(); nav("/strand/1"); };
+  useEffect(() => { enterWelcome(); return () => leaveWelcome(); }, []);
+  const start = () => { leaveWelcome(); play("page"); reset(); nav("/strand/1"); };
 
   return (
     <Page className="pt-4">
@@ -64,7 +66,7 @@ export default function Welcome() {
       <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#5A3D34]">
         {COPY.counter(count ?? "…")}
       </p>
-      <Footer>{CONFIG.CREDIT_LINE}</Footer>
+      <Footer><Credit text={CONFIG.CREDIT_LINE} /></Footer>
       <HowItWorks open={how} onOpenChange={setHow} />
     </Page>
   );
