@@ -10,7 +10,7 @@ export const StrandCTA = ({ children, ...props }) => {
   if (desk) return <div className="mt-5">{btn}</div>;
   return (
     <>
-      <div className="h-[92px] shrink-0" aria-hidden />
+      <div className="h-[112px] shrink-0" aria-hidden />
       {createPortal(
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}
           className="fixed inset-x-0 bottom-0 z-30 pointer-events-none" data-testid="strand-cta-bar">

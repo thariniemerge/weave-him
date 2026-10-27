@@ -1,0 +1,39 @@
+{
+  "summary": "Iteration 9 tested the backend and frontend: the emotion picker, the reveal choreography, the no-scroll question screens, the /bands reorder screen, the story video, plus regression. Backend: 5/5 pytest pass. POST /api/husbands took 4.3s, the band order is kept, the card is stored in the background within seconds, and card.jpg and og.jpg return 200. Frontend: everything passes except one no-scroll check. On /strand/5 (Temperament) at 1280x720 and 1440x900 the CTA sits below the fold and the page scrolls; at 1920x1080 the CTA only just fits but the page still scrolls by 32px. Strands 1-4, 6 and 7 fit at all 3 desktop sizes, and WovenProgress is hidden on desktop. At 390x844 the fixed strand-cta-bar is visible at scrollY=0 on every strand. scrollY resets to 0 on each route change. Bands, reveal, emotions, video, Tell, the public /h/:id page, reweave and the sound toggle all work with no console errors.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/husbands (LLM)", "issue": "Emergent LLM key budget is used up (backend log: 'Budget has been exceeded! Max budget: 0.4'). Every husband currently gets template vows (vows_source=template). The fallback works, but there are no LLM vows until the key is topped up."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Temperament page /strand/5 (desktop >=1024)", "issue": "No-scroll requirement not met. At 1280x720 the CTA top/bottom is 1013/1069 with scrollHeight 1090. At 1440x900 it is 1018/1074 with scrollHeight 1101. At 1920x1080 scrollHeight is 1112 > 1080 and the CTA bottom is 1079. Cause: 3 slider cards (~170px each), title, so-far tags, then the hoop-small art and 'coming together' line, all with no lg or max-height compaction.", "selector": "[data-testid=next-remembers-button]", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet emotion picker", "issues": ["The 'Heart eyes' label wraps onto 2 lines at 10px, which makes the row look uneven. Use 'Hearts' or allow a wider cell."]},
+      {"screen": "Phone strands 390x844", "issues": ["The WovenProgress row ('Your husband so far / None of VII strands') shows faintly behind the gradient of the fixed CTA bar at scrollY=0. It looks clipped. Hide it under 1024px or add more bottom spacing."]},
+      {"screen": "Meet reveal timing", "issues": ["The route exit transition shifts the whole timeline by about 0.4s. At 5.5s after the URL change the signature is at opacity 0.42; it is fully visible at about 6.2s, and the share button too (0.98). Acceptable, slightly behind the spec."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/test_iter9_bg_card.py", "/app/test_reports/pytest/iter9.xml"],
+  "action_items": [
+    "Make /strand/5 Temperament fit at 1280x720, 1440x900 and 1920x1080: on lg hide the hoop-small/comingTogether block, and maybe the so-far tags, or tighten slider card padding and space-y under a max-height media query. This keeps next-remembers-button inside the viewport and scrollHeight <= innerHeight.",
+    "Top up the Emergent LLM key budget (vows currently always come from templates).",
+    "Optional: shorten the 'Heart eyes' label; hide WovenProgress peeking behind the phone CTA bar."
+  ],
+  "critical_code_review_comments": [
+    "Bands.jsx: the useEffect has no deps and runs on every render (cheap because it is guarded, but it should use [ready, answers.bandPick]).",
+    "Bands.jsx: if she changes answers after picking, bandPick keeps stale labels. They are filtered out at render, but the stored state is never cleaned up.",
+    "VowsCard under reduced motion still plays the 0.6s clip-write and 0.5s signature fade. Fine, but motion is not fully removed.",
+    "Font preload warnings: CormorantGaramond-500-italic and GrenzeGotisch-600 are preloaded but not used on some routes."
+  ],
+  "updated_files": ["/app/backend/tests/test_iter9_bg_card.py"],
+  "success_rate": {"backend": "100%", "frontend": "92%"},
+  "seed_data_creation": "Husbands created: xubaszb3 (Hollis, bands SAFE HAVEN · PANCAKES / FAITH IN ME · COFFEE / SMALL THINGS) and 3hh5cbu6 (Ambrose, bands HOLDS ME · VOICE NOTES / NEVER ALONE · LAUGHS / QUIET READS, 1 reweave used), plus 1 husband from pytest with TEST_ strands.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Seed answers through sessionStorage 'weave-him-answers', e.g. {q1:[{id:'coffee'}],...,remembers:[{id:'coffeeorder'}]}. Mute with localStorage 'weave-him-muted'='1'. Strand 5 CTA = next-remembers-button, strand 6 = next-feel-button. Run pytest with -n 0. Reveal frames: /meet mounts about 0.3-0.4s after the URL change because of the AnimatePresence exit, so the frame at 0.3s is blank parchment. Video: headless Chromium picks video/mp4, the download is hollis-woven-by-hand.mp4 (1080x1920, 5.96s, ~2.3MB) after about 7.8s. Weaving waited correctly when POST was delayed 9s (meet at about 12s). Screenshots are in .screenshots: q_1280x720_s1/s5, q_390x844_s1/s6, reveal_390_{0.3,1.0,1.6,2.4,3.6,5.5,6.2}s, bands_390_*, bands_1280, emotion_390_hearts, meet_1280_picker, video_progress_1280, public_1280.",
+  "rca of the issue": "On desktop, Temperament.jsx renders its whole stack in the right column: StrandHeader, h1, sub, 3 Slider cards, so-far tags, the hoop-small Art with the 'coming together' text, then StrandCTA (mt-5). Unlike Strand.jsx, where Aside is hidden at max-height 820 and WovenProgress is lg:hidden, nothing here is compacted on lg, so the content is about 1090px tall. Fix: add lg:hidden to the hoop-small block, and possibly the so-far tags, or apply [@media(max-height:900px)] compaction."
+}

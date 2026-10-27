@@ -21,8 +21,8 @@ const Slider = ({ s, value, onChange }) => {
     onChange(v);
   };
   return (
-    <section className="stitch-card px-5 pt-5 pb-4" style={{ background: s.tint }} data-testid={`slider-card-${s.key}`}>
-      <h2 className="f-cg font-semibold text-center text-[21px]">{s.title}</h2>
+    <section className="stitch-card px-5 pt-5 pb-4 lg:pt-3 lg:pb-1" style={{ background: s.tint }} data-testid={`slider-card-${s.key}`}>
+      <h2 className="f-cg font-semibold text-center text-[21px] lg:text-[19px]">{s.title}</h2>
       <input
         type="range" min={0} max={100} value={value} aria-label={s.title} data-testid={`slider-${s.key}`}
         onChange={(e) => move(Number(e.target.value))} className="woven-range mt-1"
@@ -50,26 +50,26 @@ export default function Temperament() {
     <Page>
       <StrandHeader n={5} back="/strand/4" />
       <Art name="corner-ochre" className="absolute right-0 top-0 w-20 pointer-events-none opacity-90" />
-      <h1 className="f-cg font-bold text-[34px] leading-tight text-center mt-1">
+      <h1 className="f-cg font-bold text-[34px] lg:text-[28px] leading-tight text-center mt-1">
         {COPY.temperTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.temperTitle[1]}</span>
       </h1>
-      <p className="f-cg italic text-center text-[18px] text-[color:#5A3D34] mb-4">{COPY.temperSub}</p>
-      <div className="space-y-4">
+      <p className="f-cg italic text-center text-[18px] text-[color:#5A3D34] mb-4 lg:mb-2">{COPY.temperSub}</p>
+      <div className="space-y-4 lg:space-y-2">
         {SLIDERS.map((s) => (
           <Slider key={s.key} s={s} value={answers.sliders[s.key] ?? s.def}
             onChange={(v) => set("sliders", { ...answers.sliders, [s.key]: v })} />
         ))}
       </div>
-      <div className="mt-5 flex flex-wrap justify-center items-center gap-2" data-testid="so-far-tags">
+      <div className="mt-5 lg:mt-3 flex flex-wrap justify-center items-center gap-2 lg:gap-1.5" data-testid="so-far-tags">
         <span className="f-sc text-[12px] mr-1">{COPY.wovenFrom}</span>
         {tags.map((t, i) => (
           <motion.span key={t + i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-            className="f-cg italic text-[16px] px-3 py-1 rounded-full border border-[color:#b8956a]" style={{ background: CHIP_TINTS[i % 5] }}>
+            className={`f-cg italic text-[16px] lg:text-[15px] px-3 py-1 lg:py-0.5 rounded-full border border-[color:#b8956a] ${i >= 7 ? "lg:hidden" : ""}`} style={{ background: CHIP_TINTS[i % 5] }}>
             {t}
           </motion.span>
         ))}
       </div>
-      <div className="flex flex-col items-center mt-4">
+      <div className="flex flex-col items-center mt-4 lg:hidden">
         <Art name="hoop-small" className="w-24 floaty" />
         <p className="f-cg italic text-[16px] text-[color:#5A3D34] mt-1">{COPY.comingTogether}</p>
       </div>

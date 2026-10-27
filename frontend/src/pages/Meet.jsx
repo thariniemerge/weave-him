@@ -16,7 +16,6 @@ import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
 import { BandText } from "../components/weave/BandText";
 import { Face, emote } from "../components/weave/Face";
-import { EmotionPicker } from "../components/weave/EmotionPicker";
 import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
@@ -109,9 +108,8 @@ export default function Meet({ isPublic = false }) {
         <motion.div initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
           <Cameo h={h} alive />
         </motion.div>
-        <EmotionPicker />
       </PanelOrInline>
-      <p className="f-cg italic text-center text-[18px] mt-3 mb-5">
+      <p className="f-cg italic text-center text-[18px] mt-1 mb-5">
         {COPY.biceps[0]}<span className="hl">{COPY.biceps[1]}</span>{COPY.biceps[2]}
       </p>
       <VowsCard h={h} setH={setH} canEdit={mine} />
