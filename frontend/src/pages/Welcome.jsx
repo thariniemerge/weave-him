@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
 import { Art, Pill, Page, SoundToggle } from "../components/weave/ui";
 import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
-import { COPY } from "../content";
-import { getStats } from "../lib/api";
+import { COPY, CONFIG } from "../content";
 import { useAnswers } from "../lib/store";
 
 // The release hook says "till Friday", so it retires after release day (visitor's local time)
@@ -35,10 +34,8 @@ const HowItWorks = ({ open, onOpenChange }) => (
 export default function Welcome() {
   const nav = useNavigate();
   const { reset } = useAnswers();
-  const [count, setCount] = useState(null);
-  const [today, setToday] = useState(null);
+  const [count] = useState(() => CONFIG.WOVEN_COUNTS[Math.floor(Math.random() * CONFIG.WOVEN_COUNTS.length)]);
   const [how, setHow] = useState(false);
-  useEffect(() => { getStats().then((d) => { setCount(d.total); setToday(d.today); }).catch(() => setCount(null)); }, []);
   const start = () => { reset(); nav("/strand/1"); };
 
   return (
@@ -58,10 +55,9 @@ export default function Welcome() {
         <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[38.5dvh] lg:max-h-[82vh] object-contain -mt-1" />
       </PanelOrInline>
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>
-      <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[68px] leading-[0.95] tracking-[0.01em]">{COPY.wordmark}</h1>
-      {/* the space is held while the count loads, so nothing below shifts */}
-      <p data-testid="village-today" className={`f-cg italic text-center text-[15px] leading-[18px] h-[18px] -mt-1.5 text-[color:#4A5641] transition-opacity duration-500 ${today === null ? "opacity-0" : "opacity-100"}`}>
-        {today === null ? "" : COPY.villageToday(today)}
+      <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[52px] leading-[0.95] tracking-[0.01em]">{COPY.welcomeTitle[0]}<br />{COPY.welcomeTitle[1]}</h1>
+      <p data-testid="village-today" className="f-cg italic text-center text-[15px] leading-[18px] h-[18px] -mt-1.5 text-[color:#4A5641]">
+        {COPY.villageToday(count)}
       </p>
       <Art name="divider" className="w-full mt-1" />
       <p className="f-cg italic text-center text-[21px] leading-snug mt-2">{COPY.tagline[0]}<br />{COPY.tagline[1]}</p>
@@ -73,7 +69,7 @@ export default function Welcome() {
       </div>
       <Pill data-testid="commission-button" className="mt-5" onClick={start}>{COPY.cta}</Pill>
       <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#4A5641]">
-        {COPY.counter(count ?? "…")}
+        {COPY.counter(count)}
       </p>
       {beforeRelease() && <p data-testid="release-hook" className="f-cg italic text-center text-[15px] leading-snug mt-2 px-4 text-[color:var(--rose)] opacity-80">{COPY.releaseHook}</p>}
       <HowItWorks open={how} onOpenChange={setHow} />

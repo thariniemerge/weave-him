@@ -9,6 +9,8 @@ export const CONFIG = {
   CARD_CREDIT_LINE: "Built with Emergent",
   // Printed on the share card while running on a preview address (before publishing)
   PREVIEW_SITE_LABEL: "weavehim.[domain]",
+  // Welcome shows one of these as the husbands-woven count, picked afresh on every page load
+  WOVEN_COUNTS: [58, 67, 81, 94],
 };
 
 const isPreviewHost = (h) => /preview\.emergentagent\.com|localhost|127\.0\.0\.1/.test(h);
@@ -25,6 +27,7 @@ export const COPY = {
   ],
   kicker: "hand-woven for the village gossips",
   wordmark: "weave him",
+  welcomeTitle: ["Weave Wicker", "Your Husband"],
   tagline: ["Peter Dinklage can't be your basketmaker.", "But that's no reason not to weave your ideal man."],
   steps: ["Answer", "Weave", "Meet him"],
   cta: "Order my husband material",
