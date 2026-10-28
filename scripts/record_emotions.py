@@ -9,8 +9,8 @@ from playwright.async_api import async_playwright
 URL = sys.argv[1].rstrip("/")
 OUT = Path("/app/frontend/public/recordings")
 HUSBANDS = {"golden-willow": "dx22jcd8", "sunlit-curls": "4dxnbdm4"}
-ORDER = ["smile", "wink", "blush", "heart_eyes", "kiss", "shy", "brow_raise"]
-HOLD = {"smile": 1.6, "wink": 0.9, "blush": 1.8, "heart_eyes": 1.8, "kiss": 1.5, "shy": 1.8, "brow_raise": 0.9}
+ORDER = ["wink", "blush", "heart_eyes", "kiss", "shy"]
+HOLD = {"wink": 0.9, "blush": 1.8, "heart_eyes": 1.8, "kiss": 1.5, "shy": 1.8}
 ANS = {"q1": [{"id": "takeout"}], "q2": [{"id": "pancakes"}], "q3": [{"id": "laugh"}], "q4": [{"id": "lastbite"}], "q7": [{"id": "amused"}],
        "sliders": {"out": 80, "love": 50, "feel": 50}, "remembers": [{"id": "jokes"}], "goal": "serious", "interests": [{"id": "books"}], "musts": [{"id": "calm"}]}
 
@@ -26,7 +26,7 @@ async def main():
         for slug, hid in HUSBANDS.items():
             await p.goto(f"{URL}/meet/{hid}", wait_until="networkidle")
             await p.wait_for_selector("[data-testid=medallion]")
-            await p.wait_for_timeout(3600)  # reveal smile plays on its own
+            await p.wait_for_timeout(3600)  # reveal wink plays on its own
             seen = []
             for e in ORDER:
                 await p.click("[data-testid=face-tap-target]")

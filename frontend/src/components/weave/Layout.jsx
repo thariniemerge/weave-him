@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useSyncExternalStore } from "react";
+import { createContext, useContext, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { useLocation } from "react-router-dom";
 import { BuildingHusband } from "./PanelFigures";
 import { useReducedMotion } from "framer-motion";
 import { Art } from "./ui";
+import { useStage, useLinger } from "./PageStack";
 
 export const useMedia = (q) => useSyncExternalStore(
   (f) => { const m = window.matchMedia(q); m.addEventListener("change", f); return () => m.removeEventListener("change", f); },
@@ -14,16 +15,18 @@ export const useDesktop = () => useMedia("(min-width: 1024px)");
 const PanelCtx = createContext(null);
 
 // On desktop, renders its art into the sticky left panel; otherwise inline
+// (the portal child follows its page's enter/leave stage, so left and right change together)
+const PanelItem = ({ children }) => <div className={`w-full panel-${useStage()}`}>{children}</div>;
 export const PanelOrInline = ({ children }) => {
   const el = useContext(PanelCtx);
   const desk = useDesktop();
   if (!desk) return children;
-  return el ? createPortal(<div className="w-full">{children}</div>, el) : null;
+  return el ? createPortal(<PanelItem>{children}</PanelItem>, el) : null;
 };
 // Desktop-only art for the panel (nothing on phones)
 export const PanelArt = ({ children }) => {
   const el = useContext(PanelCtx);
-  return useDesktop() && el ? createPortal(<div className="w-full">{children}</div>, el) : null;
+  return useDesktop() && el ? createPortal(<PanelItem>{children}</PanelItem>, el) : null;
 };
 
 export const EmergentBadge = ({ fixed = false }) => (
@@ -71,6 +74,10 @@ export function Layout({ children }) {
   const desk = useDesktop();
   const [panel, setPanel] = useState(null);
   const strand = Number(useLocation().pathname.match(/^\/strand\/(\d+)/)?.[1] || 0);
+  const building = strand > 0 && strand < 10;
+  const lastDone = useRef(0);
+  if (building) lastDone.current = strand - 1;
+  const buildStage = useLinger(building);
   return (
     <PanelCtx.Provider value={panel}>
       <div className="mist-layer" aria-hidden />
@@ -80,17 +87,24 @@ export function Layout({ children }) {
         <div className="relative z-10 grid grid-cols-2 min-h-[100dvh]" data-testid="desktop-layout">
           <aside className="forest-panel sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
             <div className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center">
-              {/* one husband for all seven strands, so he is never remounted between questions */}
-              {strand > 0 && strand < 10 && <BuildingHusband done={strand - 1} />}
-              <div ref={setPanel} className="w-full flex flex-col items-center" />
+              {/* every panel item shares one grid cell, so arriving art never pushes leaving art down */}
+              <div className="panel-stack w-full">
+                {/* one husband for strands I-IX, so he is never remounted between questions */}
+                {buildStage && (
+                  <div className={`w-full panel-${buildStage}`}>
+                    <BuildingHusband done={lastDone.current} />
+                  </div>
+                )}
+                <div ref={setPanel} className="panel-stack w-full" />
+              </div>
             </div>
           </aside>
           <div className="flex justify-center px-8">
-            <div className="desk-col w-full max-w-[560px] min-h-[100dvh] flex flex-col justify-center">{children}</div>
+            <div className="desk-col page-stack w-full max-w-[560px] min-h-[100dvh]">{children}</div>
           </div>
         </div>
       ) : (
-        <div className="relative z-10 mx-auto w-full max-w-[430px] md:max-w-[572px] tablet-col overflow-x-hidden">{children}</div>
+        <div className="page-stack relative z-10 mx-auto w-full max-w-[430px] md:max-w-[572px] tablet-col overflow-x-hidden">{children}</div>
       )}
       <EmergentBadge fixed />
     </PanelCtx.Provider>

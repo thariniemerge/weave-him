@@ -19,15 +19,12 @@ export const Pill = ({ children, variant = "primary", icon = true, className = "
   </button>
 );
 
+// A screen; its enter/leave crossfade comes from PageStack (CSS, transform and opacity only)
 export const Page = ({ children, className = "" }) => (
-  <motion.main
-    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-    transition={{ duration: 0.32, ease: "easeOut" }}
-    className={`relative min-h-[100dvh] px-6 pt-5 pb-6 flex flex-col ${className}`}
-  >
+  <main className={`relative min-h-[100dvh] px-6 pt-5 pb-6 flex flex-col ${className}`}>
     {children}
     <div className="flex justify-center mt-6 lg:hidden"><EmergentBadge /></div>
-  </motion.main>
+  </main>
 );
 
 export const SmallCaps = ({ children, className = "" }) => (

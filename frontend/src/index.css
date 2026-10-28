@@ -236,3 +236,32 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 .torn-tag { background: #FBF6EA; transform-origin: left center; box-shadow: 0 2px 4px -2px rgba(42,33,27,.4);
   clip-path: polygon(0 6%, 4% 0, 12% 5%, 22% 1%, 33% 6%, 45% 0, 57% 5%, 68% 1%, 80% 6%, 91% 1%, 100% 5%, 98% 50%, 100% 95%, 90% 100%, 78% 95%, 66% 100%, 54% 94%, 42% 100%, 30% 95%, 18% 100%, 8% 95%, 0 100%, 2% 50%); }
 @media (min-width: 1024px) { .check-panel { --check-ink: #F1ECE1; } }
+
+/* Screen transitions: leaving and arriving screens share one grid cell, so nothing is pushed or blank */
+.page-stack { display: grid; }
+.page-stack > * { grid-area: 1 / 1; min-width: 0; }
+.panel-stack { display: grid; place-items: center; }
+.panel-stack > * { grid-area: 1 / 1; min-width: 0; }
+.page-leave { animation: fade-out .25s ease-in both; pointer-events: none; }
+/* the slide moves the screen contents, never the cell, so fixed children keep their place */
+.page-leave > main > :not(.fixed) { animation: pg-out .25s ease-in both; }
+.page-enter { animation: fade-in .35s ease-out .15s both; }
+.page-enter > main > :not(.fixed) { animation: pg-in .35s ease-out .15s backwards; }
+.panel-leave { animation: pn-out .3s ease-in both; pointer-events: none; }
+.panel-enter { animation: pn-in .4s ease-out .15s backwards; }
+@keyframes pg-out { to { transform: translateY(-12px); } }
+@keyframes pg-in { from { transform: translateY(12px); } to { transform: none; } }
+@keyframes pn-out { to { opacity: 0; transform: scale(.96); } }
+@keyframes pn-in { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+@keyframes fade-out { to { opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .page-leave, .panel-leave { animation: fade-out .2s ease both; }
+  .page-leave > main > *, .page-enter > main > * { animation: none; }
+  .page-enter, .panel-enter { animation: fade-in .2s ease both; }
+}
+/* the phone CTA bar is fixed (portaled), so it crossfades by opacity alone */
+.cta-leave { animation: fade-out .25s ease-in both; }
+.cta-leave .pointer-events-auto { pointer-events: none; }
+.cta-enter { animation: fade-in .35s ease-out .15s both; }
+.cta-idle { animation: fade-in .3s ease-out both; }

@@ -1,0 +1,35 @@
+{
+  "summary": "I tested the frontend and the backend. Everything requested passes, and I found 0 faces shown before the weave is done. (1) Pre-weave routes in a fresh tab, with the answers injected at 390x844 and 1280x800 (scripts/check_hidden.py, run 4 times): every medallion had data-woven=0, was masked, had img-weave opacity 1 and reveal-rect translateY >= 384. Desktop strands 1-9 went 600->407. Phone strand pages have no medallion. /musthaves redirects to /. Desktop /strand/10 shows suitor-check with no medallion. /weaving in its first seconds had woven=0, y 420-563, in sepia. (2) /bands: chin level (384), sepia with the golden edge, bands opacity 1, heart and ribbon 0, no expression layers, no face-tap-target. Taps update the bands live in tap order (PANCAKES -> PANCAKES,LAUGHS -> PANCAKES,LAUGHS,WORST JOKES). Deselecting removes one. A 4th tap does nothing (3 of 3). One label per band. (3) Weaving: woven goes to 1 only at 'Strand X of X', then /meet. Meet has woven=1, unmasked, 8 expression layers and the tap target, with bands in tap order. The POST payload band, GET /api/husbands/{id} band and card.woven, the card.jpg?v=15 'Woven from' line, the /api/share og description and /h/{id} all match the pick order. (4) Browser back from Meet to /bands keeps him at the chin in sepia. New picks [LAST BITE, AMUSED, TAKEOUT] gave a new husband with the matching band and card. 'Weave another' goes to /strand/1 and the face stays hidden. (5) Regression: 7 taps gave smile, wink, blush, heart_eyes, kiss, shy, brow_raise. The must-haves checklist renders. /card/{id}?frames=0.95,2.6,4.1,5.6 reaches data-frames-ready=1. Old husband w98cta5z (6 labels) renders two labels per top band plus OUR SONG. Backend pytest: 25/25 pass after I fixed a stale og:image assertion. strands_brief includes the three picks in order.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "tests only", "issue": "Two tests are flaky. test_weave_api::test_stats_increments races with other workers under xdist. test_card_stored_at_creation races with the background card task when run with -n 0. Not app bugs."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet (old husband w98cta5z)", "issues": ["The legacy label 'EXTRAORDINARIL' renders as 'EXTRAORDINAR' (old data cut to 12 characters). Cosmetic, older records only."]},
+      {"screen": "Share card", "issues": ["The footer reads '(Weave yours at weavehim.[domain])'. This is a placeholder host: check that the site/credit config is set for production."]}
+    ]
+  },
+  "test_report_links": ["/app/backend/tests/i22_band_order.py", "/app/backend/tests/i22_regression.py", "/app/backend/tests/i22_weave_another.py", "/app/scripts/check_hidden.py", "/app/test_reports/pytest/i22.xml"],
+  "action_items": [
+    "Fix your own check script, scripts/check_hidden.py: it saves screenshots into /app/frontend/public/recordings during the band-order flow. The CRA dev server then live-reloads the page. Its init script re-seeds sessionStorage on every load, which wipes bandPick, so Meet and the card show the default LAUGHS/TAKEOUT/LAST BITE. This made the script report a false mismatch 2/2 times (it passes 3/3 when those screenshots are skipped). Save the screenshots outside frontend/public, or seed sessionStorage only once (if !getItem). Not an app bug.",
+    "Optional: on Weaving, the 9s fallback ('late') and 'Skip' can both set step 10 (woven, face shown) before the husband/vows arrive. The spec says the face shows at step 10 'after the vows are ready'. If that is strict, also require husband before step 10 when skipping or on the fallback."
+  ],
+  "critical_code_review_comments": [
+    "Weaving.jsx line 89: skip sets step 10 at once, so the face is revealed while the husband may still be null ('Tying the last knot…'). The FALLBACK_MS path does the same.",
+    "Medallion.jsx: lastStrands is module-level mutable state shared by all instances. It works for the current one-medallion-per-screen flow, but it is fragile if two medallions ever mount together.",
+    "server.py strands_brief gets the short uppercase band labels (e.g. 'WORST JOKES'), not the full strands (card.woven, e.g. 'remembers my worst jokes'). Passing card.woven would give the LLM clearer context. Minor.",
+    "Bands.jsx: the useEffect with no deps calls set() on the first render when bandPick is missing. Fine, but it runs on every render; [ready] deps would be cleaner."
+  ],
+  "updated_files": ["/app/backend/tests/test_server_card_reweave.py (og:image assertion now tolerates ?v=CARD_VERSION)", "/app/backend/tests/i22_band_order.py", "/app/backend/tests/i22_regression.py", "/app/backend/tests/i22_weave_another.py"],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "seed_data_creation": "About 10 husbands created through the weaving flow from the injected answers (e.g. 34ntc9u7 = PANCAKES/LAUGHS/WORST JOKES).",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run: python backend/tests/i22_band_order.py <URL>, i22_regression.py <URL> <husband_id>, i22_weave_another.py <URL>. Use a 'seed once' init script (if !sessionStorage.getItem(...)). Never write files into frontend/public during a flow: it triggers a CRA live reload. Old 6-label husband: w98cta5z. pytest.ini uses xdist (-n); use -n 0 for serial runs.",
+  "rca of the issue": "check_hidden.py reported a false band-order mismatch. Its page.screenshot to /app/frontend/public/recordings/bands-order-desktop.png fires the webpack-dev-server static watcher, which live-reloads the tab. The unconditional add_init_script then re-seeds 'weave-him-answers' without bandPick, so buildPayload falls back to labels.slice(0,3). Confirmed: the same flow with the screenshots removed sends POST band = tapped order (3/3 runs)."
+}

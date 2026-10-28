@@ -55,26 +55,24 @@ function flash(el, cls, ms = 1700) {
   el[`_${cls}`] = setTimeout(() => el.classList.remove(cls), ms);
 }
 
-// Plays expressions on the stacked layers. With `ambient`: blink every 3-5s and a random emotion every 6-9s.
-// Reduced motion: no autoplay and no hearts, but a tap still swaps instantly.
+// Plays expressions on the stacked layers, strictly one at a time: a new emotion (or blink) waits until the
+// previous one has fully faded back to neutral, so two frames are never above neutral together.
+// With `ambient`: blink every 3-5s and a random emotion every 6-9s. Reduced motion: taps only, instant swaps.
 export function useExpressions(wrap, layers, { ambient = false, reduce = false }) {
   const st = useRef({ cur: null, timers: [], i: 0 });
   const later = (fn, ms) => st.current.timers.push(setTimeout(fn, ms));
   const set = (el, o, ms) => { el.style.transition = ms ? `opacity ${ms}ms ease` : "none"; el.style.opacity = o; };
   const play = (name) => {
     const L = layers.current, s = st.current;
-    if (!L || !L[name]) return;
-    if (name === "blink") {
-      if (s.cur) return;
-      set(L.blink, 1, 0);
-      later(() => set(L.blink, 0, 0), BLINK);
-      return;
-    }
-    s.timers.forEach(clearTimeout); s.timers = [];
-    const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
-    Object.entries(L).forEach(([k, el]) => k !== name && set(el, 0, back));
-    set(L[name], 1, fade);
+    if (!L || !L[name] || s.cur) return false;
     s.cur = name;
+    if (name === "blink") {
+      set(L.blink, 1, 0);
+      later(() => { set(L.blink, 0, 0); s.cur = null; }, BLINK);
+      return true;
+    }
+    const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
+    set(L[name], 1, fade);
     wrap.current?.setAttribute("data-emotion", name);
     if (!reduce && name === "kiss") flash(wrap.current, "mk-kiss");
     if (!reduce && name === "heart_eyes") flash(wrap.current, "mk-hearteyes");
@@ -82,6 +80,7 @@ export function useExpressions(wrap, layers, { ambient = false, reduce = false }
       set(L[name], 0, back);
       later(() => { s.cur = null; wrap.current?.setAttribute("data-emotion", "neutral"); }, back);
     }, fade + HOLD[name] * 1000);
+    return true;
   };
   useEffect(() => {
     if (reduce) return;
@@ -97,5 +96,5 @@ export function useExpressions(wrap, layers, { ambient = false, reduce = false }
     blinkLoop(); moodLoop();
     return () => { clearTimeout(b); clearTimeout(m); };
   }, [ambient, reduce]); // eslint-disable-line react-hooks/exhaustive-deps
-  return () => { play(TAP_ORDER[st.current.i % TAP_ORDER.length]); st.current.i += 1; };
+  return () => { if (play(TAP_ORDER[st.current.i % TAP_ORDER.length])) st.current.i += 1; };
 }

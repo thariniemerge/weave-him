@@ -89,7 +89,7 @@ class TestServerCard:
     def test_share_og_image(self, s, created):
         t = s.get(f"{API}/share/{created['id']}", allow_redirects=False).text
         m = re.search(r'og:image" content="([^"]+)"', t)
-        assert m and m.group(1).endswith(f"/api/husbands/{created['id']}/og.jpg")
+        assert m and m.group(1).split("?")[0].endswith(f"/api/husbands/{created['id']}/og.jpg")  # ?v=CARD_VERSION cache-bust
         assert 'og:image:width" content="720"' in t
 
     def test_card_404_unknown(self, s):

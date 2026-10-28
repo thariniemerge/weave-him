@@ -1,8 +1,8 @@
 // Turns his share card into a 6s story video: he breathes and plays his own expression frames
-// (neutral, blink, smile, wink, smile). The frames are used as provided, never redrawn.
+// (neutral, blink, wink, heart eyes, neutral), one frame at a time. The frames are used as provided, never redrawn.
 import { portraitSrc, frameSrc } from "../content";
 
-const FACES = ["neutral", "blink", "smile", "wink"];
+const FACES = ["neutral", "blink", "wink", "heart_eyes"];
 
 const W = 1080, H = 1920, FPS = 30, SECONDS = 6;
 // The card's portrait box (sky box grown under the frame rim) and the visible oval inside the frame
@@ -31,11 +31,11 @@ async function prepare(portrait) {
 }
 
 const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
-// neutral, blink, slow smile, wink, back to the smile (weights of each frame over the neutral one)
+// neutral, blink, wink (0.9s hold), heart eyes (1.8s hold), neutral: weights of each frame over the neutral one
 export function expressionAt(t) {
-  const smile = ramp(t, 1.5, 1.8) * (1 - ramp(t, 3.4, 3.75)) + ramp(t, 4.6, 4.95);
-  const wink = ramp(t, 3.4, 3.7) * (1 - ramp(t, 4.6, 4.95));
-  return { blink: t >= 0.9 && t < 1.05 ? 1 : 0, smile, wink };
+  const wink = ramp(t, 1.5, 1.8) * (1 - ramp(t, 2.7, 3.05));
+  const heart_eyes = ramp(t, 3.15, 3.45) * (1 - ramp(t, 5.25, 5.6));
+  return { blink: t >= 0.9 && t < 1.05 ? 1 : 0, wink, heart_eyes };
 }
 
 function frame(c, card, L, t) {
@@ -51,7 +51,7 @@ function frame(c, card, L, t) {
   x.drawImage(L.bg, FIG.x, FIG.y, FIG.w, FIG.h);
   x.drawImage(L.faces.neutral, FIG.x, FIG.y, FIG.w, FIG.h);
   const w = expressionAt(t);
-  ["smile", "wink", "blink"].forEach((e) => { if (w[e] > 0) { x.globalAlpha = w[e]; x.drawImage(L.faces[e], FIG.x, FIG.y, FIG.w, FIG.h); } });
+  ["wink", "heart_eyes", "blink"].forEach((e) => { if (w[e] > 0) { x.globalAlpha = w[e]; x.drawImage(L.faces[e], FIG.x, FIG.y, FIG.w, FIG.h); } });
   x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1;
   x.globalCompositeOperation = "destination-in"; x.drawImage(L.mask, 0, 0);
   c.drawImage(L.scratch, 0, 0);

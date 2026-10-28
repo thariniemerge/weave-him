@@ -65,7 +65,7 @@ export default function Meet({ isPublic = false }) {
   useEffect(() => {
     if (!h?.id || !framesReady) return;
     play("harp"); duckMusic();
-    const t = setTimeout(() => emote("smile"), 700);
+    const t = setTimeout(() => emote("wink"), 1000);
     return () => clearTimeout(t);
   }, [h?.id, framesReady]);
 
