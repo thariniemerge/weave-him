@@ -91,7 +91,7 @@ export default function Meet({ isPublic = false }) {
     if (!blob || video != null) return;
     setVideo(0);
     try { await saveVideo({ blob: await makeCardVideo(blob, h.portrait, setVideo), name: h.name, link: shareLink(h.id) }); }
-    catch { toast("The loom jammed. Try the video again in a moment."); }
+    catch { toast(COPY.videoError); }
     finally { setVideo(null); }
   };
   const again = () => { reset(); nav("/strand/1"); };

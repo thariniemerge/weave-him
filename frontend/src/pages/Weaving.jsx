@@ -50,20 +50,20 @@ const LoadingLine = ({ active, finishing, reduce }) => {
   const [f, setF] = useState(0);
   useEffect(() => {
     if (!active) return;
-    const t = setInterval(() => setI((n) => Math.min(n + 1, COPY.weavingLoading.length - 1)), 1300);
+    const t = setInterval(() => setI((n) => Math.min(n + 1, COPY.weavingLoading.length - 1)), 1750);
     return () => clearInterval(t);
   }, [active]);
   useEffect(() => {
     if (!finishing) return;
-    const t = setInterval(() => setF((n) => n + 1), 650);
+    const t = setInterval(() => setF((n) => n + 1), 1500);
     return () => clearInterval(t);
   }, [finishing]);
   const line = finishing ? COPY.weavingFinishing[f % COPY.weavingFinishing.length] : COPY.weavingLoading[i];
   return (
-    <div className="h-7 mt-3 relative w-full flex justify-center" aria-live="polite" data-testid="weaving-loading">
+    <div className="h-[3.25rem] mt-3 px-4 relative w-full flex justify-center" aria-live="polite" data-testid="weaving-loading">
       <AnimatePresence mode="wait" initial={false}>
         {active && (
-          <motion.p key={line} data-testid="weaving-loading-text" className="f-cg italic text-[17px] text-[color:#4A5641] text-center"
+          <motion.p key={line} data-testid="weaving-loading-text" className="f-cg italic text-[16px] leading-snug text-[color:#4A5641] text-center"
             initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.4 }}>
             {line}
           </motion.p>

@@ -40,6 +40,9 @@ export default function MustHaves() {
         <ChipPicker items={MUSTHAVES} picks={picks} onChange={onChange} max={5} prefix="must"
           placeholder={COPY.mustsOwnPlaceholder} ownLabel="Add my own must-have" />
       </PickCard>
+      {picks.some((p) => p.id === "available" || p.id === "space") && (
+        <p data-testid="basket-aside" className="f-cg italic text-center text-[16px] mt-3 text-[color:var(--rose)]">{COPY.basketAside}</p>
+      )}
       <PanelOrInline><div className="mt-5 lg:mt-0 w-full lg:max-h-[88vh] lg:overflow-y-auto check-panel">{check}</div></PanelOrInline>
       {verdict && <p className="hidden lg:block f-cg italic font-semibold text-center text-[19px] mt-4 text-[color:var(--rose)]" data-testid="musts-verdict">{verdict}</p>}
       <StrandCTA data-testid="weave-him-musts-button" disabled={!picks.length || !!verdict} onClick={confirm}>{COPY.weaveHim}</StrandCTA>
