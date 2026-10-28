@@ -68,3 +68,10 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Share card: CardPortrait shows {slug}-bg.jpg. The server uses card_assets/base-{slug}.png (build_card_layers.sh loops over all five). CARD_VERSION=14. The video in lib/cardVideo.js is light-only.
 - The suitor cards stay portrait-free: a monogram over a dark silhouette.
 - Checks: scripts/check_portraits.py and record_full.py.
+
+## Iteration 8 (2026-06): expression frames
+- The user's 9 aligned frames for each husband are in public/assets/husbands/{slug}/{expr}.webp (source copies in scripts/emotions). PORTRAIT_V=6.
+- lib/face.js useExpressions crossfades the frames over neutral: 0.3s in, a per-emotion hold, 0.35s out. Blink is an instant 150ms swap. Meet him autoplays (blink every 3-5s, an emotion every 6-9s, smile on reveal, wink on Share, heart eyes on reweave), and a tap steps through TAP_ORDER. Floating hearts come from the lips for kiss and from the brooch for heart eyes. Reduced motion: taps only, instant swaps.
+- preloadFrames runs during Weaving, and Meet waits until the frames are decoded. The video plays neutral, blink, smile, wink, smile using the frames. The shimmer and glow code was removed.
+- Global rule: his face is hidden until the weaving screen finishes. Bands shows strands=9 with the bands visible (showBands).
+- Check script: scripts/record_emotions.py. iteration_21: all passed.

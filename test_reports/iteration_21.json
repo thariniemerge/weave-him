@@ -1,0 +1,24 @@
+{
+  "summary": "Frontend only. I tested the expression-frame emotions with Playwright at 390x844 and 1920x1080. Everything requested passed. (1) Meet /meet/dx22jcd8 (golden-willow) and /meet/4dxnbdm4 (sunlit-curls): the medallion has data-portrait and data-emotion. The emo group has 8 <image> layers (blink..shy) with href /assets/husbands/{slug}/{expr}.webp?v=6. img-color is neutral.webp. No K-*, shimmer or img-glow ids. (2) 7 taps gave smile, wink, blush, heart_eyes, kiss, shy, brow_raise in that order. Each layer peaked at opacity 1, returned to 0, and data-emotion went back to neutral. mk-hearteyes and mk-kiss were added on heart_eyes and kiss and removed about 1.7s later. (3) Autoplay: smile at about 640ms after the medallion mounted, a blink at about 4.0s lasting about 150ms, and a random emotion at about 7.1s. share-him-button set data-emotion=wink. (4) Reduced motion: no 'breathing' class and no autoplay over 10s (no emotion changes, all layers stayed at 0). A tap swapped instantly (transition none, opacity 1) with no mk-kiss/mk-hearteyes classes. (5) No flash: 'Unrolling the parchment' showed at 446ms, all 9 sunlit-curls frames finished by 585ms (resource timing), and the medallion mounted at 845ms. (6) /bands with the injected answers: reveal-rect translateY(384px), img-weave opacity 1, bands opacity 1, heart and ribbon 0, no emo layers and no tap target. Desktop strand 1/5/9 showed rect 600/503/407 in sepia, and strand 10 showed the suitor check with no medallion. On the weaving screen the reveal went 600->575->...->384 for strands I-IX, reached 30 only at strand X (about 4.3s), then went to Meet. (7) /card/4dxnbdm4?frames=0.95,2.6,4.1,5.6: 4 frames, data-frames-ready=1. A visual crop showed blink, smile, wink, smile. The story video downloaded as tobias-woven-by-hand.mp4. (8) Regression: weaving -> meet creates a new husband, the must-haves checklist renders ('Handles a fight calmly'), reweaving vow 1 changed its text and triggered heart_eyes plus mk-hearteyes. /h/4dxnbdm4 shows a live medallion with 8 layers and the weave-your-own button.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Optional: under reduced motion, useExpressions does not subscribe to emote(), so the share-him wink and the vow-reweave heart-eyes never happen, even though both come from a user tap. If 'a tap still swaps instantly' should cover these taps too, subscribe to emote() when reduce is on (keep autoplay and the reveal smile off)."
+  ],
+  "critical_code_review_comments": [
+    "face.js useExpressions: under reduced motion, the emote() subscription is skipped completely (line 87). This turns off user-triggered emotions from other buttons, not only autoplay.",
+    "face.js: the subscribe effect has no deps, so it resubscribes on every render. It works, but [reduce] deps with a ref to play would be cleaner.",
+    "ShareReveal: the action fieldset is disabled until 1.6s after opening. Clicks in that window are silently ignored (by design, but a test or a fast user might think the video button is broken)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A (skipped)", "frontend": "100%"},
+  "seed_data_creation": "The weaving flow created 2 new husbands (e.g. 5nfbzb7a) from the injected test answers",
+  "retest_needed": false,
+  "should_main_agent_self_test": false,
+  "context_for_next_testing_agent": "Medallion layers: [data-testid=medallion] [data-expr=...]. Use a MutationObserver on data-emotion/class to log the emotion timeline. Tap testids for vows are 1-based: vow-text-1 / reweave-button-1 (click the vow text first). The ShareReveal buttons sit in a fieldset that is disabled until about 1.6s after opening, so wait 3s before clicking reveal-video-button. page.route with asyncio.sleep did not reliably delay assets in the browser tool. Use performance resource timing compared with the medallion mount time (add_init_script MutationObserver) to check preloading."
+}
