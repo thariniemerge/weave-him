@@ -41,7 +41,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
         <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{name.toUpperCase()}</span>
       </div>
       <div className="band bot">
-        <div className="stat s1"><div className="n">07</div><div className="l">Strands</div></div>
+        <div className="stat s1"><div className="n">10</div><div className="l">Strands</div></div>
         <img className="scroll" src={A("gold-scroll-left.webp")} style={{ left: 262 }} alt="" />
         <div className="mid"><div className="no">His number</div><div className="big dyn" data-testid="share-card-number">{number.slice(0, 2)}<sup>✦</sup>{number.slice(2)}</div></div>
         <img className="scroll" src={A("gold-scroll-right.webp")} style={{ right: 262 }} alt="" />

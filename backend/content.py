@@ -1,4 +1,4 @@
-NAMES = ["Rowan", "Edmund", "Ambrose", "Felix", "Jasper", "Lucian", "Theodore", "Silas", "Augustin", "Percival", "Hollis", "Ellis"]
+NAMES = ["Rowan", "Alistair", "Cornelius", "Felix", "Jasper", "Lucian", "Theodore", "Laurence", "Augustin", "Tobias", "Hollis", "Ellis"]
 
 # Fallback vow per answer key
 VOW_TEMPLATES = {

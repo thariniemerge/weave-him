@@ -21,5 +21,5 @@ export const isMine = (id) => !!tokens()[id];
 export const reweaveVow = (id, index) =>
   axios.post(`${API}/husbands/${id}/reweave`, { index, token: tokens()[id] || "" }, { timeout: 20000 }).then((r) => r.data);
 export const cardUrl = (id) => `${API}/husbands/${id}/card.png`;
-export const getCardBlob = (id) => axios.get(`${API}/husbands/${id}/card.jpg?v=12`, { responseType: "blob", timeout: 20000 }).then((r) => r.data);
+export const getCardBlob = (id) => axios.get(`${API}/husbands/${id}/card.jpg?v=13`, { responseType: "blob", timeout: 20000 }).then((r) => r.data);
 export const cachedHusband = (id) => cache[id];

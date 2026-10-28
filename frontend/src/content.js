@@ -218,16 +218,16 @@ export const INTERESTS = [
 
 // Strand X: my non-negotiables (up to five, plus my own). `vow` is his promise; `words` help check the vows keep it.
 export const MUSTHAVES = [
-  { id: "wants", label: "Actually wants a relationship", vow: "I'll choose us on purpose, every single day.", words: ["choose us", "relationship", "together", "stay"] },
+  { id: "wants", label: "Actually wants a relationship", vow: "I'll choose us on purpose, every single day.", words: ["choose us", "relationship"] },
   { id: "calm", label: "Handles a fight calmly", vow: "When we fight, I'll stay and talk it through.", words: ["fight", "argue", "talk it through", "calm"] },
-  { id: "available", label: "Emotionally available", vow: "I'll tell you what I'm feeling, even the clumsy parts.", words: ["feel", "heart", "open"] },
+  { id: "available", label: "Emotionally available", vow: "I'll tell you what I'm feeling, even the clumsy parts.", words: ["feeling", "feelings"] },
   { id: "honest", label: "Honest even when it's hard", vow: "I'll tell you the truth, even when it's hard to say.", words: ["truth", "honest"] },
-  { id: "loyal", label: "Loyal", vow: "I'll be on your side, in every room you walk into.", words: ["your side", "loyal", "only you"] },
+  { id: "loyal", label: "Loyal", vow: "I'll be on your side, in every room you walk into.", words: ["your side", "loyal"] },
   { id: "time", label: "Makes time for me", vow: "I'll always make time for you, and I'll guard it.", words: ["time for you", "make time", "make the time"] },
-  { id: "family", label: "Gets along with my family", vow: "I'll win over your family, one Sunday lunch at a time.", words: ["family", "your mom", "your mother"] },
+  { id: "family", label: "Gets along with my family", vow: "I'll win over your family, one Sunday lunch at a time.", words: ["your family"] },
   { id: "kids", label: "Wants kids someday", vow: "I'll want a little family with you, someday.", words: ["kids", "children", "little family"] },
-  { id: "space", label: "Respects my space", vow: "I'll give you room to breathe, and I'll still be here.", words: ["space", "room to breathe", "room"] },
-  { id: "ambitious", label: "Ambitious", vow: "I'll chase big things with you, and cheer yours louder.", words: ["dream", "big things", "chase"] },
+  { id: "space", label: "Respects my space", vow: "I'll give you room to breathe, and I'll still be here.", words: ["your space", "room to breathe"] },
+  { id: "ambitious", label: "Ambitious", vow: "I'll chase big things with you, and cheer yours louder.", words: ["big things", "ambition"] },
 ];
 
 // Demo "suitors on file" for the live check. Each has a playful reason for every must-have he fails.

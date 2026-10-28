@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../components/weave/ui";
 import { StrandHeader } from "../components/weave/StrandHeader";
@@ -20,6 +20,8 @@ export default function MustHaves() {
   const interests = (answers.interests || []).map(resolveInterest).filter(Boolean).map((i) => i.id);
   const [verdict, setVerdict] = useState(null);
   const timers = useRef([]);
+  useEffect(() => () => timers.current.forEach(clearTimeout), []);
+  const chosen = picks.filter((p) => !p.custom).length;
   const onChange = (next) => {
     const added = next.filter((p) => !picks.includes(p)).map(resolveMust).filter(Boolean);
     // a thread snaps for every suitor who fails the new must-have
@@ -30,14 +32,14 @@ export default function MustHaves() {
   const confirm = () => {
     play("harp");
     setVerdict(checkVerdict(musts));
-    setTimeout(() => document.querySelector("[data-testid=suitor-check-verdict]")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60);
-    setTimeout(() => nav("/bands"), 2400);
+    timers.current.push(setTimeout(() => document.querySelector("[data-testid=suitor-check-verdict]")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60));
+    timers.current.push(setTimeout(() => nav("/bands"), 2400));
   };
   const check = <SuitorCheck musts={musts} interests={interests} verdict={verdict} />;
   return (
     <Page>
       <StrandHeader n={10} back="/strand/9" />
-      <PickCard testid="musts-card" title={COPY.mustsTitle} sub={COPY.mustsSub} count={`${picks.length} of 5 chosen`}>
+      <PickCard testid="musts-card" title={COPY.mustsTitle} sub={COPY.mustsSub} count={`${chosen} of 5 chosen${picks.length > chosen ? " · plus my own" : ""}`}>
         <ChipPicker items={MUSTHAVES} picks={picks} onChange={onChange} max={5} prefix="must"
           placeholder={COPY.mustsOwnPlaceholder} ownLabel="Add my own must-have" />
       </PickCard>

@@ -25,12 +25,12 @@ function SuitorCard({ s, musts, interests }) {
       <div className="flex items-center gap-2">
         <Monogram letter={s.name[0]} />
         <div className="min-w-0">
-          <p className="f-cg font-bold text-[16px] leading-tight truncate">{s.name}</p>
+          <p className="f-cg font-bold text-[15px] leading-[1.1]">{s.name}</p>
           <p className="f-sc text-[10.5px] tracking-[0.08em] text-[color:#4A5641] leading-tight">{s.title} · {goalLabel(s.goal)}</p>
         </div>
       </div>
       <p className="f-cg italic text-[12.5px] text-[color:#4A3A2E] mt-1 leading-snug">
-        {s.interests.map((i, k) => <span key={i} className={interests.includes(i) ? "text-[color:#8A2F3A] font-semibold not-italic" : ""}>{k ? ", " : ""}{i === "walks" ? "nature walks" : i}</span>)}
+        {s.interests.map((i, k) => <span key={i}>{k ? ", " : ""}<span className={interests.includes(i) ? "text-[color:#8A2F3A] font-semibold not-italic" : ""}>{i === "walks" ? "nature walks" : i}</span></span>)}
       </p>
       {passes.length > 0 && (
         <p className="f-cg text-[13px] text-[color:#3E5A3A] mt-1.5 leading-snug" data-testid={`suitor-${s.id}-passes`}>
@@ -53,7 +53,7 @@ export function SuitorCheck({ musts, interests, verdict }) {
     <section className="w-full" data-testid="suitor-check" aria-live="polite">
       <div className="flex items-baseline justify-between mb-2">
         <p className="f-sc text-[14px] tracking-[0.1em] text-[color:var(--check-ink,#2A211B)]">{COPY.checkTitle}</p>
-        <p className="f-sc text-[12px] text-[color:var(--check-ink,#4A5641)]">{musts.length} of 5 checked</p>
+        <p className="f-sc text-[12px] text-[color:var(--check-ink,#4A5641)]">{musts.length} checked</p>
       </div>
       {!musts.length && <p className="f-cg italic text-[16px] text-[color:var(--check-ink,#4A3A2E)] mb-2" data-testid="suitor-check-empty">{COPY.checkEmpty}</p>}
       {allFail.map((m) => (
@@ -66,7 +66,7 @@ export function SuitorCheck({ musts, interests, verdict }) {
       </div>
       {verdict && (
         <motion.p initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} data-testid="suitor-check-verdict"
-          className="f-cg italic font-semibold text-center text-[19px] mt-3 text-[color:var(--check-ink,#6B2E36)]">{verdict}</motion.p>
+          className="lg:hidden f-cg italic font-semibold text-center text-[19px] mt-3 text-[color:var(--check-ink,#6B2E36)]">{verdict}</motion.p>
       )}
     </section>
   );

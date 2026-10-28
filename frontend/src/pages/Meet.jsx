@@ -110,7 +110,11 @@ export default function Meet({ isPublic = false }) {
         {COPY.biceps[0]}<span className="hl">{COPY.biceps[1]}</span>{COPY.biceps[2]}
       </p>
       <VowsCard h={h} setH={setH} canEdit={mine} />
-      {h.musts?.length > 0 && <MustHavesCard musts={h.musts} name={h.name} />}
+      {h.musts?.length > 0 && (
+        <motion.div initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : 5, duration: 0.5 }}>
+          <MustHavesCard musts={h.musts} name={h.name} />
+        </motion.div>
+      )}
       <motion.div className="space-y-3 mt-6" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : 5.4, duration: 0.5 }}>
         {isPublic ? (
           <Pill data-testid="weave-your-own-button" onClick={again}>{COPY.weaveOwn}</Pill>

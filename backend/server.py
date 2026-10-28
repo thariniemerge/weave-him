@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 12
+CARD_VERSION = 13
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -173,9 +173,12 @@ def keeps_must(vows: List[str], musts: List["Must"]) -> bool:
     return any(w in text for m in musts for w in m.words)
 
 
-# At least one vow must promise one of her must-haves; if none does, his first must-have vow takes slot four
-def keep_a_must(vows: List[str], musts: List["Must"]) -> List[str]:
-    if not musts or keeps_must(vows, musts) or not musts[0].vow:
+# At least one vow must promise one of her must-haves. Templates always carry her first must-have's vow;
+# LLM vows count only if they clearly use one of that must-have's own words.
+def keep_a_must(vows: List[str], musts: List["Must"], strict: bool = True) -> List[str]:
+    if not musts or not musts[0].vow or any(m.vow in vows for m in musts):
+        return vows
+    if not strict and keeps_must(vows, musts):
         return vows
     vows = list(vows)
     vows[min(3, len(vows) - 1)] = musts[0].vow
@@ -250,7 +253,7 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
     except ValueError:
         vows = None
     vows = [undash(clip(v, 200)) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
-    return keep_a_must(vows, p.musts) if vows_ok(vows) else None
+    return keep_a_must(vows, p.musts, strict=False) if vows_ok(vows) else None
 
 
 def render_for(h: "Husband", host: str = "") -> bytes:

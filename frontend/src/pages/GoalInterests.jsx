@@ -33,10 +33,11 @@ export function Interests() {
   const nav = useNavigate();
   const { answers, set } = useAnswers();
   const picks = answers.interests || [];
+  const chosen = picks.filter((p) => !p.custom).length;
   return (
     <Page>
       <StrandHeader n={9} back="/strand/8" />
-      <PickCard testid="interests-card" title={COPY.interestsTitle} sub={COPY.interestsSub} count={`${picks.length} of 5 chosen`}>
+      <PickCard testid="interests-card" title={COPY.interestsTitle} sub={COPY.interestsSub} count={`${chosen} of 5 chosen${picks.length > chosen ? " · plus my own" : ""}`}>
         <ChipPicker items={INTERESTS} picks={picks} onChange={(v) => set("interests", v)} max={5} prefix="interest"
           placeholder={COPY.interestsOwnPlaceholder} ownLabel="Add a thing I love" />
       </PickCard>

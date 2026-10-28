@@ -91,7 +91,7 @@ class TestHusbands:
     def test_get_404(self, s):
         assert s.get(f"{API}/husbands/nosuchid").status_code == 404
 
-    @pytest.mark.parametrize("n", [6, 8])
+    @pytest.mark.parametrize("n", [6, 25])
     def test_strand_count_validation(self, s, n):
         p = dict(PAYLOAD, strands=PAYLOAD["strands"][:6] + ["x"] * (n - 6))
         assert s.post(f"{API}/husbands", json=p).status_code == 422

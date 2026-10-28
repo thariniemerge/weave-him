@@ -5,11 +5,11 @@ import { play } from "../../lib/sound";
 
 const TINTS = ["var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)", "var(--peony)", "var(--wisteria)"];
 
-// Chips she can pick (up to `max`) plus one chip in her own words; picks are [{ id } | { custom }]
+// Chips she can pick (up to `max`) plus one chip in her own words on top; picks are [{ id } | { custom }]
 export function ChipPicker({ items, picks, onChange, max, prefix, placeholder, ownLabel }) {
   const custom = picks.find((p) => p.custom);
   const [draft, setDraft] = useState("");
-  const full = picks.length >= max;
+  const full = picks.filter((p) => !p.custom).length >= max;
   const has = (id) => picks.some((p) => p.id === id);
   const toggle = (id) => {
     play("pluck", { rate: has(id) ? 0.8 : 1.1 });
@@ -17,7 +17,7 @@ export function ChipPicker({ items, picks, onChange, max, prefix, placeholder, o
   };
   const addCustom = () => {
     const t = draft.trim();
-    if (!t || full) return;
+    if (!t) return;
     play("pluck"); onChange([...picks.filter((p) => !p.custom), { custom: t }]); setDraft("");
   };
   return (
@@ -39,10 +39,10 @@ export function ChipPicker({ items, picks, onChange, max, prefix, placeholder, o
       </div>
       {!custom && (
         <div className="mt-5 flex items-center gap-2 border-b-2 border-dotted border-[color:var(--peony)] pb-1">
-          <input data-testid={`${prefix}-custom-input`} maxLength={50} value={draft} disabled={full} placeholder={placeholder}
+          <input data-testid={`${prefix}-custom-input`} maxLength={50} value={draft} placeholder={placeholder}
             onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustom()} aria-label={ownLabel}
             className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#5E5A4E] disabled:opacity-40" />
-          <button data-testid={`${prefix}-custom-add`} onClick={addCustom} disabled={!draft.trim() || full} aria-label={ownLabel}
+          <button data-testid={`${prefix}-custom-add`} onClick={addCustom} disabled={!draft.trim()} aria-label={ownLabel}
             className="w-11 h-11 rounded-full flex items-center justify-center bg-[color:var(--wisteria)] border border-[color:var(--gold)] disabled:opacity-40">
             <Plus className="w-5 h-5" />
           </button>

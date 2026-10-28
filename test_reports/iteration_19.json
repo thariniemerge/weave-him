@@ -1,0 +1,53 @@
+{
+  "summary": "Tested the new Strands VIII-X (goal, interests, must-haves with the live Suitors on file check), the backend musts, goal and interests fields, Meet's must-haves checklist, the X labels and card v12. I ran the full phone flow (390x844) from /strand/1 to /meet/{id} and checked desktop (1280x800) on strands 8 and 10, the verdicts, the Bands back link, the redirects, /h/{id}, a legacy husband and the 10-step weaving sequence. Nearly everything works as specified. I found 2 medium logic issues (a husband name can match a suitor's first name, and the must-have vow check can be satisfied by accident) and some minor ones.",
+  "backend_issues": {
+    "critical": [],
+    "minor": [
+      {"endpoint": "POST /api/husbands (keep_a_must/keeps_must)", "issue": "The must-have check is a loose substring match over all vows, so a vow can count as a must-have promise by accident. Repro: musts=[calm, family] and remembers=mom. The template vow \"I'll remember your mom's birthday\" contains the family word 'your mom', so keeps_must returns True and the calm vow 'When we fight, I'll stay and talk it through.' never appears, even though calm was her first must-have (husband w2wqjgv7). Generic words like 'room', 'feel', 'open', 'stay', 'together' and 'heart' can also match template vows. Suggest checking only vows that come from her must-haves, or always placing musts[0].vow unless a vow already contains the full must vow."},
+      {"endpoint": "backend/content.py NAMES", "issue": "4 of the 12 husband names (Silas, Ambrose, Edmund, Percival) match suitor first names (Silas Thorne, Ambrose Vale, Edmund Pryce, Percival Finch). Seen in testing: the husband was named 'Silas' right after 'Silas: says he's not ready...'. This contradicts 'her husband is NOT a suitor'."},
+      {"endpoint": "card.jpg v12", "issue": "The card still prints '07 Strands' because it uses len(strands), while the app now says ten strands ('Ten strands' on Meet, 'of X'). This may be intended, but it reads as inconsistent."}
+    ]
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "ChipPicker (strands 9 and 10)", "issue": "The custom chip counts toward max=5, so 5 chips plus 1 custom is impossible. With 5 chips picked, the custom input is disabled, and the count still reads '5 of 5' after a custom is added. The spec says up to 5 chips + 1 custom.", "selector": "[data-testid=interest-custom-input], [data-testid=must-custom-input]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Strand 10 suitor cards (phone and desktop)", "issues": ["Long names are cut off: 'Barnaby Ash...', 'Rafe Merriw...' and on desktop 'Edmund Pry...'. Allow 2 lines or use a smaller font.", "The highlighted interest span includes the leading comma, so ', coffee' shows a rose-coloured comma."]},
+      {"screen": "Strand 10 desktop verdict", "issue_note": "", "issues": ["The verdict text appears twice, once in the left panel (suitor-check-verdict) and once above the CTA (musts-verdict)."]}
+    ]
+  },
+  "passed_checks": [
+    "Strands 1-7 work as before; the strand 7 CTA reads 'Next: what I'm looking for'; 10 hearts; strand-roman shows I/X to X/X",
+    "Strand 8: next-interests-button is disabled until a goal is picked; Strand 9: max 5, extra chips disabled, custom chip added; Strand 10: weave button disabled while empty, suitor-check-empty shown",
+    "Live check: suitor-poet-no-calm reads 'Ambrose: goes quiet for three days after a fight.'; time fails exactly poet, woodsman, scholar, captain; suitor-check-none-family and none-custom notes appear; unpicking a chip removes its tags; the passes line is correct; picked interests are highlighted",
+    "Verdicts: 'None of them had it all. So we'll weave one who does.'; with only wants picked: 'Ambrose came close...'; then /bands after about 2.4s",
+    "The Bands back link goes to /strand/10; /bands with no musts and /weaving with no goal redirect to /strand/1",
+    "Weaving goes from 'Strand I of X' to 'Strand X of X', then /meet; desktop panel shows 'VII of X strands woven'; on strand 10 the desktop left panel shows only the suitor check (no medallion)",
+    "musts-checklist lists every must-have with a ✓ on /meet and /h; a legacy husband (no musts) shows no checklist",
+    "API returns and persists goal, interests and musts; vows include the must vow for calm, time, available, space, wants and custom",
+    "card.jpg?v=12 is a 1080x1920 JPEG and the portrait oval fills under the rim with no pale gap",
+    "No horizontal overflow at 390px on strands 8-10; no em dashes on Meet; no console or page errors"
+  ],
+  "test_report_links": ["/app/backend/tests/test_iter19_musts.py", "/app/test_reports/pytest/iter19.xml"],
+  "action_items": [
+    "Make keep_a_must stricter so a remember or template vow (e.g. 'your mom') does not count as keeping a must-have; make sure her first must-have's vow appears (e.g. the calm vow when 'Handles a fight calmly' is picked)",
+    "Remove the suitor first names (Silas, Ambrose, Edmund, Percival) from the husband NAMES list, or rename the suitors",
+    "Optional: let the custom chip sit outside max=5 (spec: 5 + 1 custom)",
+    "Optional: fix suitor name truncation and the highlighted leading comma; decide whether the duplicate desktop verdict is intended; decide whether the card should say 10 strands",
+    "Update the stale test test_weave_api.py::test_strand_count_validation[8] (8 strands are valid now)"
+  ],
+  "critical_code_review_comments": [
+    "server.py keeps_must: substring matching over every vow's text with short generic words gives false positives",
+    "ChipPicker: `full = picks.length >= max` includes the custom pick",
+    "MustHaves.jsx: the confirm setTimeout(nav) is never cleared on unmount; the timers ref for snaps is never cleared either (minor leak and possible stray navigation)"
+  ],
+  "updated_files": ["/app/backend/tests/test_iter19_musts.py"],
+  "success_rate": {"backend": "92% (1 strict-vow test failed on family; 2 old-test failures are stale or caused by a parallel-run race)", "frontend": "95%"},
+  "seed_data_creation": "Created husbands through the API and UI: w2wqjgv7 (calm, family, custom), 4g56vv65 (time), bhwtp9vn (legacy, no musts)",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run pytest test_iter19_musts.py. To start at a given strand, inject sessionStorage 'weave-him-answers'. test_weave_api stats test is flaky under xdist; strand_count [8] is stale.",
+  "rca of the issue": "Calm vow missing: keeps_must joins all vows and looks for any must's words. The remember 'mom' template vow contains 'your mom', which is one of the family must's words, so keep_a_must returns early and the calm vow is never inserted."
+}
