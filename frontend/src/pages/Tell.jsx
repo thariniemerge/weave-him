@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ChevronLeft, MessageCircle } from "lucide-react";
 import { toast } from "sonner";
 import { Page, Art, Chip } from "../components/weave/ui";
-import { COPY, RECIPIENTS } from "../content";
+import { COPY, RECIPIENTS, FAMILY_ONLY, LETTER_STRANDS, MAX_LETTER_STRANDS } from "../content";
 import { cachedHusband, getHusband, shareLink } from "../lib/api";
 import { copyText } from "../lib/card";
 import { play } from "../lib/sound";
@@ -14,8 +14,18 @@ import { Cameo } from "./Meet";
 const STRAND_TINTS = ["var(--peony)", "var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)"];
 const greetingFor = (to, his) => {
   const n = his.trim();
-  if (!n) return to.greeting;
-  return to.id === "partner" ? `My love, ${n},` : `Dear ${n},`;
+  return n ? to.named(n) : to.greeting;
+};
+// her own strands first (no family-only ones), then the fixed ones for this recipient; the fixed ones always fit
+const strandsFor = (threads, to) => {
+  const own = threads.filter((t) => !FAMILY_ONLY.includes(t.label));
+  const has = (l) => own.some((t) => t.label === l);
+  const fixed = LETTER_STRANDS.filter((t) => !t.to || t.to.includes(to.id)).slice(0, MAX_LETTER_STRANDS);
+  const always = new Set(fixed.map((t) => t.label));
+  const room = MAX_LETTER_STRANDS - fixed.filter((t) => !has(t.label)).length;
+  let extra = room - own.filter((t) => always.has(t.label)).length;
+  const mine = own.filter((t) => always.has(t.label) || extra-- > 0);
+  return [...mine, ...fixed.filter((t) => !has(t.label))];
 };
 const isMobile = () => /iphone|ipad|android|mobile/i.test(navigator.userAgent);
 
@@ -48,7 +58,13 @@ export default function Tell() {
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => nav("/")); }, [id, h, nav]);
   if (!h) return <Page className="items-center justify-center"><p className="f-cg italic text-[20px]">Finding his strands…</p></Page>;
 
-  const sentence = h.threads[strand]?.sentence || "";
+  const threads = strandsFor(h.threads || [], to);
+  const sentence = threads[strand]?.sentence || "";
+  const pickTo = (r) => {
+    const label = threads[strand]?.label;
+    const i = strandsFor(h.threads || [], r).findIndex((t) => t.label === label);
+    setTo(r); setStrand(Math.max(0, i));
+  };
   const link = shareLink(h.id);
   const greeting = greetingFor(to, his);
   const body = [greeting, COPY.letterBody(sentence).join(""), COPY.withLove, name.trim()].filter(Boolean).join("\n");
@@ -77,15 +93,15 @@ export default function Tell() {
       <p className="f-sc text-[13px] mt-5 mb-2">{COPY.sendTo}</p>
       <div className="flex flex-wrap gap-2.5">
         {RECIPIENTS.map((r) => (
-          <Chip key={r.id} data-testid={`recipient-${r.id}`} active={to.id === r.id} tint={r.tint} onClick={() => { play("pluck"); setTo(r); }}
-            className={`f-body font-semibold text-[17px] min-w-[96px] ${to.id === r.id && r.id === "partner" ? "text-[color:var(--paper)]" : ""}`}>
+          <Chip key={r.id} data-testid={`recipient-${r.id}`} active={to.id === r.id} tint={r.tint} onClick={() => { play("pluck"); pickTo(r); }}
+            className={`f-body font-semibold text-[17px] min-w-[96px] ${to.id === r.id && r.id === "so" ? "text-[color:var(--paper)]" : ""}`}>
             {r.label}
           </Chip>
         ))}
       </div>
       <p className="f-sc text-[13px] mt-5 mb-2">{COPY.strandGave}</p>
       <div className="flex flex-wrap gap-2.5">
-        {h.threads.map((t, i) => (
+        {threads.map((t, i) => (
           <Chip key={i} data-testid={`strand-chip-${i}`} active={strand === i} tint={STRAND_TINTS[i % 5]} onClick={() => { play("pluck", { rate: 0.9 + (i % 5) * 0.07 }); setStrand(i); }}
             className="f-cg italic text-[17px]">
             <span className="flex items-center gap-2">{strand === i && <Art name="heart" className="w-5 h-5" />}{t.label}</span>

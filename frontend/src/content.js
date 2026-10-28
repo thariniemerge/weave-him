@@ -106,11 +106,28 @@ export const COPY = {
 };
 
 export const RECIPIENTS = [
-  { id: "partner", label: "Partner", greeting: "My love,", tint: "#6B2E36" },
-  { id: "dad", label: "Dad", greeting: "Dear Dad,", tint: "#C9CEC1" },
-  { id: "brother", label: "Brother", greeting: "Dear brother,", tint: "#C9CEC1" },
-  { id: "friend", label: "Best friend", greeting: "Dearest friend,", tint: "#D8C08A" },
+  { id: "so", label: "Significant other", greeting: "My love,", named: (n) => `My love, ${n},`, tint: "#6B2E36" },
+  { id: "crush", label: "Crush", greeting: "Hey you,", named: (n) => `Hey you, ${n},`, tint: "#C9CEC1" },
+  { id: "friend", label: "Best friend", greeting: "Dear bestie,", named: (n) => `Dear bestie, ${n},`, tint: "#D8C08A" },
+  { id: "ex", label: "Ex", greeting: "To whom it may concern,", named: (n) => `To whom it may concern (${n}),`, tint: "#C9CEC1" },
 ];
+
+// "The strand he gave me": her own strands (minus family-only ones), then fixed ones per recipient, at most 6
+export const FAMILY_ONLY = ["Mom's birthday", "My childhood pet"];
+const T = (label, sentence, to) => ({ label, sentence, to });
+export const LETTER_STRANDS = [
+  T("Coffee, unasked", "you bring me coffee before I even think to ask"),
+  T("Truly sees me", "you make me feel truly seen"),
+  T("Texts back, promptly", "you text me back before I've even put my phone down", ["crush"]),
+  T("Still knows my order", "you still know my order, years later", ["ex"]),
+  T("Never really left", "you never really left, not completely", ["ex"]),
+  T("Left a thread behind", "you left a thread behind, and I never cut it", ["ex"]),
+  T("Remembers how we met", "you still remember exactly how we met", ["crush"]),
+  T("Remembers how we met", "you remembered exactly how we met", ["ex"]),
+  T("Says it plainly", "you say what you mean, so I never have to guess", ["crush"]),
+  T("Says it plainly", "you said what you meant, so I never had to guess", ["ex"]),
+];
+export const MAX_LETTER_STRANDS = 6;
 
 // Single-choice strands. strand = tag label, tag = "so far" chip, band = band word, sentence = letter form
 export const QUESTIONS = [
