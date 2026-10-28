@@ -1,9 +1,9 @@
 // Turns his share card into a 6s story video: he breathes and plays his own expression frames
-// (neutral, natural blink, wink, heart eyes, neutral), one frame at a time. The frames are used as provided, never redrawn.
+// (neutral, natural blink, blush, shy, neutral), one frame at a time. The frames are used as provided, never redrawn.
 import { portraitSrc, frameSrc } from "../content";
 import { onFrame } from "./perf";
 
-const FACES = ["neutral", "blink_half", "blink", "wink", "heart_eyes"];
+const FACES = ["neutral", "blink_half", "blink", "blush", "shy"];
 // the blink is timed in video frames with hard cuts: half 2 frames, closed 3, half 2 (about 230ms at 30fps)
 const BLINK_AT = 27;
 
@@ -34,12 +34,12 @@ async function prepare(portrait) {
 }
 
 const ramp = (t, a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
-// neutral, blink, wink (0.9s hold), heart eyes (1.8s hold), neutral: weights of each frame over the neutral one
+// neutral, blink, blush (0.9s hold), shy (1.8s hold), neutral: weights of each frame over the neutral one
 export function expressionAt(t) {
-  const wink = ramp(t, 1.5, 1.8) * (1 - ramp(t, 2.7, 3.05));
-  const heart_eyes = ramp(t, 3.15, 3.45) * (1 - ramp(t, 5.25, 5.6));
+  const blush = ramp(t, 1.5, 1.8) * (1 - ramp(t, 2.7, 3.05));
+  const shy = ramp(t, 3.15, 3.45) * (1 - ramp(t, 5.25, 5.6));
   const f = Math.floor(t * FPS + 1e-6) - BLINK_AT;
-  return { blink_half: (f >= 0 && f < 2) || (f >= 5 && f < 7) ? 1 : 0, blink: f >= 2 && f < 5 ? 1 : 0, wink, heart_eyes };
+  return { blink_half: (f >= 0 && f < 2) || (f >= 5 && f < 7) ? 1 : 0, blink: f >= 2 && f < 5 ? 1 : 0, blush, shy };
 }
 
 function frame(c, card, L, t) {
@@ -55,7 +55,7 @@ function frame(c, card, L, t) {
   x.drawImage(L.bg, FIG.x, FIG.y, FIG.w, FIG.h);
   x.drawImage(L.faces.neutral, FIG.x, FIG.y, FIG.w, FIG.h);
   const w = expressionAt(t);
-  ["wink", "heart_eyes", "blink_half", "blink"].forEach((e) => { if (w[e] > 0) { x.globalAlpha = w[e]; x.drawImage(L.faces[e], FIG.x, FIG.y, FIG.w, FIG.h); } });
+  ["blush", "shy", "blink_half", "blink"].forEach((e) => { if (w[e] > 0) { x.globalAlpha = w[e]; x.drawImage(L.faces[e], FIG.x, FIG.y, FIG.w, FIG.h); } });
   x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1;
   x.globalCompositeOperation = "destination-in"; x.drawImage(L.mask, 0, 0);
   c.drawImage(L.scratch, 0, 0);

@@ -237,10 +237,6 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 .mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; filter: drop-shadow(0 0 3px rgba(224,74,90,.65)); }
 .mk-pulse [id$="-heart"] > * { transform-box: fill-box; transform-origin: center; animation: mk-pulse .9s ease-in-out .9s; }
 @keyframes mk-pulse { 40% { transform: scale(1.45); } 70% { transform: scale(.95); } }
-.mk-hearteyes [id$="-float-brooch"] .mk-fl, .mk-kiss [id$="-lips-at"] .mk-fl { animation: mk-rise 1.5s ease-out forwards; }
-.mk-hearteyes [id$="-float-brooch"] > :nth-child(2) .mk-fl, .mk-kiss [id$="-lips-at"] > :nth-child(2) .mk-fl { animation-delay: .2s; }
-.mk-hearteyes [id$="-float-brooch"] > :nth-child(3) .mk-fl, .mk-kiss [id$="-lips-at"] > :nth-child(3) .mk-fl { animation-delay: .4s; }
-.mk-kiss [id$="-lips-at"] > :nth-child(4) .mk-fl { animation-delay: .55s; }
 @keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -110px) scale(calc(var(--s) * 1.2)); } }
 @media (prefers-reduced-motion: reduce) { .mk-fl, .mk-pulse [id$="-heart"] > *, .medallion [id$="-breath"] { animation: none !important; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }
 

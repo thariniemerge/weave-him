@@ -86,7 +86,7 @@ export const VowsCard = ({ h, setH, canEdit }) => {
     try {
       const nh = await reweaveVow(h.id, i);
       setH(nh);
-      emote("hearts");
+      emote("blush");
       if (nh.reweaves_left === 0) setOpen(i);
     } catch (e) {
       if (e.response?.status === 409) { setH({ ...h, reweaves_left: 0 }); toast(COPY.outOfWillow); }

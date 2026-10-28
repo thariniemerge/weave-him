@@ -26,7 +26,7 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
       <div className="band top">
         <div className="t-row">
           <img className="t-sun" src={A("gold-sun.webp")} alt="" />
-          <div className="t-title">Woven to Order</div>
+          <div className="t-title">Hand-Woven With Love</div>
           <img className="t-sun t-sun-r" src={A("gold-sun.webp")} alt="" />
         </div>
         <div className="t-sub">Commissioned from the village basketmaker</div>

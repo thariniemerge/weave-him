@@ -236,9 +236,10 @@ export const PORTRAIT_V = 8;
 export const portraitSrc = (slug, kind = "", full = false) =>
   `/assets/husbands/${slug}${kind}${!full && kind && isPhone() ? "-m.webp" : kind === "-bg" ? ".jpg" : ".webp"}?v=${PORTRAIT_V}`;
 // His expression frames (aligned, same box as the portrait). Hold = seconds at full strength.
-export const EXPRESSIONS = ["neutral", "blink_half", "blink", "wink", "blush", "heart_eyes", "kiss", "shy"];
-export const HOLD = { wink: 0.9, blush: 1.8, heart_eyes: 1.8, kiss: 1.5, shy: 1.8 };
-export const TAP_ORDER = ["wink", "blush", "heart_eyes", "kiss", "shy"];
+// Only blush and shy play (no wink, heart eyes or kiss); blinks are natural, not an emotion
+export const EXPRESSIONS = ["neutral", "blink_half", "blink", "blush", "shy"];
+export const HOLD = { blush: 1.8, shy: 1.8 };
+export const TAP_ORDER = ["blush", "shy"];
 export const frameSrc = (slug, e, full = false) => `/assets/husbands/${slug}/${!full && isPhone() ? "m/" : ""}${e}.webp?v=${PORTRAIT_V}`;
 export const lipsOf = (slug) => (PORTRAITS.find((p) => p.slug === slug) || PORTRAITS[0]).lips;
 

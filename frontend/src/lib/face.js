@@ -4,10 +4,9 @@ import { EXPRESSIONS, HOLD, TAP_ORDER, frameSrc } from "../content";
 // His emotions are the user's aligned expression frames, crossfaded over the neutral one. Nothing is drawn.
 const IN = 300, OUT = 350, BLINK_HALF = 45, BLINK = 90;
 const MOODS = TAP_ORDER;
-const ALIAS = { hearts: "heart_eyes" };
 
 const subs = new Set();
-export const emote = (name) => subs.forEach((f) => f(ALIAS[name] || name));
+export const emote = (name) => subs.forEach((f) => f(name));
 
 let seq = 0;
 // Scope every id so several medallions can live on one page
@@ -80,8 +79,6 @@ export function useExpressions(wrap, layers, { ambient = false, reduce = false }
     const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
     set(L[name], 1, fade);
     wrap.current?.setAttribute("data-emotion", name);
-    if (!reduce && name === "kiss") flash(wrap.current, "mk-kiss");
-    if (!reduce && name === "heart_eyes") flash(wrap.current, "mk-hearteyes");
     later(() => {
       set(L[name], 0, back);
       later(() => { s.cur = null; busy(false); wrap.current?.setAttribute("data-emotion", "neutral"); }, back);

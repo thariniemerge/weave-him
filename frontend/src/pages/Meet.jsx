@@ -78,7 +78,7 @@ export default function Meet({ isPublic = false }) {
   useEffect(() => {
     if (!h?.id || !framesReady) return;
     play("harp"); duckMusic();
-    const t = setTimeout(() => emote("wink"), 1000);
+    const t = setTimeout(() => emote("blush"), 1000);
     return () => clearTimeout(t);
   }, [h?.id, framesReady]);
 
@@ -141,7 +141,7 @@ export default function Meet({ isPublic = false }) {
           <>
             <CardPreview url={url} name={h.name} onOpen={() => setReveal(true)} />
             <p data-testid="village-talking" className="f-cg italic text-center text-[15px] text-[color:var(--rose)] opacity-80">{COPY.villageTalking}</p>
-            <button data-testid="share-him-button" onClick={() => { emote("wink"); setReveal(true); }} className="pill pill-primary">
+            <button data-testid="share-him-button" onClick={() => { emote("blush"); setReveal(true); }} className="pill pill-primary">
               <Share className="w-5 h-5" strokeWidth={1.8} /><span>{COPY.share}</span>
             </button>
             <button data-testid="in-your-life-button" onClick={() => { nav(`/tell/${h.id}`); }} className="pill pill-secondary">{COPY.inLife}</button>
