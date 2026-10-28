@@ -61,17 +61,20 @@ function flash(el, cls, ms = 1700) {
 export function useExpressions(wrap, layers, { ambient = false, reduce = false }) {
   const st = useRef({ cur: null, timers: [], i: 0 });
   const later = (fn, ms) => st.current.timers.push(setTimeout(fn, ms));
+  // the frame stack is promoted only while an expression plays
+  const busy = (on) => { const g = Object.values(layers.current || {})[0]?.parentNode; if (g) g.style.willChange = on ? "opacity" : ""; };
   const set = (el, o, ms) => { el.style.transition = ms ? `opacity ${ms}ms ease` : "none"; el.style.opacity = o; };
   const play = (name) => {
     const L = layers.current, s = st.current;
     if (!L || !L[name] || s.cur) return false;
     s.cur = name;
+    busy(true);
     if (name === "blink") {
       // natural blink, hard cuts with no crossfade: half (45ms), closed (90ms), half (45ms), open
       set(L.blink_half, 1, 0);
       later(() => { set(L.blink, 1, 0); set(L.blink_half, 0, 0); }, BLINK_HALF);
       later(() => { set(L.blink_half, 1, 0); set(L.blink, 0, 0); }, BLINK_HALF + BLINK);
-      later(() => { set(L.blink_half, 0, 0); s.cur = null; }, BLINK_HALF * 2 + BLINK);
+      later(() => { set(L.blink_half, 0, 0); s.cur = null; busy(false); }, BLINK_HALF * 2 + BLINK);
       return true;
     }
     const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
@@ -81,7 +84,7 @@ export function useExpressions(wrap, layers, { ambient = false, reduce = false }
     if (!reduce && name === "heart_eyes") flash(wrap.current, "mk-hearteyes");
     later(() => {
       set(L[name], 0, back);
-      later(() => { s.cur = null; wrap.current?.setAttribute("data-emotion", "neutral"); }, back);
+      later(() => { s.cur = null; busy(false); wrap.current?.setAttribute("data-emotion", "neutral"); }, back);
     }, fade + HOLD[name] * 1000);
     return true;
   };

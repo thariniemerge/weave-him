@@ -135,6 +135,6 @@ export function Medallion({ name, band, portrait, woven = false, alive: wantAliv
 // Share card: his full-background painting filling the card's oval (bottom-anchored)
 export const CardPortrait = ({ className, portrait }) => (
   <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%", clipPath: "ellipse(50% 50% at 50% 50%)", WebkitClipPath: "ellipse(50% 50% at 50% 50%)" }}>
-    <img src={portraitSrc(portrait || PORTRAITS[0].slug, "-bg")} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 100%", display: "block" }} />
+    <img src={portraitSrc(portrait || PORTRAITS[0].slug, "-bg", true)} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 100%", display: "block" }} />
   </div>
 );

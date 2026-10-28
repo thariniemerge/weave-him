@@ -8,7 +8,7 @@ from typing import List, Dict, Optional
 from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
-import os, re, json, random, secrets, hashlib, logging, asyncio, uuid
+import os, re, json, random, secrets, hashlib, logging, asyncio, uuid, time
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 from content import PORTRAITS, NAMES, VOW_TEMPLATES, GENERIC_VOWS, BANNED, SYSTEM_PROMPT, REWEAVE_PROMPT
@@ -28,6 +28,7 @@ MAX_REWEAVES = 3
 CARD_VERSION = 16
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
+LLM_MODEL = "claude-haiku-4-5-20251001"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
 ID_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789"
 
@@ -84,6 +85,8 @@ class HusbandIn(BaseModel):
     goal: str = Field(default="", max_length=40)
     interests: List[str] = Field(default=[], max_length=6)
     musts: List[Must] = Field(default=[], max_length=6)
+    draft: str = Field(default="", max_length=40)
+    fast: bool = False
 
     @field_validator("strands", "remembers", "band", "remember_keys")
     @classmethod
@@ -137,6 +140,11 @@ class Husband(BaseModel):
 
 class HusbandCreated(Husband):
     edit_token: str
+
+
+class UpgradeIn(BaseModel):
+    token: str = Field(max_length=64)
+    draft: str = Field(max_length=40)
 
 
 class ReweaveIn(BaseModel):
@@ -220,7 +228,7 @@ async def llm_text(system: str, msg: str) -> Optional[str]:
     async def attempt():
         for i in range(3):
             chat = LlmChat(api_key=key, session_id=f"vows-{uuid.uuid4()}", system_message=system).with_model(
-                "anthropic", "claude-sonnet-5-5")
+                "anthropic", LLM_MODEL).with_params(max_tokens=250, extra_body={"thinking": {"type": "disabled"}})
             try:
                 return await chat.send_message(UserMessage(text=msg))
             except Exception as e:
@@ -228,7 +236,11 @@ async def llm_text(system: str, msg: str) -> Optional[str]:
                     raise
                 await asyncio.sleep(0.6 * (i + 1))
 
-    return await asyncio.wait_for(attempt(), timeout=8)
+    t = time.perf_counter()
+    try:
+        return await asyncio.wait_for(attempt(), timeout=8)
+    finally:
+        logger.info("LLM %s call took %d ms", LLM_MODEL, (time.perf_counter() - t) * 1000)
 
 
 def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interests=(), band=()) -> str:
@@ -247,8 +259,16 @@ def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interest
             slider_words(sliders) + ("\n" + extra if extra else ""))
 
 
+def brief_of(p: HusbandIn) -> str:
+    return strands_brief(p.strands, p.remembers, p.feel, p.sliders, p.musts, p.goal, p.interests, p.band)
+
+
+def vow_sig(p: HusbandIn) -> str:
+    return hashlib.sha256(brief_of(p).encode()).hexdigest()
+
+
 async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
-    raw = await llm_text(SYSTEM_PROMPT, strands_brief(p.strands, p.remembers, p.feel, p.sliders, p.musts, p.goal, p.interests, p.band))
+    raw = await llm_text(SYSTEM_PROMPT, brief_of(p))
     if not raw:
         return None
     start = raw.find("[")
@@ -257,6 +277,13 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
     except ValueError:
         vows = None
     vows = [undash(clip(v, 200)) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
+    # one stray line (too long, or not starting "I'll") is swapped for a template vow instead of losing all five
+    if isinstance(vows, list) and len(vows) == 5 and sum(not vow_ok(v) for v in vows) == 1:
+        spare = [t for t in template_vows(p) if t not in vows]
+        if spare:
+            vows = [v if vow_ok(v) else spare[0] for v in vows]
+    if not vows_ok(vows):
+        logger.warning("LLM vows rejected: %r", raw[:600])
     return keep_a_must(vows, p.musts, strict=False) if vows_ok(vows) else None
 
 
@@ -299,11 +326,33 @@ async def stats(since: Optional[str] = None):
     return {"total": await db.husbands.count_documents({}), "today": today}
 
 
+# Vows are written ahead (while she stitches his bands) and picked up by id when he is woven
+@api.post("/vows/draft")
+async def draft_vows(p: HusbandIn):
+    t = time.perf_counter()
+    try:
+        vows = await llm_vows(p)
+    except Exception as e:
+        logger.warning("LLM vows failed: %r", e)
+        vows = None
+    ms = int((time.perf_counter() - t) * 1000)
+    if not vows:
+        return {"draft": None, "ms": ms}
+    did = uuid.uuid4().hex
+    await db.vow_drafts.insert_one({"id": did, "sig": vow_sig(p), "vows": vows, "at": datetime.now(timezone.utc), "created_at": datetime.now(timezone.utc).isoformat()})
+    return {"draft": did, "ms": ms}
+
+
+async def draft_for(did: str, sig: str) -> Optional[List[str]]:
+    d = await db.vow_drafts.find_one({"id": did, "sig": sig}, {"_id": 0, "vows": 1}) if did else None
+    return d["vows"] if d else None
+
+
 @api.post("/husbands", response_model=HusbandCreated)
 async def create_husband(p: HusbandIn, request: Request):
     vows, source = None, "llm"
     try:
-        vows = await llm_vows(p)
+        vows = await draft_for(p.draft, vow_sig(p)) if (p.draft or p.fast) else await llm_vows(p)
     except Exception as e:
         logger.warning("LLM vows failed: %r", e)
     if not vows:
@@ -319,7 +368,7 @@ async def create_husband(p: HusbandIn, request: Request):
         portrait=p.portrait if p.portrait in PORTRAITS else PORTRAITS[0],
     )
     token = secrets.token_urlsafe(18)
-    await db.husbands.insert_one({**h.to_mongo(), "edit_token_hash": hashlib.sha256(token.encode()).hexdigest()})
+    await db.husbands.insert_one({**h.to_mongo(), "edit_token_hash": hashlib.sha256(token.encode()).hexdigest(), "vow_sig": vow_sig(p)})
     asyncio.create_task(_bg_card(h, req_host(request)))  # don't hold the reveal for the card
     return HusbandCreated(**h.model_dump(), edit_token=token)
 
@@ -348,6 +397,25 @@ def reweave_fallback(h: Husband) -> List[str]:
     pool = [VOW_TEMPLATES[k] for k in keys if k in VOW_TEMPLATES] + list(VOW_TEMPLATES.values()) + GENERIC_VOWS
     used = {w for v in h.vows for w in re.findall(r"[a-z']{5,}", v.lower())}
     return [v for v in dict.fromkeys(pool) if v not in h.vows and not (set(re.findall(r"[a-z']{5,}", v.lower())) - {"always", "never"}) & used]
+
+
+# Late AI vows replace the template ones, only before any reweave
+@api.post("/husbands/{hid}/vows", response_model=Husband)
+async def upgrade_vows(hid: str, body: UpgradeIn):
+    doc = await db.husbands.find_one({"id": hid}, {"_id": 0})
+    if not doc:
+        raise HTTPException(404, "No husband by that thread")
+    if doc.get("edit_token_hash") != hashlib.sha256(body.token.encode()).hexdigest():
+        raise HTTPException(403, "Only his commissioner may change his vows")
+    vows = await draft_for(body.draft, doc.get("vow_sig", ""))
+    if not vows:
+        raise HTTPException(404, "No such draft")
+    res = await db.husbands.find_one_and_update(
+        {"id": hid, "vows_source": "template", "reweaves": {"$in": [0, None]}},
+        {"$set": {"vows": vows, "vows_source": "llm"}}, return_document=True, projection={"_id": 0})
+    if not res:
+        raise HTTPException(409, "His vows are already written")
+    return Husband.from_mongo(res)
 
 
 @api.post("/husbands/{hid}/reweave", response_model=Husband)
@@ -439,6 +507,7 @@ app.add_middleware(CORSMiddleware, allow_credentials=True,
 async def startup():
     await db.husbands.create_index("id", unique=True)
     await db.cards.create_index("id", unique=True)
+    await db.vow_drafts.create_index("at", expireAfterSeconds=3600)
 
 
 @app.on_event("shutdown")

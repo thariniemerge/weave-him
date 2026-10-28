@@ -9,6 +9,7 @@ import { StrandCTA } from "../components/weave/StrandCTA";
 import { useAnswers } from "../lib/store";
 import { allBandLabels, isComplete, pickPortrait } from "../lib/weave";
 import { COPY } from "../content";
+import { vowsFor } from "../lib/vowDraft";
 
 const MAX = 3;
 
@@ -19,6 +20,13 @@ export default function Bands() {
   const labels = ready ? allBandLabels(answers) : [];
   const picked = (answers.bandPick || labels.slice(0, MAX)).filter((l) => labels.includes(l));
   useEffect(() => { if (ready && !answers.bandPick) set("bandPick", labels.slice(0, MAX)); }); // eslint-disable-line react-hooks/exhaustive-deps
+  // her band picks feed the vows too: rewrite them in the background once she settles
+  const pickKey = picked.join("|");
+  useEffect(() => {
+    if (!ready || !picked.length) return;
+    const t = setTimeout(() => vowsFor(answers), 700);
+    return () => clearTimeout(t);
+  }, [pickKey]); // eslint-disable-line react-hooks/exhaustive-deps
   if (!ready) return <Navigate to="/strand/1" replace />;
 
   const toggle = (l) => {

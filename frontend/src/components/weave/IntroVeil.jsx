@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { holdMusic, isMuted } from "../../lib/sound";
+import { maxDpr, onFrame } from "../../lib/perf";
 import "./intro.css";
 
 // Painting, particles and sound ported as-is from weave-him-intro-prototype.html
 function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const LEAF=['#3E4A37','#4A5641','#56634A','#65734F','#7E8E5E','#9AA38A'];
 const DEEP=['#26302A','#2E3A30','#34402F'];
-const DPR=()=>Math.min(2,window.devicePixelRatio||1);
+const DPR=maxDpr;
 function setup(c,W,H){const d=DPR();c.width=Math.round(W*d);c.height=Math.round(H*d);const x=c.getContext('2d');x.setTransform(d,0,0,d,0,0);x.clearRect(0,0,W,H);return x}
 
 function leaf(x,ctx,px,py,ang,len,wid,col,rib){
@@ -106,9 +107,9 @@ function burst(fx,state){
       else{fctx.beginPath();fctx.moveTo(0,0);fctx.bezierCurveTo(p.len*.32,-p.len*.25,p.len*.3,-p.len*.75,0,-p.len);fctx.bezierCurveTo(-p.len*.3,-p.len*.75,-p.len*.32,-p.len*.25,0,0);fctx.fillStyle=p.col;fctx.fill()}
       fctx.restore();}
     fctx.globalAlpha=1;
-    if(alive) state.raf=requestAnimationFrame(tick); else fctx.clearRect(0,0,W,H);
+    if(!alive){state.stop?.();state.stop=null;fctx.clearRect(0,0,W,H)}
   };
-  cancelAnimationFrame(state.raf);tick();
+  state.stop?.();state.stop=onFrame(tick);
 }
 
 /* sound: soft leaf rustle + small harp shimmer, started by the tap */
@@ -140,7 +141,7 @@ const welcomeReady = (stage) => Promise.race([
 
 export function IntroVeil({ stageRef, onOpen, onDone }) {
   const cv = { L: useRef(null), R: useRef(null), T: useRef(null), B: useRef(null) };
-  const fx = useRef(null), btn = useRef(null), fxState = useRef({ raf: 0 });
+  const fx = useRef(null), btn = useRef(null), fxState = useRef({ stop: null });
   const [open, setOpen] = useState(false);
   const opening = useRef(false);
   const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -156,7 +157,7 @@ export function IntroVeil({ stageRef, onOpen, onDone }) {
     let rt;
     const onResize = () => { clearTimeout(rt); rt = setTimeout(() => { if (!opening.current) paint(canvases()); }, 200); };
     window.addEventListener("resize", onResize);
-    return () => { window.removeEventListener("resize", onResize); clearTimeout(rt); document.body.style.overflow = prev; cancelAnimationFrame(st.raf); };
+    return () => { window.removeEventListener("resize", onResize); clearTimeout(rt); document.body.style.overflow = prev; st.stop?.(); };
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const enter = () => {

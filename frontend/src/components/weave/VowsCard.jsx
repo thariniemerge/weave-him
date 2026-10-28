@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Feather } from "lucide-react";
 import { toast } from "sonner";
@@ -33,7 +33,7 @@ const Vow = ({ i, text, delay, canEdit, open, onOpen, left, busy, onReweave, wri
     </div>
     <AnimatePresence>
       {open && (
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden pl-12">
+        <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} className="overflow-hidden pl-12">
           {left > 0 ? (
             <div className="mt-1 flex items-center gap-3 flex-wrap">
               <button data-testid={`reweave-button-${i + 1}`} disabled={busy} onClick={onReweave}
@@ -70,6 +70,16 @@ export const VowsCard = ({ h, setH, canEdit }) => {
     return () => ts.forEach(clearTimeout);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [h.id]);
+  // late AI vows replacing the template ones: the quill rewrites each line
+  const src = useRef(h.vows_source);
+  useEffect(() => {
+    const upgraded = src.current === "template" && h.vows_source === "llm";
+    src.current = h.vows_source;
+    if (!upgraded || reduce || !revealed) return;
+    const ts = [0, 1, 2, 3, 4].map((i) => setTimeout(() => { setWriting(i); play("quill", { rate: 0.9 + i * 0.05 }); }, i * 450));
+    ts.push(setTimeout(() => setWriting(-1), 5 * 450));
+    return () => ts.forEach(clearTimeout);
+  }, [h.vows_source]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const reweave = async (i) => {
     setBusy(i);

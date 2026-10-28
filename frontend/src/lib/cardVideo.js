@@ -1,6 +1,7 @@
 // Turns his share card into a 6s story video: he breathes and plays his own expression frames
 // (neutral, natural blink, wink, heart eyes, neutral), one frame at a time. The frames are used as provided, never redrawn.
 import { portraitSrc, frameSrc } from "../content";
+import { onFrame } from "./perf";
 
 const FACES = ["neutral", "blink_half", "blink", "wink", "heart_eyes"];
 // the blink is timed in video frames with hard cuts: half 2 frames, closed 3, half 2 (about 230ms at 30fps)
@@ -22,7 +23,7 @@ const canvas = (w, h) => Object.assign(document.createElement("canvas"), { width
 const load = (src) => new Promise((res, rej) => { const i = new Image(); i.crossOrigin = "anonymous"; i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
 async function prepare(portrait) {
-  const [bg, ...faces] = await Promise.all([load(portraitSrc(portrait, "-bg")), ...FACES.map((e) => load(frameSrc(portrait, e)))]);
+  const [bg, ...faces] = await Promise.all([load(portraitSrc(portrait, "-bg", true)), ...FACES.map((e) => load(frameSrc(portrait, e, true)))]);
   // feathered oval mask: his painting melts into the still card under the frame rim
   const mask = canvas(W, H), o = mask.getContext("2d");
   o.translate(OVAL.cx, OVAL.cy); o.scale(1, OVAL.ry / OVAL.rx);
@@ -92,13 +93,11 @@ export async function makeCardVideo(cardBlob, portrait, onProgress = () => {}) {
   rec.start(250);
   const t0 = performance.now();
   await new Promise((resolve) => {
-    const tick = () => {
+    const stop = onFrame(() => {
       const t = (performance.now() - t0) / 1000;
-      if (t >= SECONDS) return resolve();
+      if (t >= SECONDS) { stop(); return resolve(); }
       frame(c, card, L, t); onProgress(0.1 + (0.9 * t) / SECONDS);
-      requestAnimationFrame(tick);
-    };
-    requestAnimationFrame(tick);
+    });
   });
   frame(c, card, L, SECONDS);
   rec.stop(); await done;

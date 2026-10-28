@@ -24,7 +24,6 @@ const HowItWorks = ({ open, onOpenChange }) => (
             </li>
           ))}
         </ol>
-        <p data-testid="fan-disclaimer" className="f-cg italic text-[13px] leading-snug text-[color:#4A3A2E] mt-7">{COPY.disclaimer}</p>
       </div>
     </DrawerContent>
   </Drawer>

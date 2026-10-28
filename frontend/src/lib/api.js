@@ -10,6 +10,8 @@ export const getStats = () => {
   return axios.get(`${API}/stats`, { params: { since: midnight.toISOString() } }).then((r) => r.data);
 };
 export const createHusband = (payload) => axios.post(`${API}/husbands`, payload, { timeout: 25000 }).then((r) => r.data);
+export const draftVows = (payload) => axios.post(`${API}/vows/draft`, payload, { timeout: 15000 }).then((r) => r.data);
+export const upgradeVows = (id, draft) => axios.post(`${API}/husbands/${id}/vows`, { token: tokens()[id] || "", draft }).then((r) => r.data);
 export const getHusband = (id) => axios.get(`${API}/husbands/${id}`).then((r) => r.data);
 export const shareLink = (id) => `${window.location.origin}/api/share/${id}`;
 

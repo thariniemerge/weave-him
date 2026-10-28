@@ -206,6 +206,18 @@ img[src*="/art/heart"] { filter: drop-shadow(0 0 5px rgba(240, 201, 120, 0.65));
   100% { transform: translate3d(-20px, 105vh, 0) rotate(320deg); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .mist-layer { animation: none; } .leaf-fall { display: none; } }
+/* desktop forest: ray pulse and mist drift run on the compositor (was per-frame JS) */
+.forest-scene [data-layer=rays] { animation: forest-rays 15.7s ease-in-out infinite alternate; }
+.forest-scene [data-layer=mistc] { animation: forest-mist 44s ease-in-out infinite alternate; }
+@keyframes forest-rays { from { opacity: .5; } to { opacity: 1; } }
+@keyframes forest-mist { from { transform: translateX(-18px); } to { transform: translateX(18px); } }
+@media (prefers-reduced-motion: reduce) { .forest-scene [data-layer] { animation: none; } }
+/* phones / touch: no blend-mode grain, blur filters or backdrop blur */
+@media (max-width: 767px), (pointer: coarse) {
+  .grain-layer, .forest-grain { display: none; }
+  .mist-layer { filter: none; }
+  .backdrop-blur-md { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: rgb(22 32 26 / .93); }
+}
 /* questions are in her own voice ("I've…"), so keep their capitals */
 main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-transform: none; }
 /* the question card already wears a wax seal top-right: tuck the fern bottom-left there */
@@ -216,6 +228,8 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 /* Medallion: one SVG frame with his painted expression frames; emotions are crossfades (lib/face.js) */
 .medallion svg { width: 100%; height: auto; display: block; }
 .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .8s cubic-bezier(0,0,.2,1), opacity .4s ease; }
+.finishing .medallion [id$="reveal-edge"] > * { animation: edge-shimmer .9s ease-in-out infinite alternate; }
+@keyframes edge-shimmer { from { opacity: 1; } to { opacity: .4; } }
 .medallion [id$="-bands"], .medallion [id$="-heart"], .medallion [id$="-ribbon"] { transition: opacity .8s ease; }
 .medallion [id$="-breath"] { transform-box: fill-box; transform-origin: 50% 100%; }
 .medallion.breathing [id$="-breath"] { animation: mk-breathe 5s ease-in-out infinite; }

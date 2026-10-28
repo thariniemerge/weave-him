@@ -9,6 +9,7 @@ import { SuitorCheck, checkVerdict } from "../components/weave/SuitorCheck";
 import { COPY, MUSTHAVES } from "../content";
 import { useAnswers } from "../lib/store";
 import { resolveMust, resolveInterest } from "../lib/weave";
+import { vowsFor } from "../lib/vowDraft";
 
 // Strand X: her non-negotiables, checked live against the suitors on file
 export default function MustHaves() {
@@ -26,6 +27,7 @@ export default function MustHaves() {
     set("musts", next);
   };
   const confirm = () => {
+    vowsFor(answers);
     setVerdict(checkVerdict(musts));
     timers.current.push(setTimeout(() => document.querySelector("[data-testid=suitor-check-verdict]")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60));
     timers.current.push(setTimeout(() => nav("/bands"), 2400));

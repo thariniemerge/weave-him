@@ -1,4 +1,5 @@
 // All editable copy & config lives here.
+import { isPhone } from "./lib/perf";
 export const CONFIG = {
   // Leave empty to use the current domain (without https:// or www.)
   SITE_URL: "",
@@ -29,6 +30,7 @@ export const COPY = {
   cta: "Commission my husband",
   villageToday: (n) => (n < 10 ? "The village is just waking up..." : `${n} husbands woven in the village today`),
   villageTalking: "The village is already talking. Let them.",
+  weavingFinishing: ["Tying the last knot…", "Pressing the seal…"],
   weavingLoading: ["The Basket Weaver is soaking the willow...", "Weaving his shoulders...", "Checking for loose ends...", "Almost ready to meet you..."],
   counter: (n) => `${n} ${n === 1 ? "husband" : "husbands"} woven by hand · two minutes`,
   orderTitle: "Order for one husband",
@@ -92,7 +94,6 @@ export const COPY = {
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
-  disclaimer: "A fan-made tribute, not affiliated with the makers of Wicker.",
   upToThree: "up to three",
   bandsKicker: "Before he's woven",
   bandsTitle: ["Stitch his ", "bands"],
@@ -229,12 +230,14 @@ export const PORTRAITS = [
   { slug: "moorland-scholar", lips: [0.58, 0.45], name: "Moorland Scholar", signs: ["q1:vent", "q2:reads", "out:low", "q3:rehearse", "q3:won"] },
 ];
 export const PORTRAIT_V = 8;
-export const portraitSrc = (slug, kind = "") => `/assets/husbands/${slug}${kind}.${kind === "-bg" ? "jpg" : "webp"}?v=${PORTRAIT_V}`;
+// Phones get 600px-wide WebP copies (`-m` / `m/`); `full` keeps the originals (share card exports)
+export const portraitSrc = (slug, kind = "", full = false) =>
+  `/assets/husbands/${slug}${kind}${!full && kind && isPhone() ? "-m.webp" : kind === "-bg" ? ".jpg" : ".webp"}?v=${PORTRAIT_V}`;
 // His expression frames (aligned, same box as the portrait). Hold = seconds at full strength.
 export const EXPRESSIONS = ["neutral", "blink_half", "blink", "wink", "blush", "heart_eyes", "kiss", "shy"];
 export const HOLD = { wink: 0.9, blush: 1.8, heart_eyes: 1.8, kiss: 1.5, shy: 1.8 };
 export const TAP_ORDER = ["wink", "blush", "heart_eyes", "kiss", "shy"];
-export const frameSrc = (slug, e) => `/assets/husbands/${slug}/${e}.webp?v=${PORTRAIT_V}`;
+export const frameSrc = (slug, e, full = false) => `/assets/husbands/${slug}/${!full && isPhone() ? "m/" : ""}${e}.webp?v=${PORTRAIT_V}`;
 export const lipsOf = (slug) => (PORTRAITS.find((p) => p.slug === slug) || PORTRAITS[0]).lips;
 
 // Strand VIII: what I'm looking for (pick one)

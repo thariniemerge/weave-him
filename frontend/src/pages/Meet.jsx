@@ -9,7 +9,8 @@ import { CardPreview } from "../components/weave/CardPreview";
 import { play, duckMusic } from "../lib/sound";
 import { ShareCard } from "../components/weave/ShareCard";
 import { COPY } from "../content";
-import { cachedHusband, getCardBlob, getHusband, isMine, shareLink } from "../lib/api";
+import { cachedHusband, getCardBlob, getHusband, isMine, shareLink, upgradeVows, rememberHusband } from "../lib/api";
+import { peekLateDraft, dropLateDraft } from "../lib/vowDraft";
 import { renderCard, shareCard, saveCard, saveVideo, loadCardFonts, copyText, isIOS } from "../lib/card";
 import { makeCardVideo, canMakeVideo } from "../lib/cardVideo";
 import { ShareReveal } from "../components/weave/ShareReveal";
@@ -58,6 +59,18 @@ export default function Meet({ isPublic = false }) {
   const mine = !isPublic && isMine(id);
 
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => setMissing(true)); }, [id, h]);
+  // AI vows that missed the weave can still replace the template ones if they land within 20s
+  useEffect(() => {
+    if (!mine || h?.vows_source !== "template") return;
+    const d = peekLateDraft(id);
+    if (!d) return;
+    let live = true;
+    d.promise.then((draft) => {
+      if (!live || !draft || Date.now() - d.at > 20000) return;
+      upgradeVows(id, draft).then((nh) => { dropLateDraft(id); rememberHusband(nh); if (live) setH(nh); }).catch(() => dropLateDraft(id));
+    });
+    return () => { live = false; };
+  }, [h?.id]); // eslint-disable-line react-hooks/exhaustive-deps
   // all nine of his expression frames are decoded before he appears, so nothing flashes or swaps late
   const [framesReady, setFramesReady] = useState(() => !!h && framesLoaded(h.portrait));
   useEffect(() => { if (h) preloadFrames(h.portrait).then(() => setFramesReady(true)); }, [h?.portrait]); // eslint-disable-line react-hooks/exhaustive-deps

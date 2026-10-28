@@ -98,7 +98,20 @@ class TestSource:
     @pytest.mark.parametrize("phrase", [
         "When I've had a *terrible* day, he…", "When I'm *nervous* before something big, he…",
         "Commission my husband", "My commission is ready", "Is he already in my life?",
-        "The strand he gave me", "Sign with my name", "A fan-made tribute, not affiliated with the makers of Wicker.",
+        "The strand he gave me", "Sign with my name",
     ])
     def test_first_person_copy(self, phrase):
         assert phrase in open(os.path.join(SRC, "content.js")).read()
+
+
+# Disclaimer sentence removed app-wide (iteration 2)
+def test_no_fan_disclaimer_anywhere():
+    import re
+    hits = []
+    for root, _, files in os.walk(SRC):
+        for f in files:
+            if f.endswith((".js", ".jsx")):
+                fp = os.path.join(root, f)
+                if re.search(r"fan-made|not affiliated|makers of Wicker|fan-disclaimer", open(fp, errors="ignore").read(), re.I):
+                    hits.append(fp)
+    assert not hits, hits
