@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useState } from 
 // One choreographed crossfade between every screen, in CSS (transform and opacity only): the leaving screen
 // lifts away while the arriving one rises in, both stacked in the same grid cell so nothing is pushed and
 // there is never an empty frame. The arriving screen is fully rendered before the first frame paints.
-const LEAVE_MS = 320;
+const LEAVE_MS = 500;
 export const StageCtx = createContext("idle");
 export const useStage = () => useContext(StageCtx);
 

@@ -5,6 +5,7 @@ import { BuildingHusband } from "./PanelFigures";
 import { useReducedMotion } from "framer-motion";
 import { Art } from "./ui";
 import { useStage, useLinger } from "./PageStack";
+import { ForestScene } from "./ForestScene";
 
 export const useMedia = (q) => useSyncExternalStore(
   (f) => { const m = window.matchMedia(q); m.addEventListener("change", f); return () => m.removeEventListener("change", f); },
@@ -17,10 +18,11 @@ const PanelCtx = createContext(null);
 // On desktop, renders its art into the sticky left panel; otherwise inline
 // (the portal child follows its page's enter/leave stage, so left and right change together)
 const PanelItem = ({ children }) => <div className={`w-full panel-${useStage()}`}>{children}</div>;
-export const PanelOrInline = ({ children }) => {
+// `forest`: on phones, the forest scene sits behind this strip only
+export const PanelOrInline = ({ children, forest = false }) => {
   const el = useContext(PanelCtx);
   const desk = useDesktop();
-  if (!desk) return children;
+  if (!desk) return forest ? <div className="forest-strip" data-testid="forest-strip"><ForestScene />{children}</div> : children;
   return el ? createPortal(<PanelItem>{children}</PanelItem>, el) : null;
 };
 // Desktop-only art for the panel (nothing on phones)
@@ -86,6 +88,7 @@ export function Layout({ children }) {
       {desk ? (
         <div className="relative z-10 grid grid-cols-2 min-h-[100dvh]" data-testid="desktop-layout">
           <aside className="forest-panel sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
+            <ForestScene />
             <div className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center">
               {/* every panel item shares one grid cell, so arriving art never pushes leaving art down */}
               <div className="panel-stack w-full">

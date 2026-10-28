@@ -208,10 +208,10 @@ export const PORTRAITS = [
   { slug: "lantern-woodsman", lips: [0.6, 0.4], name: "Lantern Woodsman", signs: ["q1:holds", "q4:fixing", "q3:squeeze", "q2:adventure", "q7:alone"] },
   { slug: "moorland-scholar", lips: [0.58, 0.45], name: "Moorland Scholar", signs: ["q1:vent", "q2:reads", "out:low", "q3:rehearse", "q3:won"] },
 ];
-export const PORTRAIT_V = 7;
+export const PORTRAIT_V = 8;
 export const portraitSrc = (slug, kind = "") => `/assets/husbands/${slug}${kind}.${kind === "-bg" ? "jpg" : "webp"}?v=${PORTRAIT_V}`;
 // His expression frames (aligned, same box as the portrait). Hold = seconds at full strength.
-export const EXPRESSIONS = ["neutral", "blink", "wink", "blush", "heart_eyes", "kiss", "shy"];
+export const EXPRESSIONS = ["neutral", "blink_half", "blink", "wink", "blush", "heart_eyes", "kiss", "shy"];
 export const HOLD = { wink: 0.9, blush: 1.8, heart_eyes: 1.8, kiss: 1.5, shy: 1.8 };
 export const TAP_ORDER = ["wink", "blush", "heart_eyes", "kiss", "shy"];
 export const frameSrc = (slug, e) => `/assets/husbands/${slug}/${e}.webp?v=${PORTRAIT_V}`;

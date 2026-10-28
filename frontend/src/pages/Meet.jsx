@@ -104,7 +104,7 @@ export default function Meet({ isPublic = false }) {
         </div>
       </header>
       <p className="f-sc text-center text-[13px] text-[color:#4A5641] mt-1">{isPublic ? COPY.readyPublic : COPY.ready}</p>
-      <PanelOrInline>
+      <PanelOrInline forest>
         <motion.div initial={reduce ? false : { opacity: 0, y: 28, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}>
           <Cameo h={h} alive />
         </motion.div>

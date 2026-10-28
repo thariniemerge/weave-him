@@ -42,7 +42,7 @@ export default function Bands() {
         {COPY.bandsTitle[0]}<span className="italic text-[color:var(--rose)]">{COPY.bandsTitle[1]}</span>
       </h1>
       <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
-      <PanelOrInline>
+      <PanelOrInline forest>
         <div className="w-full max-w-[230px] lg:max-w-[440px] mx-auto mt-2" data-testid="bands-preview">
           <Medallion band={picked} portrait={pickPortrait(answers)} showBands label="Your wicker husband wearing the chosen strands, his face still to be woven" />
         </div>

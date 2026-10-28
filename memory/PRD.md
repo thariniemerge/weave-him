@@ -75,3 +75,10 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - preloadFrames runs during Weaving, and Meet waits until the frames are decoded. The video plays neutral, blink, smile, wink, smile using the frames. The shimmer and glow code was removed.
 - Global rule: his face is hidden until the weaving screen finishes. Bands shows strands=9 with the bands visible (showBands).
 - Check script: scripts/record_emotions.py. iteration_21: all passed.
+
+## Iteration 9 (2026-06): blink, fades, forest, sliders
+- Blink uses hard cuts: blink_half 45ms, blink 90ms, blink_half 45ms (face.js). The video uses frames 27-28 half, 29-31 closed, 32-33 half at 30fps (cardVideo.js expressionAt). Checked: no in-between opacity.
+- Page fades: leave .5s ease-in, enter .55s ease-out with a .1s delay (index.css). LEAVE_MS=500. The visible page never drops below about 0.56 opacity (scripts/record_transition.py).
+- ForestScene.jsx is a port of forest-panel-prototype.html. It sits behind the desktop art panel, and on phones behind the medallion strip only (PanelOrInline forest on Welcome, Meet, Bands, Weaving). It repaints on resize (ResizeObserver), pauses when the tab is hidden, and is static under reduced motion (no fireflies or leaves).
+- Temperament sliders: the thread is an img inside .woven-thread (min(100%-40px,320px)). An invisible native range input overhangs the thread by 20px on each side, so the heart centre maps from 0% at the left end to 100% at the right end. The visible heart sits at left:value%, vertically centred. Labels match the thread's width. Check: scripts/check_sliders.py (mouse and touch at 390 and 1280; all pass).
+- Next round (user-approved): a small part-woven husband medallion (120-140px) above the question card on phones. It is sepia with the face hidden, does not react to taps, and must keep the CTA in view at 390x844. The forest goes behind that strip only. Later: the golden weaving shimmer and the faint-ink first vow.

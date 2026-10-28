@@ -23,13 +23,18 @@ const Slider = ({ s, value, onChange }) => {
   return (
     <section className="stitch-card px-5 pt-5 pb-4 lg:pt-3 lg:pb-1" style={{ background: s.tint }} data-testid={`slider-card-${s.key}`}>
       <h2 className="f-cg font-semibold text-center text-[21px] lg:text-[19px]">{s.title}</h2>
-      <input
-        type="range" min={0} max={100} value={value} aria-label={s.title} data-testid={`slider-${s.key}`}
-        onChange={(e) => move(Number(e.target.value))} className="woven-range mt-1"
-        style={{ "--track-img": "url(/art/slider-track.svg)", "--thumb-img": "url(/art/heart.svg)" }}
-      />
-      <div className="flex justify-between f-sc text-[11.5px] text-[color:#2A211B] -mt-1">
-        <span>{s.left}</span><span>{s.right}</span>
+      {/* the thread is the range: the (invisible) native input overhangs it by half a heart each side,
+          so its thumb centre runs exactly from the thread's left end to its right end */}
+      <div className="woven-thread relative mx-auto mt-1 h-11 flex items-center" data-testid={`slider-track-${s.key}`}>
+        <img src="/art/slider-track.svg" alt="" className="w-full h-auto block pointer-events-none" draggable={false} />
+        <input
+          type="range" min={0} max={100} value={value} aria-label={s.title} data-testid={`slider-${s.key}`}
+          onChange={(e) => move(Number(e.target.value))} className="woven-range"
+        />
+        <img src="/art/heart.svg" alt="" aria-hidden className="woven-heart" style={{ left: `${value}%` }} data-testid={`slider-heart-${s.key}`} />
+      </div>
+      <div className="woven-thread mx-auto flex justify-between gap-3 f-sc text-[11.5px] text-[color:#2A211B] -mt-1">
+        <span className="text-left">{s.left}</span><span className="text-right">{s.right}</span>
       </div>
       <div className="h-7 mt-1 relative overflow-hidden">
         <AnimatePresence mode="wait" initial={false}>

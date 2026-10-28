@@ -52,7 +52,7 @@ export default function Welcome() {
         </button>
         <SoundToggle className="-mr-2 ml-1" />
       </header>
-      <PanelOrInline>
+      <PanelOrInline forest>
         <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[40dvh] lg:max-h-[82vh] object-contain -mt-1" />
       </PanelOrInline>
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>

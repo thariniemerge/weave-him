@@ -108,7 +108,7 @@ export default function Weaving() {
     <Page className="items-center">
       <SoundToggle className="absolute right-4 top-4" />
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
-      <PanelOrInline>
+      <PanelOrInline forest>
       <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
         <div className="w-[72%] mx-auto"><Medallion woven={step >= 10} band={band} portrait={husband?.portrait || pickPortrait(answers)} strands={step} finished={step >= 10} pulse fadeOnly={!!reduce} name={step >= 10 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}

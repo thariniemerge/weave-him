@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { EXPRESSIONS, HOLD, TAP_ORDER, frameSrc } from "../content";
 
 // His emotions are the user's aligned expression frames, crossfaded over the neutral one. Nothing is drawn.
-const IN = 300, OUT = 350, BLINK = 150;
+const IN = 300, OUT = 350, BLINK_HALF = 45, BLINK = 90;
 const MOODS = TAP_ORDER;
 const ALIAS = { hearts: "heart_eyes" };
 
@@ -67,8 +67,11 @@ export function useExpressions(wrap, layers, { ambient = false, reduce = false }
     if (!L || !L[name] || s.cur) return false;
     s.cur = name;
     if (name === "blink") {
-      set(L.blink, 1, 0);
-      later(() => { set(L.blink, 0, 0); s.cur = null; }, BLINK);
+      // natural blink, hard cuts with no crossfade: half (45ms), closed (90ms), half (45ms), open
+      set(L.blink_half, 1, 0);
+      later(() => { set(L.blink, 1, 0); set(L.blink_half, 0, 0); }, BLINK_HALF);
+      later(() => { set(L.blink_half, 1, 0); set(L.blink, 0, 0); }, BLINK_HALF + BLINK);
+      later(() => { set(L.blink_half, 0, 0); s.cur = null; }, BLINK_HALF * 2 + BLINK);
       return true;
     }
     const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
