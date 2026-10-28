@@ -35,7 +35,6 @@ export const COPY = {
   releaseHook: "In theatres Oct 30. Can't wait till Friday? Weave him now.",
   RELEASE_DAY: "2026-10-30",
   howIntro: "Dear lonely fisherwoman, it's quite simple…",
-  villageToday: (n) => (n < 10 ? "The village is just waking up. The gossip isn't." : `${n} husbands woven today. The village is not coping.`),
   villageTalking: "The village is already talking. Soon they'll be jealous.",
   weavingFinishing: ["Sanding down his rough edges…", "No assembly required. Unlike some husbands."],
   weavingLoading: ["The basketmaker is soaking the willow… (Peter Dinklage would've been faster. Probably.)", "Weaving his shoulders. Skarsgård-width, as requested.", "Checking for splinters. Emotional ones too.", "Bending the willow. Not your standards."],

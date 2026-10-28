@@ -56,9 +56,6 @@ export default function Welcome() {
       </PanelOrInline>
       <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>
       <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[52px] leading-[0.95] tracking-[0.01em]">{COPY.welcomeTitle[0]}<br />{COPY.welcomeTitle[1]}</h1>
-      <p data-testid="village-today" className="f-cg italic text-center text-[15px] leading-[18px] h-[18px] -mt-1.5 text-[color:#4A5641]">
-        {COPY.villageToday(count)}
-      </p>
       <Art name="divider" className="w-full mt-1" />
       <p className="f-cg italic text-center text-[21px] leading-snug mt-2">{COPY.tagline[0]}<br />{COPY.tagline[1]}</p>
       <div className="mt-5">
