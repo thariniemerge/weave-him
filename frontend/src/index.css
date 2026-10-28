@@ -256,9 +256,9 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 @keyframes fade-out { to { opacity: 0; } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) {
-  .page-leave, .panel-leave { animation: fade-out .2s ease both; }
-  .page-leave > main > *, .page-enter > main > * { animation: none; }
-  .page-enter, .panel-enter { animation: fade-in .2s ease both; }
+  .page-leave, .panel-leave, .cta-leave { animation: fade-out .2s ease both !important; }
+  .page-leave > main > :not(.fixed), .page-enter > main > :not(.fixed) { animation: none !important; }
+  .page-enter, .panel-enter, .cta-enter, .cta-idle { animation: fade-in .2s ease both !important; }
 }
 /* the phone CTA bar is fixed (portaled), so it crossfades by opacity alone */
 .cta-leave { animation: fade-out .25s ease-in both; }

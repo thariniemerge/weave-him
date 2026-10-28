@@ -18,11 +18,16 @@ export function PageStack({ location, render }) {
   }, [location.pathname]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => {
     if (!items.some((i) => i.stage === "leave")) return;
-    const t = setTimeout(() => setItems((c) => c.filter((i) => i.stage !== "leave")), LEAVE_MS);
+    // the leaving screen goes when its fade has really finished (animationend); the timer is only a safety net
+    const t = setTimeout(() => setItems((c) => c.filter((i) => i.stage !== "leave")), LEAVE_MS * 3);
     return () => clearTimeout(t);
   }, [items]);
+  const done = (key) => (e) => {
+    if (e.target === e.currentTarget) setItems((c) => c.filter((i) => !(i.key === key && i.stage === "leave")));
+  };
   return items.map((i) => (
-    <div key={i.key} className={`page-cell page-${i.stage}`} aria-hidden={i.stage === "leave" || undefined} data-testid={`page-cell-${i.stage}`}>
+    <div key={i.key} className={`page-cell page-${i.stage}`} aria-hidden={i.stage === "leave" || undefined} data-testid={`page-cell-${i.stage}`}
+      onAnimationEnd={i.stage === "leave" ? done(i.key) : undefined}>
       <StageCtx.Provider value={i.stage}>{render(i.loc)}</StageCtx.Provider>
     </div>
   ));
