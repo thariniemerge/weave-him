@@ -19,7 +19,7 @@
 .whc .ink{color:#2A211B}
 .whc .t-row{position:absolute;left:0;right:0;top:24px;height:86px;display:flex;align-items:center;justify-content:center;gap:26px}
 .whc .t-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:62px;line-height:1;letter-spacing:.14em;padding-left:.14em;text-transform:uppercase;color:#2A211B;white-space:nowrap}
-.whc .t-sub{position:absolute;left:0;right:0;top:110px;text-align:center;font-family:'Cormorant SC',serif;font-weight:600;font-size:20px;letter-spacing:.16em;color:#4A5641}
+.whc .t-sub{position:absolute;left:0;right:0;top:101px;text-align:center;font-family:'Cormorant SC',serif;font-weight:600;font-size:28px;letter-spacing:.1em;color:#4A5641}
 .whc .t-sun{flex:none;width:84px;height:auto;filter:sepia(.45) saturate(.6) brightness(.72) drop-shadow(0 3px 4px rgba(20,25,20,.45))}
 .whc .t-sun-r{transform:scaleX(-1)}
 .whc .sky{position:absolute;left:280.6px;top:456.6px;width:523.5px;height:757.2px;background:var(--sky-img) center/100% 100% no-repeat;filter:saturate(.95) brightness(.93)}

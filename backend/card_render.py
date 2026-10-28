@@ -31,20 +31,20 @@ def _retitle(base):
     # old title sits between the two suns (x 211-869, y 94-133), old subtitle at x 241-835, y 166-178
     base.paste(_paper((690, 60)), (195, 84))
     base.paste(_paper((920, 26)), (80, 160))
-    # title: Cormorant 500 caps, 0.14em tracking, shrunk to fit between the suns, caps centred where the old ones were
+    # title: Cormorant 500 caps, 0.14em tracking, shrunk to fit between the suns, caps centred a little above the old ones
     t = CARD_TITLE.upper()
     s = fit([t], "cg", 62, 30, 1, 680, 0.14)
     f, ls = font("cg", s), s * 0.14
     cap = f.getbbox("H", anchor="ls")
     m = Image.new("L", (W, H), 0)
-    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 113.5 - (cap[1] + cap[3]) / 2, ls)
+    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 108.5 - (cap[1] + cap[3]) / 2, ls)
     paint(base, m, hexrgb("2A211B"))
-    # subtitle: Cormorant SC 600, 0.16em tracking, on the old baseline
+    # subtitle: Cormorant SC 600 at 28px (the old 20px read too small), 0.1em tracking, centred in the space under the title
     t = CARD_SUBTITLE
-    s = fit([t], "sc600", 20, 14, 1, 900, 0.16)
-    f, ls = font("sc600", s), s * 0.16
+    s = fit([t], "sc600", 28, 18, 1, 900, 0.1)
+    f, ls = font("sc600", s), s * 0.1
     m = Image.new("L", (W, H), 0)
-    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 178, ls)
+    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 177, ls)
     paint(base, m, hexrgb("4A5641"))
     return base
 

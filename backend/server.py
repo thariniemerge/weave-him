@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 17
+CARD_VERSION = 18
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 LLM_MODEL = "claude-haiku-4-5-20251001"
