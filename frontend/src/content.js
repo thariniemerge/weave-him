@@ -18,7 +18,7 @@ export const COPY = {
   guild: "The Weavers' Guild",
   howItWorks: "How it works",
   howSteps: [
-    { title: "Answer", body: "Seven little questions, seven strands. Not one of them about his looks." },
+    { title: "Answer", body: "Ten little questions, ten strands. Not one of them about his looks." },
     { title: "Weave", body: "The basketmaker weaves my answers into willow & wicker, strand by strand." },
     { title: "Meet him", body: "He arrives with an 1800s name and five vows, written just for me." },
   ],
@@ -46,12 +46,30 @@ export const COPY = {
   remembersOwnPlaceholder: "He remembers…",
   nextFeel: "Next: how he makes me feel",
   weaveHim: "Weave him",
+  nextGoal: "Next: what I'm looking for",
+  goalTitle: ["What I'm ", "looking for"],
+  goalSub: "pick the one that's true today",
+  nextInterests: "Next: things I love",
+  interestsTitle: ["Things I ", "love"],
+  interestsSub: "pick up to five, he'll love them too",
+  interestsOwnPlaceholder: "I love…",
+  nextMusts: "Next: my non-negotiables",
+  mustsTitle: ["My ", "non-negotiables"],
+  mustsSub: "pick up to five, I'm checking the suitors on file",
+  mustsOwnPlaceholder: "He must…",
+  checkTitle: "Suitors on file",
+  checkEmpty: "Pick a must-have and I'll check every suitor on file.",
+  checkNone: (m) => `None of them have "${m}" yet, so we'll weave it in.`,
+  checkVerdict: "None of them had it all. So we'll weave one who does.",
+  checkClose: (n) => `${n} came close. But we'll weave one who has it all.`,
+  mustsCard: "Must-haves",
+  mustsCardSub: "every one of mine, woven in",
   weaving: "The basketmaker is weaving…",
   weavingAside: ["Every strand is one of my answers.", "Not one of them is about his ", "jawline", "."],
   skip: "Skip to him",
   ready: "My commission is ready",
   readyPublic: "A commission, woven by hand",
-  biceps: ["Seven strands. Not one of them about his ", "biceps", "."],
+  biceps: ["Ten strands. Not one of them about his ", "biceps", "."],
   vowsNo: "His vows · No.",
   dearest: "dearest reader, he promises…",
   yours: "Yours, woven by hand,",
@@ -179,4 +197,53 @@ export const REMEMBERS = [
   { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises" },
 ];
 
-export const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII"];
+export const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
+export const TOTAL_STRANDS = 10;
+
+// Strand VIII: what I'm looking for (pick one)
+export const GOALS = [
+  { id: "serious", label: "Something serious", short: "something serious" },
+  { id: "marriage", label: "Marriage someday", short: "marriage someday" },
+  { id: "slow", label: "Taking it slow", short: "taking it slow" },
+  { id: "unsure", label: "Not sure yet", short: "not sure yet" },
+];
+
+// Strand IX: things I love (up to five, plus my own)
+export const INTERESTS = [
+  { id: "books", label: "Books" }, { id: "cooking", label: "Cooking" }, { id: "travel", label: "Travel" },
+  { id: "music", label: "Music" }, { id: "films", label: "Films" }, { id: "fitness", label: "Fitness" },
+  { id: "walks", label: "Nature walks" }, { id: "art", label: "Art" }, { id: "games", label: "Games" },
+  { id: "markets", label: "Markets" }, { id: "dancing", label: "Dancing" }, { id: "coffee", label: "Coffee" },
+];
+
+// Strand X: my non-negotiables (up to five, plus my own). `vow` is his promise; `words` help check the vows keep it.
+export const MUSTHAVES = [
+  { id: "wants", label: "Actually wants a relationship", vow: "I'll choose us on purpose, every single day.", words: ["choose us", "relationship", "together", "stay"] },
+  { id: "calm", label: "Handles a fight calmly", vow: "When we fight, I'll stay and talk it through.", words: ["fight", "argue", "talk it through", "calm"] },
+  { id: "available", label: "Emotionally available", vow: "I'll tell you what I'm feeling, even the clumsy parts.", words: ["feel", "heart", "open"] },
+  { id: "honest", label: "Honest even when it's hard", vow: "I'll tell you the truth, even when it's hard to say.", words: ["truth", "honest"] },
+  { id: "loyal", label: "Loyal", vow: "I'll be on your side, in every room you walk into.", words: ["your side", "loyal", "only you"] },
+  { id: "time", label: "Makes time for me", vow: "I'll always make time for you, and I'll guard it.", words: ["time for you", "make time", "make the time"] },
+  { id: "family", label: "Gets along with my family", vow: "I'll win over your family, one Sunday lunch at a time.", words: ["family", "your mom", "your mother"] },
+  { id: "kids", label: "Wants kids someday", vow: "I'll want a little family with you, someday.", words: ["kids", "children", "little family"] },
+  { id: "space", label: "Respects my space", vow: "I'll give you room to breathe, and I'll still be here.", words: ["space", "room to breathe", "room"] },
+  { id: "ambitious", label: "Ambitious", vow: "I'll chase big things with you, and cheer yours louder.", words: ["dream", "big things", "chase"] },
+];
+
+// Demo "suitors on file" for the live check. Each has a playful reason for every must-have he fails.
+export const SUITORS = [
+  { id: "rogue", name: "Silas Thorne", title: "The Rogue", goal: "slow", interests: ["travel", "dancing", "music", "markets"],
+    no: { wants: "says he's not ready to settle down.", loyal: "winks at every governess in the county.", kids: "asks if children come with a return policy.", family: "called your aunt \"old girl\" at supper." } },
+  { id: "poet", name: "Ambrose Vale", title: "The Poet", goal: "marriage", interests: ["books", "art", "walks", "coffee"],
+    no: { calm: "goes quiet for three days after a fight.", time: "misses supper whenever the moon is pretty.", ambitious: "his life plan is one unfinished sonnet.", family: "read your father a poem about his moustache." } },
+  { id: "woodsman", name: "Barnaby Ashcroft", title: "The Woodsman", goal: "serious", interests: ["walks", "cooking", "fitness", "coffee"],
+    no: { time: "is always out in the forest.", available: "shares his feelings only with the oak trees.", family: "brought your mother a live badger as a gift." } },
+  { id: "scholar", name: "Edmund Pryce", title: "The Scholar", goal: "marriage", interests: ["books", "games", "films", "music"],
+    no: { time: "is married to his library until Thursday.", kids: "would need to read three books on it first.", family: "corrected your grandmother's Latin. Twice." } },
+  { id: "captain", name: "Rafe Merriweather", title: "The Captain", goal: "serious", interests: ["travel", "fitness", "games", "dancing"],
+    no: { space: "salutes you good morning, noon and night.", time: "is at sea eight months of the year.", family: "challenged your brother to a duel over cards." } },
+  { id: "dandy", name: "Percival Finch", title: "The Dandy", goal: "unsure", interests: ["art", "markets", "films", "dancing"],
+    no: { honest: "said he loved your hat. He did not.", ambitious: "his one ambition is a finer waistcoat.", family: "spent the whole family dinner in the mirror." } },
+];
+// A must-have of her own words: none of them have heard of it yet
+export const CUSTOM_NO = "hasn't learned that one yet.";

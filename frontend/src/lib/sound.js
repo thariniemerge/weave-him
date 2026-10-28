@@ -53,6 +53,9 @@ function string(freq, sec, damp = 0.996) {
 const SYNTH = {
   pluck: () => norm(env(string(392, 0.45, 0.994), (t) => Math.exp(-t * 7)), 0.35),
   tick: () => norm(env(biquad(noise(0.03), "bp", 2400, 6), (t) => Math.exp(-t * 180)), 0.22),
+  // a thread snapping: a bright crack with a short slack twang
+  snap: () => mix(norm(env(biquad(noise(0.06), "bp", 3400, 3), (t) => Math.exp(-t * 90)), 0.3),
+    norm(env(string(210, 0.28, 0.985), (t) => Math.exp(-t * 14)), 0.14), Math.round(SR * 0.012)),
   creak: () => norm(env(biquad(noise(0.16).map((v, i) => v * (0.5 + 0.5 * Math.sin(i / SR * 2 * Math.PI * 38))), "bp", 700, 3),
     (t, d) => Math.sin(Math.PI * t / d)), 0.2),
   page: () => {

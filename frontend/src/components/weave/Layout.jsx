@@ -70,7 +70,7 @@ export const FallingLeaves = () => {
 export function Layout({ children }) {
   const desk = useDesktop();
   const [panel, setPanel] = useState(null);
-  const strand = Number(useLocation().pathname.match(/^\/strand\/(\d)/)?.[1] || 0);
+  const strand = Number(useLocation().pathname.match(/^\/strand\/(\d+)/)?.[1] || 0);
   return (
     <PanelCtx.Provider value={panel}>
       <div className="mist-layer" aria-hidden />
@@ -81,7 +81,7 @@ export function Layout({ children }) {
           <aside className="forest-panel sticky top-0 h-[100dvh] flex items-center justify-center px-[5vw] py-10" data-testid="art-panel">
             <div className="relative z-10 w-full max-w-[min(640px,80vh)] flex flex-col items-center">
               {/* one husband for all seven strands, so he is never remounted between questions */}
-              {strand > 0 && <BuildingHusband done={strand - 1} />}
+              {strand > 0 && strand < 10 && <BuildingHusband done={strand - 1} />}
               <div ref={setPanel} className="w-full flex flex-col items-center" />
             </div>
           </aside>

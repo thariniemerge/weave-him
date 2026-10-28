@@ -8,9 +8,11 @@ import { useAnswers } from "../lib/store";
 import { resolveChoices } from "../lib/weave";
 import Temperament from "./Temperament";
 import Remembers from "./Remembers";
+import { Goal, Interests } from "./GoalInterests";
+import MustHaves from "./MustHaves";
 import { play } from "../lib/sound";
 
-export const nextPath = (n) => (n < 7 ? `/strand/${n + 1}` : "/bands");
+export const nextPath = (n) => (n < 10 ? `/strand/${n + 1}` : "/bands");
 export const prevPath = (n) => (n > 1 ? `/strand/${n - 1}` : "/");
 
 const Aside = () => (
@@ -36,7 +38,7 @@ function Question({ n }) {
         <WovenProgress done={n - 1} />
       </div>
       <StrandCTA data-testid="weave-strand-button" disabled={!ok} onClick={() => { play("page"); nav(nextPath(n)); }}>
-        {n === 7 ? COPY.weaveHim : COPY.weaveStrand}
+        {n === 7 ? COPY.nextGoal : COPY.weaveStrand}
       </StrandCTA>
     </Page>
   );
@@ -44,8 +46,11 @@ function Question({ n }) {
 
 export default function Strand() {
   const n = Number(useParams().n);
-  if (!(n >= 1 && n <= 7)) return <Navigate to="/strand/1" replace />;
+  if (!(n >= 1 && n <= 10)) return <Navigate to="/strand/1" replace />;
   if (n === 5) return <Temperament />;
   if (n === 6) return <Remembers />;
+  if (n === 8) return <Goal />;
+  if (n === 9) return <Interests />;
+  if (n === 10) return <MustHaves />;
   return <Question key={n} n={n} />;
 }

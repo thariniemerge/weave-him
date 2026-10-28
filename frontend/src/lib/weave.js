@@ -1,4 +1,4 @@
-import { QUESTIONS, SLIDERS, REMEMBERS, CONFIG, siteHost } from "../content";
+import { QUESTIONS, SLIDERS, REMEMBERS, CONFIG, siteHost, MUSTHAVES, INTERESTS, GOALS, CUSTOM_NO } from "../content";
 
 export const qByKey = (key) => QUESTIONS.find((q) => q.key === key);
 const clean = (t) => t.replace(/^\s*(he|he…|he\.\.\.)\s+/i, "").replace(/\s+/g, " ").trim();
@@ -68,8 +68,14 @@ export function soFarTags(a) {
 }
 
 export function isComplete(a) {
-  return [...QK, "q7"].every((k) => resolveChoices(k, a[k]).length) && a.remembers.length > 0;
+  return [...QK, "q7"].every((k) => resolveChoices(k, a[k]).length) && a.remembers.length > 0 && !!a.goal && a.musts.length > 0;
 }
+
+// Her must-haves and interests: picks are [{ id } | { custom }]
+export const resolveMust = (m) => (m.custom ? { id: "custom", label: clean(m.custom), vow: `I'll keep this promise above all: ${clean(m.custom).toLowerCase()}.`, words: [clean(m.custom).toLowerCase()] } : MUSTHAVES.find((x) => x.id === m.id));
+export const resolveInterest = (m) => (m.custom ? { id: "custom", label: clean(m.custom) } : INTERESTS.find((x) => x.id === m.id));
+// One suitor against one must-have: { ok, reason }
+export const suitorVerdict = (s, m) => (m.id === "custom" ? { ok: false, reason: CUSTOM_NO } : s.no[m.id] ? { ok: false, reason: s.no[m.id] } : { ok: true });
 
 export function buildPayload(a) {
   const [q1, q2, q3, q4, q7] = [...QK, "q7"].map((k) => resolveChoices(k, a[k]));
@@ -99,6 +105,9 @@ export function buildPayload(a) {
       ...q7.map((o) => ({ label: cap(o.strand), sentence: o.sentence }))].slice(0, 20),
     site: siteHost(),
     credit: CONFIG.CARD_CREDIT_LINE,
+    goal: GOALS.find((g) => g.id === a.goal)?.short || "",
+    interests: (a.interests || []).map(resolveInterest).filter(Boolean).map((i) => i.label),
+    musts: (a.musts || []).map(resolveMust).filter(Boolean).map(({ label, vow, words }) => ({ label, vow, words })),
   };
 }
 

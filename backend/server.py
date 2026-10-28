@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 10
+CARD_VERSION = 12
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -52,6 +52,22 @@ class CardText(BaseModel):
     woven: List[str] = Field(max_length=3)
 
 
+class Must(BaseModel):
+    label: str
+    vow: str = ""
+    words: List[str] = Field(default=[], max_length=6)
+
+    @field_validator("label", "vow")
+    @classmethod
+    def _m(cls, v):
+        return undash(clip(v, 120))
+
+    @field_validator("words")
+    @classmethod
+    def _w(cls, v):
+        return [clip(w, 40).lower() for w in v if clip(w)]
+
+
 class HusbandIn(BaseModel):
     strands: List[str] = Field(min_length=7, max_length=24)
     keys: Dict[str, str] = {}
@@ -64,6 +80,9 @@ class HusbandIn(BaseModel):
     threads: List[Thread] = Field(default=[], max_length=20)
     site: str = Field(default="", max_length=80)
     credit: str = Field(default="", max_length=120)
+    goal: str = Field(default="", max_length=40)
+    interests: List[str] = Field(default=[], max_length=6)
+    musts: List[Must] = Field(default=[], max_length=6)
 
     @field_validator("strands", "remembers", "band", "remember_keys")
     @classmethod
@@ -101,6 +120,9 @@ class Husband(BaseModel):
     credit: str = ""
     reweaves: int = 0
     reweaves_left: int = MAX_REWEAVES
+    goal: str = ""
+    interests: List[str] = []
+    musts: List[Must] = []
 
     @classmethod
     def from_mongo(cls, doc):
@@ -143,7 +165,21 @@ def template_vows(p: HusbandIn) -> List[str]:
     for g in GENERIC_VOWS:
         if len(vows) < 5 and g not in vows:
             vows.insert(len(vows) - 1 if vows else 0, g)
-    return vows[:5]
+    return keep_a_must(vows[:5], p.musts)
+
+
+def keeps_must(vows: List[str], musts: List["Must"]) -> bool:
+    text = " ".join(vows).lower()
+    return any(w in text for m in musts for w in m.words)
+
+
+# At least one vow must promise one of her must-haves; if none does, his first must-have vow takes slot four
+def keep_a_must(vows: List[str], musts: List["Must"]) -> List[str]:
+    if not musts or keeps_must(vows, musts) or not musts[0].vow:
+        return vows
+    vows = list(vows)
+    vows[min(3, len(vows) - 1)] = musts[0].vow
+    return vows
 
 
 def undash(v: str) -> str:
@@ -190,14 +226,22 @@ async def llm_text(system: str, msg: str) -> Optional[str]:
     return await asyncio.wait_for(attempt(), timeout=8)
 
 
-def strands_brief(strands, remembers, feel, sliders) -> str:
-    return ("His seven strands:\n" + "\n".join(f"- {s}" for s in strands) +
+def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interests=()) -> str:
+    extra = ""
+    if musts:
+        extra += ("Her non-negotiables (at least one vow must clearly promise one of these, in his own words, "
+                  "e.g. \"When we fight, I'll stay and talk it through.\"):\n" + "\n".join(f"- {m.label}" for m in musts) + "\n")
+    if goal:
+        extra += f"She is looking for: {goal}.\n"
+    if interests:
+        extra += f"Things she loves: {', '.join(interests)}.\n"
+    return ("His strands:\n" + "\n".join(f"- {s}" for s in strands) +
             f"\nHe remembers: {', '.join(remembers) or 'the small things'}.\nHe should make her feel: {feel}.\n" +
-            slider_words(sliders))
+            slider_words(sliders) + ("\n" + extra if extra else ""))
 
 
 async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
-    raw = await llm_text(SYSTEM_PROMPT, strands_brief(p.strands, p.remembers, p.feel, p.sliders))
+    raw = await llm_text(SYSTEM_PROMPT, strands_brief(p.strands, p.remembers, p.feel, p.sliders, p.musts, p.goal, p.interests))
     if not raw:
         return None
     start = raw.find("[")
@@ -206,7 +250,7 @@ async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
     except ValueError:
         vows = None
     vows = [undash(clip(v, 200)) for v in vows if isinstance(v, str)] if isinstance(vows, list) else None
-    return vows if vows_ok(vows) else None
+    return keep_a_must(vows, p.musts) if vows_ok(vows) else None
 
 
 def render_for(h: "Husband", host: str = "") -> bytes:
@@ -257,6 +301,7 @@ async def create_husband(p: HusbandIn, request: Request):
         remembers=p.remembers, feel=clip(p.feel), vows=vows, vows_source=source, band=p.band,
         card=p.card, threads=p.threads, created_at=datetime.now(timezone.utc).isoformat(),
         keys=p.keys, remember_keys=p.remember_keys, site=clip(p.site), credit=clip(p.credit, 120),
+        goal=clip(p.goal), interests=[clip(i, 40) for i in p.interests if clip(i)], musts=p.musts,
     )
     token = secrets.token_urlsafe(18)
     await db.husbands.insert_one({**h.to_mongo(), "edit_token_hash": hashlib.sha256(token.encode()).hexdigest()})

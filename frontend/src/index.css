@@ -225,3 +225,10 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 .mk-float > :nth-child(3) .mk-fl { animation-delay: .7s; }
 @keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -120px) scale(calc(var(--s) * 1.25)); } }
 @media (prefers-reduced-motion: reduce) { .mk-float .mk-fl, .mk-pulse [id$="-heart"] > * { animation: none; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }
+
+/* Suitors on file: parchment cards, woven monograms, torn-paper "no" tags */
+.parchment-card { background: linear-gradient(160deg, #F4EEDF, #E9E0CC); border: 1px solid rgba(74,58,46,.28); box-shadow: 0 6px 14px -8px rgba(31,40,35,.55), inset 0 0 0 3px rgba(244,238,223,.9), inset 0 0 0 4px rgba(74,58,46,.16); color: #2A211B; }
+.monogram { background: repeating-linear-gradient(45deg, #8C6A42 0 3px, #A5814F 3px 6px), #8C6A42; box-shadow: inset 0 0 0 2px #6E5232, inset 0 0 0 4px rgba(241,236,225,.35), 0 2px 4px rgba(0,0,0,.25); text-shadow: 0 1px 1px rgba(42,33,27,.7); }
+.torn-tag { background: #FBF6EA; transform-origin: left center; box-shadow: 0 2px 4px -2px rgba(42,33,27,.4);
+  clip-path: polygon(0 6%, 4% 0, 12% 5%, 22% 1%, 33% 6%, 45% 0, 57% 5%, 68% 1%, 80% 6%, 91% 1%, 100% 5%, 98% 50%, 100% 95%, 90% 100%, 78% 95%, 66% 100%, 54% 94%, 42% 100%, 30% 95%, 18% 100%, 8% 95%, 0 100%, 2% 50%); }
+@media (min-width: 1024px) { .check-panel { --check-ink: #F1ECE1; } }

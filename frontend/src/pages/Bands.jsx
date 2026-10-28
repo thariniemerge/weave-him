@@ -32,7 +32,7 @@ export default function Bands() {
   return (
     <Page>
       <header className="flex items-center justify-between h-12 mb-2">
-        <Link to="/strand/7" aria-label="Back" data-testid="back-button" className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)]">
+        <Link to="/strand/10" aria-label="Back" data-testid="back-button" className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)]">
           <ChevronLeft className="w-6 h-6" strokeWidth={1.5} />
         </Link>
         <SoundToggle />
@@ -44,7 +44,7 @@ export default function Bands() {
       <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
       <PanelOrInline>
         <div className="w-full max-w-[230px] lg:max-w-[440px] mx-auto mt-2" data-testid="bands-preview">
-          <Medallion band={orderBands(labels, picked)} strands={7} label="Your wicker husband wearing the chosen strands" />
+          <Medallion band={orderBands(labels, picked)} strands={10} label="Your wicker husband wearing the chosen strands" />
         </div>
       </PanelOrInline>
       <div className="flex flex-wrap justify-center gap-2 mt-3" data-testid="band-choices">

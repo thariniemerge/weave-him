@@ -14,7 +14,7 @@ export const BuildingHusband = ({ done }) => {
         <Medallion band={band} strands={done} finished={false} label="Your wicker husband, part-woven" />
       </div>
       <p className="f-sc text-center text-[16px] mt-4 text-[color:#F1ECE1]">
-        {done ? `${ROMAN[done]} of VII strands woven` : "The basketmaker awaits the first strand"}
+        {done ? `${ROMAN[done]} of X strands woven` : "The basketmaker awaits the first strand"}
       </p>
     </div>
   );

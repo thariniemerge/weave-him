@@ -31,9 +31,10 @@ function useTexts(root, p, name, lines) {
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-// Reveal line (top of the woven part) per answered strand, by his anatomy: lower abs, upper abs, chest,
-// shoulders, neck, chin, then face and hair. Shared across screens so the line only ever grows upward.
-const LEVELS = [600, 572, 546, 470, 432, 416, 392, 84];
+// Reveal line (top of the woven part) per answered strand, by his anatomy: lower abs up to the chin over
+// strands I-IX, then face and hair last at X. Shared across screens so the line only ever grows upward.
+const LEVELS = [600, 572, 549, 527, 504, 482, 459, 437, 414, 392, 84];
+const LAST = LEVELS.length - 1;
 let lastStrands = null;
 
 function useReveal(root, p, strands, finished, named, fadeOnly) {
@@ -49,11 +50,11 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
       return;
     }
     fig.setAttribute("mask", `url(#${p}reveal-mask)`);
-    const y = fadeOnly ? LEVELS[7] : LEVELS[strands];
+    const y = fadeOnly ? LEVELS[LAST] : LEVELS[strands];
     if (fadeOnly && rect.dataset.y) {
       // reduced motion: no wipe, he simply fades in at the end
       rect.style.transition = "opacity .6s ease";
-      rect.style.opacity = strands === 7 ? 1 : 0;
+      rect.style.opacity = strands === LAST ? 1 : 0;
     }
     if (!rect.dataset.y) {
       // first paint of this instance: start from the last level any screen showed (never from top or bottom),
@@ -65,15 +66,15 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
       [rect, edge].forEach((el) => { el.style.transform = `translateY(${from}px)`; });
       [...late, ribbon].forEach((el) => { el.style.opacity = finished && !grow ? 1 : 0; });
       edge.style.opacity = 0;
-      if (fadeOnly) rect.style.opacity = strands === 7 && !grow ? 1 : 0;
+      if (fadeOnly) rect.style.opacity = strands === LAST && !grow ? 1 : 0;
       rect.getBoundingClientRect();
       all.forEach((el) => { el.style.transition = ""; });
-      if (fadeOnly) { rect.style.transition = "opacity .6s ease"; rect.style.opacity = strands === 7 ? 1 : 0; }
+      if (fadeOnly) { rect.style.transition = "opacity .6s ease"; rect.style.opacity = strands === LAST ? 1 : 0; }
     }
     [rect, edge].forEach((el) => { el.style.transform = `translateY(${y}px)`; });
     rect.dataset.y = y;
     lastStrands = strands;
-    const edgeOn = !fadeOnly && strands > 0 && !(strands === 7 && finished);
+    const edgeOn = !fadeOnly && strands > 0 && !(strands === LAST && finished);
     edge.style.transitionDelay = edgeOn ? "0s" : "0s, .8s";
     edge.style.opacity = edgeOn ? 1 : 0;
     late.forEach((el) => { el.style.transitionDelay = finished ? ".8s" : "0s"; el.style.opacity = finished ? 1 : 0; });

@@ -10,7 +10,7 @@ const TINTS = ["var(--paper)", "var(--paper)", "var(--paper)", "var(--paper)"];
 
 const SHAKE = { x: [0, -7, 7, -5, 5, 0], transition: { duration: 0.4 } };
 
-const Option = ({ opt, i, active, onPick, shake }) => (
+export const Option = ({ opt, i, active, onPick, shake }) => (
   <motion.button animate={shake ? SHAKE : { x: 0 }}
     data-testid={`option-${opt.id}`} onClick={onPick} aria-pressed={active}
     className={`w-full min-h-[56px] flex items-center justify-between gap-3 pl-5 pr-3 py-2 rounded-full text-left transition-[background-color,color,transform,box-shadow] duration-300 active:scale-[0.985] ${active ? "bg-[color:var(--moss)] text-[color:var(--paper)] shadow-[0_8px_16px_-8px_rgba(38,48,42,.85)] border border-[color:#33402f]" : "border border-dashed border-[color:#9AA38A]"}`}

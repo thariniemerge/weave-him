@@ -3,7 +3,8 @@ import { PORTRAIT } from "../assets/medallionK";
 import { scoped, faceParts, applyPose } from "./face";
 
 const W = 1080, H = 1920, FPS = 30, SECONDS = 6;
-const SKY = { x: 280.6, y: 456.6, w: 523.5, h: 757.2 };
+// The card's portrait oval (sky box grown 26px/30px so it tucks under the frame's inner rim)
+const SKY = { x: 254.6, y: 426.6, w: 575.5, h: 817.2 };
 // His face inside the sky box (brows to chin), redrawn each frame with a feathered edge
 const PATCH = { x: 150, y: 250, w: 230, h: 205 };
 

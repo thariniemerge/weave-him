@@ -12,7 +12,7 @@ import { PanelOrInline } from "../components/weave/Layout";
 import { play, startLoop, stopLoop } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 
-const STEP_MS = 680;
+const STEP_MS = 460;
 const FALLBACK_MS = 9000;
 // face weaves in (0.8s), then the heart pulses and the bands appear
 const FINISH_MS = 2600;
@@ -75,23 +75,23 @@ export default function Weaving() {
     ["400 40px 'Grenze Gotisch'", "500 20px 'Cormorant Garamond'", "italic 400 20px 'Cormorant Garamond'", "600 20px 'Cormorant SC'", "400 20px 'EB Garamond'"]
       .forEach((f) => document.fonts.load(f).catch(() => {}));
   }, []);
-  useEffect(() => { if (step > 0) play("pluck", { rate: [1, 1.12, 1.26, 1.33, 1.5, 1.68, 2][step - 1] }); }, [step]);
-  // Strands I-VI weave him up to the chin on a timer; his face waits for the vows (or the 9s fallback)
+  useEffect(() => { if (step > 0) play("pluck", { rate: [1, 1.06, 1.12, 1.19, 1.26, 1.33, 1.41, 1.5, 1.68, 2][step - 1] }); }, [step]);
+  // Strands I-IX weave him up to the chin on a timer; his face waits for the vows (or the 9s fallback)
   const [late, setLate] = useState(false);
   useEffect(() => {
-    const t = setInterval(() => setStep((s) => (s < 6 ? s + 1 : s)), reduce ? 400 : STEP_MS);
+    const t = setInterval(() => setStep((s) => (s < 9 ? s + 1 : s)), reduce ? 400 : STEP_MS);
     const f = setTimeout(() => setLate(true), FALLBACK_MS);
     return () => { clearInterval(t); clearTimeout(f); };
   }, [reduce]);
   useEffect(() => {
-    if (skip) { setStep(7); return; }
-    if (step === 6 && (husband || late)) {
-      const t = setTimeout(() => setStep(7), 350);
+    if (skip) { setStep(10); return; }
+    if (step === 9 && (husband || late)) {
+      const t = setTimeout(() => setStep(10), 350);
       return () => clearTimeout(t);
     }
   }, [step, husband, late, skip]);
   useEffect(() => {
-    if (husband && step >= 7) {
+    if (husband && step >= 10) {
       const t = setTimeout(() => nav(`/meet/${husband.id}`, { replace: true }), skip ? 0 : FINISH_MS);
       return () => clearTimeout(t);
     }
@@ -99,7 +99,7 @@ export default function Weaving() {
 
   if (!ready) return <Navigate to="/strand/1" replace />;
   const tags = hoopTags(answers);
-  const p = step / 7;
+  const p = step / 10;
   const band = buildPayload(answers).band;
 
   return (
@@ -108,13 +108,13 @@ export default function Weaving() {
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <PanelOrInline>
       <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
-        <div className="w-[72%] mx-auto"><Medallion band={band} strands={step} finished={step >= 7} pulse fadeOnly={!!reduce} name={step >= 7 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
+        <div className="w-[72%] mx-auto"><Medallion band={band} strands={step} finished={step >= 10} pulse fadeOnly={!!reduce} name={step >= 10 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>
       <h1 className="f-cg font-bold italic text-[32px] mt-3 text-center">{COPY.weaving}</h1>
-      <p data-testid="weaving-strand-count" className="f-sc text-[14px] mt-1">Strand {ROMAN[Math.max(1, step)]} of VII</p>
-      <div className="mt-3"><HeartsRow current={Math.min(step + 1, 7)} done={step} size="w-[26px]" /></div>
+      <p data-testid="weaving-strand-count" className="f-sc text-[14px] mt-1">Strand {ROMAN[Math.max(1, step)]} of X</p>
+      <div className="mt-3"><HeartsRow current={Math.min(step + 1, 10)} done={step} size="w-[20px]" now="w-[26px]" /></div>
       <div className="relative w-[70%] mt-6" style={{ aspectRatio: "192 / 102" }}>
         <Art name="loom" className="absolute inset-0 w-full h-full" />
         <div className="absolute left-[9%] right-[9%] top-[22%] transition-[height] duration-500 ease-out bg-[color:#fbf7ef]"

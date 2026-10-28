@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { SLIDERS } from "../content";
 
 const KEY = "weave-him-answers";
-const blank = () => ({ q1: null, q2: null, q3: null, q4: null, q7: null, remembers: [], sliders: Object.fromEntries(SLIDERS.map((s) => [s.key, s.def])) });
+const blank = () => ({ q1: null, q2: null, q3: null, q4: null, q7: null, remembers: [], goal: null, interests: [], musts: [], sliders: Object.fromEntries(SLIDERS.map((s) => [s.key, s.def])) });
 const Ctx = createContext(null);
 
 export function AnswersProvider({ children }) {
