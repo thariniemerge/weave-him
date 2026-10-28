@@ -1,10 +1,10 @@
 import { useEffect, useRef } from "react";
+import { EXPRESSIONS, HOLD, TAP_ORDER, frameSrc } from "../content";
 
-// He is a painting, so he moves only with light: breathing (CSS), a warm shimmer across the weave,
-// floating red hearts and a soft glow pulse. Nothing is drawn on top of his face.
-export const LIGHTS = ["shimmer", "hearts", "glow"];
-const ALIAS = { smile: "glow", wink: "hearts", kiss: "hearts", blush: "glow" };
-const DUR = { shimmer: 1800, hearts: 2600, glow: 1500 };
+// His emotions are the user's aligned expression frames, crossfaded over the neutral one. Nothing is drawn.
+const IN = 300, OUT = 350, BLINK = 150;
+const MOODS = TAP_ORDER;
+const ALIAS = { hearts: "heart_eyes" };
 
 const subs = new Set();
 export const emote = (name) => subs.forEach((f) => f(ALIAS[name] || name));
@@ -16,32 +16,86 @@ export const scoped = (raw) => {
   return [p, raw.replace(/id="/g, `id="${p}`).replace(/url\(#/g, `url(#${p}`).replace(/href="#/g, `href="#${p}`)];
 };
 
-// Restart a CSS light animation on the medallion wrapper
-export function flash(el, name) {
-  if (!el || !DUR[name]) return;
-  const cls = `mk-${name}`;
+// Fetch and decode all nine frames of one husband (once)
+const cache = new Map();
+const loaded = new Set();
+export const framesLoaded = (slug) => loaded.has(slug);
+export function preloadFrames(slug) {
+  if (!slug) return Promise.resolve();
+  if (!cache.has(slug)) {
+    cache.set(slug, Promise.all(EXPRESSIONS.map((e) => { const i = new Image(); i.src = frameSrc(slug, e); return i.decode().catch(() => {}); }))
+      .then(() => { loaded.add(slug); }));
+  }
+  return cache.get(slug);
+}
+
+// Stack his eight expression frames over the neutral image, all hidden
+export function mountFrames(group, neutral, slug) {
+  group.innerHTML = "";
+  const layers = {};
+  EXPRESSIONS.slice(1).forEach((e) => {
+    const el = neutral.cloneNode();
+    el.removeAttribute("id");
+    el.setAttribute("href", frameSrc(slug, e));
+    el.setAttribute("opacity", "0");
+    el.dataset.expr = e;
+    group.appendChild(el);
+    layers[e] = el;
+  });
+  return layers;
+}
+
+// Restart a CSS animation class on the medallion wrapper (floating hearts)
+function flash(el, cls, ms = 1700) {
+  if (!el) return;
   el.classList.remove(cls);
   void el.getBoundingClientRect();
   el.classList.add(cls);
   clearTimeout(el[`_${cls}`]);
-  el[`_${cls}`] = setTimeout(() => el.classList.remove(cls), DUR[name]);
+  el[`_${cls}`] = setTimeout(() => el.classList.remove(cls), ms);
 }
 
-// Ambient light every 6-9s (with `ambient`), emote() from anywhere, and tap = glow + hearts
-export function useLight(ref, { ambient = false, reduce = false }) {
-  const n = useRef(0);
+// Plays expressions on the stacked layers. With `ambient`: blink every 3-5s and a random emotion every 6-9s.
+// Reduced motion: no autoplay and no hearts, but a tap still swaps instantly.
+export function useExpressions(wrap, layers, { ambient = false, reduce = false }) {
+  const st = useRef({ cur: null, timers: [], i: 0 });
+  const later = (fn, ms) => st.current.timers.push(setTimeout(fn, ms));
+  const set = (el, o, ms) => { el.style.transition = ms ? `opacity ${ms}ms ease` : "none"; el.style.opacity = o; };
+  const play = (name) => {
+    const L = layers.current, s = st.current;
+    if (!L || !L[name]) return;
+    if (name === "blink") {
+      if (s.cur) return;
+      set(L.blink, 1, 0);
+      later(() => set(L.blink, 0, 0), BLINK);
+      return;
+    }
+    s.timers.forEach(clearTimeout); s.timers = [];
+    const fade = reduce ? 0 : IN, back = reduce ? 0 : OUT;
+    Object.entries(L).forEach(([k, el]) => k !== name && set(el, 0, back));
+    set(L[name], 1, fade);
+    s.cur = name;
+    wrap.current?.setAttribute("data-emotion", name);
+    if (!reduce && name === "kiss") flash(wrap.current, "mk-kiss");
+    if (!reduce && name === "heart_eyes") flash(wrap.current, "mk-hearteyes");
+    later(() => {
+      set(L[name], 0, back);
+      later(() => { s.cur = null; wrap.current?.setAttribute("data-emotion", "neutral"); }, back);
+    }, fade + HOLD[name] * 1000);
+  };
   useEffect(() => {
     if (reduce) return;
-    const f = (name) => flash(ref.current, name);
-    subs.add(f);
-    return () => { subs.delete(f); };
-  }, [reduce, ref]);
+    subs.add(play);
+    return () => { subs.delete(play); };
+  });
+  useEffect(() => () => st.current.timers.forEach(clearTimeout), []);
   useEffect(() => {
     if (!ambient || reduce) return;
-    let t;
-    const loop = () => { t = setTimeout(() => { flash(ref.current, n.current++ % 2 ? "hearts" : "shimmer"); loop(); }, 6000 + Math.random() * 3000); };
-    loop();
-    return () => clearTimeout(t);
-  }, [ambient, reduce, ref]);
-  return () => { if (!reduce) { flash(ref.current, "glow"); flash(ref.current, "hearts"); } };
+    let b, m;
+    const blinkLoop = () => { b = setTimeout(() => { play("blink"); blinkLoop(); }, 3000 + Math.random() * 2000); };
+    const moodLoop = () => { m = setTimeout(() => { if (!st.current.cur) play(MOODS[Math.floor(Math.random() * MOODS.length)]); moodLoop(); }, 6000 + Math.random() * 3000); };
+    blinkLoop(); moodLoop();
+    return () => { clearTimeout(b); clearTimeout(m); };
+  }, [ambient, reduce]); // eslint-disable-line react-hooks/exhaustive-deps
+  return () => { play(TAP_ORDER[st.current.i % TAP_ORDER.length]); st.current.i += 1; };
 }

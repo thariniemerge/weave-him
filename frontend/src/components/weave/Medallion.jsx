@@ -1,8 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 import { MEDALLION } from "../../assets/medallion";
-import { scoped, useLight } from "../../lib/face";
-import { PORTRAITS, portraitSrc } from "../../content";
+import { scoped, useExpressions, mountFrames } from "../../lib/face";
+import { PORTRAITS, portraitSrc, frameSrc, lipsOf } from "../../content";
 import { bandLines } from "../../lib/weave";
 
 const NAME_MAX = 320;
@@ -38,7 +38,7 @@ const LEVELS = [600, 575, 551, 527, 503, 479, 455, 431, 407, 384, 30];
 const LAST = LEVELS.length - 1;
 let lastStrands = null;
 
-function useReveal(root, p, strands, finished, named, fadeOnly) {
+function useReveal(root, p, strands, finished, named, fadeOnly, showBands) {
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
     const fig = q("figure"), rect = q("reveal-rect"), edge = q("reveal-edge");
@@ -90,32 +90,38 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
     ribbon.style.opacity = finished && named ? 1 : 0;
     weave.style.transition = "opacity 1s ease .7s";
     weave.style.opacity = color ? 0 : 1;
-  }, [strands, finished, named, fadeOnly]); // eslint-disable-line react-hooks/exhaustive-deps
+    if (showBands) { late[0].style.transitionDelay = "0s"; late[0].style.opacity = 1; }
+  }, [strands, finished, named, fadeOnly, showBands]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 // The medallion frame as one piece, with her painted husband in the oval: bottom-anchored, clipped by the oval.
 // `portrait` picks the painting; `strands` (0-10) weaves him bottom-up in raw willow; `finished` blooms his colours
 // and adds the heart (pulsing once with `pulse`), bands and ribbon. He moves only with light.
-export function Medallion({ name, band, portrait, alive = false, strands, finished = true, pulse = false, fadeOnly = false, testid = "medallion", label }) {
+export function Medallion({ name, band, portrait, alive = false, strands, finished = true, pulse = false, fadeOnly = false, showBands = false, testid = "medallion", label }) {
   const reduce = useReducedMotion();
   const [[p, html]] = useState(() => scoped(MEDALLION));
   const root = useRef(null);
   const wrap = useRef(null);
-  const tap = useLight(wrap, { ambient: alive, reduce });
+  const layers = useRef(null);
+  const tap = useExpressions(wrap, layers, { ambient: alive, reduce });
   useLayoutEffect(() => { if (!root.current.firstChild) root.current.innerHTML = html; }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
     const slug = portrait || PORTRAITS[0].slug;
-    ["img-color", "img-glow", "img-mask"].forEach((id) => q(id).setAttribute("href", portraitSrc(slug)));
+    q("img-color").setAttribute("href", frameSrc(slug, "neutral"));
     q("img-weave").setAttribute("href", portraitSrc(slug, "-weave"));
-  }, [portrait]); // eslint-disable-line react-hooks/exhaustive-deps
+    const [lx, ly] = lipsOf(slug);
+    q("lips-at").setAttribute("transform", `translate(${92 + lx * 416},${42.2 + ly * 555.8})`);
+    // only a living husband (Meet him) carries the expression frames
+    layers.current = alive ? mountFrames(q("emo"), q("img-color"), slug) : null;
+  }, [portrait, alive]); // eslint-disable-line react-hooks/exhaustive-deps
   useTexts(root, p, name, bandLines(band));
-  useReveal(root, p, strands, finished, !!name, fadeOnly);
+  useReveal(root, p, strands, finished, !!name, fadeOnly, showBands);
   return (
     <div ref={wrap} className={`medallion relative w-full${reduce ? "" : " breathing"}${pulse && finished ? " mk-pulse" : ""}`} data-testid={testid}
-      data-portrait={portrait || PORTRAITS[0].slug} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
+      data-portrait={portrait || PORTRAITS[0].slug} data-emotion="neutral" role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
       <div ref={root} />
-      {alive && <button type="button" aria-label="Make him glow" onClick={tap} data-testid="face-tap-target"
+      {alive && <button type="button" aria-label="Make him react" onClick={tap} data-testid="face-tap-target"
         className="absolute rounded-full cursor-pointer" style={{ left: "24%", top: "10%", width: "52%", height: "56%" }} />}
     </div>
   );

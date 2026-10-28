@@ -16,7 +16,7 @@ import { ShareReveal } from "../components/weave/ShareReveal";
 import { toast } from "sonner";
 import { useAnswers } from "../lib/store";
 import { Medallion } from "../components/weave/Medallion";
-import { emote } from "../lib/face";
+import { emote, preloadFrames, framesLoaded } from "../lib/face";
 import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
@@ -58,13 +58,16 @@ export default function Meet({ isPublic = false }) {
   const mine = !isPublic && isMine(id);
 
   useEffect(() => { if (!h) getHusband(id).then(setH).catch(() => setMissing(true)); }, [id, h]);
+  // all nine of his expression frames are decoded before he appears, so nothing flashes or swaps late
+  const [framesReady, setFramesReady] = useState(() => !!h && framesLoaded(h.portrait));
+  useEffect(() => { if (h) preloadFrames(h.portrait).then(() => setFramesReady(true)); }, [h?.portrait]); // eslint-disable-line react-hooks/exhaustive-deps
   useEffect(() => { if (isPublic && h) document.title = `Meet ${h.name} · Weave Him`; }, [h, isPublic]);
   useEffect(() => {
-    if (!h?.id) return;
+    if (!h?.id || !framesReady) return;
     play("harp"); duckMusic();
     const t = setTimeout(() => emote("smile"), 700);
     return () => clearTimeout(t);
-  }, [h?.id]);
+  }, [h?.id, framesReady]);
 
   const [reveal, setReveal] = useState(false);
   const onShare = () => { play("paper"); blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
@@ -86,7 +89,7 @@ export default function Meet({ isPublic = false }) {
       <Link to="/" className="text-link mt-4" data-testid="missing-home-link">{COPY.weaveOwn}</Link>
     </Page>
   );
-  if (!h) return <Page className="items-center justify-center"><p className="f-cg italic text-[20px]">Unrolling the parchment…</p></Page>;
+  if (!h || !framesReady) return <Page className="items-center justify-center"><p className="f-cg italic text-[20px]">Unrolling the parchment…</p></Page>;
 
   return (
     <Page>

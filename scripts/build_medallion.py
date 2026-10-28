@@ -16,7 +16,7 @@ def sub1(pat, rep, s, flags=re.S):
 
 
 HEART = "M0,9 C-13,0 -13,-10 -6.5,-10 C-3,-10 0,-7 0,-4 C0,-7 3,-10 6.5,-10 C13,-10 13,0 0,9Z"
-# Portrait box: the oval's width (92..508), bottom-anchored at the oval's foot (598); PNGs are 1500x2004
+# Portrait box: the oval's width (92..508), bottom-anchored at the oval's foot (598); frames are 1000x1336 (same as the 1500x2004 PNGs)
 X, W = 92, 416
 H = round(W * 2004 / 1500, 1)
 Y = round(598 - H, 1)
@@ -24,30 +24,30 @@ IMG = f'x="{X}" y="{Y}" width="{W}" height="{H}" preserveAspectRatio="xMidYMax m
 
 figure = (
     '<g id="figure"><g id="breath">'
-    f'<image id="img-glow" {IMG} filter="url(#him-glow)" opacity="0"/>'
     f'<image id="img-color" {IMG}/>'
+    # his expression frames (the user's aligned PNGs) are stacked here and crossfaded over the neutral one
+    '<g id="emo"></g>'
     f'<image id="img-weave" {IMG} opacity="1"/>'
-    # warm light sweeping across the weave, only where he is painted
-    f'<g mask="url(#him-mask)"><rect id="shimmer" x="-150" y="0" width="130" height="760" fill="url(#shimmer-grad)" opacity="0" style="mix-blend-mode:screen"/></g>'
     '</g></g>'
 )
 svg = sub1(r'<g id="figure">.*?</svg></g>', figure, svg)
 assert "K-" not in svg and 'id="Kw"' not in svg
 
-# Red hearts that float up from his brooch; invisible until played
-fl = "".join(f'<g transform="translate({x},{y})"><path class="mk-fl" opacity="0" style="--dx:{dx}px;--s:{s}" d="{HEART}" fill="#B3263A"/></g>'
-             for x, y, s, dx in [(306, 430, .9, 40), (292, 424, .7, -34), (314, 418, .6, 12)])
+# Red hearts that float up: from his brooch (heart eyes) and from his lips (kiss; placed per portrait in JS)
+def hearts(pts):
+    return "".join(f'<g transform="translate({x},{y})"><path class="mk-fl" opacity="0" style="--dx:{dx}px;--s:{s}" d="{HEART}" fill="#B3263A"/></g>'
+                   for x, y, s, dx in pts)
+
+
+fl = (f'<g id="float-brooch">{hearts([(306, 430, .8, 40), (292, 424, .6, -34), (314, 418, .5, 12)])}</g>'
+      f'<g id="float-lips"><g id="lips-at">{hearts([(0, 0, .45, 30), (6, -6, .35, 52), (-4, -2, .32, 16), (8, 4, .28, 66)])}</g></g>')
 svg = sub1(r'(\n <g id="bands">)', f'\n <g id="floaters">{fl}</g>' + r'\1', svg)
 
 svg = sub1(r"<defs>", '<defs>\n <mask id="reveal-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760">'
            '<rect id="reveal-rect" x="0" y="0" width="600" height="760" fill="#fff"/></mask>'
            '\n <linearGradient id="reveal-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9C878" stop-opacity="0"/>'
            '<stop offset=".5" stop-color="#F3D58C" stop-opacity=".9"/><stop offset="1" stop-color="#E9C878" stop-opacity="0"/></linearGradient>'
-           f'\n <mask id="him-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760" style="mask-type:alpha"><image id="img-mask" {IMG}/></mask>'
-           '\n <linearGradient id="shimmer-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE3A8" stop-opacity="0"/>'
-           '<stop offset=".5" stop-color="#FFE9B8" stop-opacity=".55"/><stop offset="1" stop-color="#FFE3A8" stop-opacity="0"/></linearGradient>'
-           '\n <filter id="him-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="9"/>'
-           '<feColorMatrix values="0 0 0 0 1  0 0 0 0 .82  0 0 0 0 .52  0 0 0 1.6 0"/></filter>', svg)
+           , svg)
 svg = sub1(r'(\n <g id="heart")', '\n <g id="reveal-edge" opacity="0"><rect x="0" y="-9" width="600" height="18" fill="url(#reveal-gold)"/>'
            r'<rect x="0" y="-.7" width="600" height="1.4" fill="#FFF1C8" opacity=".9"/></g>\1', svg)
 svg = sub1(r'<svg ([^>]*?) width="600" height="760" id="medallion">',

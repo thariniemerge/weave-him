@@ -213,25 +213,22 @@ main [data-testid=question-card] h1, main [data-testid=question-card] h2 { text-
 /* contrast rule: anything selected sits on moss/wine, so its text is bone */
 [aria-pressed=true]:not([data-testid=sound-toggle]) { color: #F1ECE1; }
 
-/* Medallion: one SVG frame with his painted portrait; he moves only with light */
+/* Medallion: one SVG frame with his painted expression frames; emotions are crossfades (lib/face.js) */
 .medallion svg { width: 100%; height: auto; display: block; }
 .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: transform .8s cubic-bezier(0,0,.2,1), opacity .4s ease; }
 .medallion [id$="-bands"], .medallion [id$="-heart"], .medallion [id$="-ribbon"] { transition: opacity .8s ease; }
 .medallion [id$="-breath"] { transform-box: fill-box; transform-origin: 50% 100%; }
-.medallion.breathing [id$="-breath"] { animation: mk-breathe 4.2s ease-in-out infinite; }
+.medallion.breathing [id$="-breath"] { animation: mk-breathe 5s ease-in-out infinite; }
 @keyframes mk-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.012); } }
-.mk-shimmer [id$="-shimmer"] { animation: mk-sweep 1.8s ease-in-out; }
-@keyframes mk-sweep { 0% { opacity: 0; transform: translateX(0) skewX(-14deg); } 20%, 75% { opacity: 1; } 100% { opacity: 0; transform: translateX(780px) skewX(-14deg); } }
-.mk-glow [id$="-img-glow"] { animation: mk-glow 1.5s ease-in-out; }
-@keyframes mk-glow { 0%, 100% { opacity: 0; } 40% { opacity: .75; } }
-.mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.mk-fl { opacity: 0; transform-box: fill-box; transform-origin: center; filter: drop-shadow(0 0 3px rgba(224,74,90,.65)); }
 .mk-pulse [id$="-heart"] > * { transform-box: fill-box; transform-origin: center; animation: mk-pulse .9s ease-in-out .9s; }
 @keyframes mk-pulse { 40% { transform: scale(1.45); } 70% { transform: scale(.95); } }
-.mk-hearts .mk-fl { animation: mk-rise 2.1s ease-out forwards; }
-.mk-hearts [id$="-floaters"] > :nth-child(2) .mk-fl { animation-delay: .35s; }
-.mk-hearts [id$="-floaters"] > :nth-child(3) .mk-fl { animation-delay: .7s; }
-@keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -150px) scale(calc(var(--s) * 1.25)); } }
-@media (prefers-reduced-motion: reduce) { .mk-hearts .mk-fl, .mk-pulse [id$="-heart"] > *, .mk-shimmer [id$="-shimmer"], .mk-glow [id$="-img-glow"], .medallion [id$="-breath"] { animation: none !important; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }
+.mk-hearteyes [id$="-float-brooch"] .mk-fl, .mk-kiss [id$="-lips-at"] .mk-fl { animation: mk-rise 1.5s ease-out forwards; }
+.mk-hearteyes [id$="-float-brooch"] > :nth-child(2) .mk-fl, .mk-kiss [id$="-lips-at"] > :nth-child(2) .mk-fl { animation-delay: .2s; }
+.mk-hearteyes [id$="-float-brooch"] > :nth-child(3) .mk-fl, .mk-kiss [id$="-lips-at"] > :nth-child(3) .mk-fl { animation-delay: .4s; }
+.mk-kiss [id$="-lips-at"] > :nth-child(4) .mk-fl { animation-delay: .55s; }
+@keyframes mk-rise { 0% { opacity: 0; transform: scale(calc(var(--s) * .6)); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(var(--dx), -110px) scale(calc(var(--s) * 1.2)); } }
+@media (prefers-reduced-motion: reduce) { .mk-fl, .mk-pulse [id$="-heart"] > *, .medallion [id$="-breath"] { animation: none !important; } .medallion [id$="reveal-rect"], .medallion [id$="reveal-edge"] { transition: none; } }
 
 /* Suitors on file: parchment cards, woven monograms, torn-paper "no" tags */
 .parchment-card { background: linear-gradient(160deg, #F4EEDF, #E9E0CC); border: 1px solid rgba(74,58,46,.28); box-shadow: 0 6px 14px -8px rgba(31,40,35,.55), inset 0 0 0 3px rgba(244,238,223,.9), inset 0 0 0 4px rgba(74,58,46,.16); color: #2A211B; }

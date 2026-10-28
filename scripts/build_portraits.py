@@ -12,7 +12,8 @@ TARGET = 0.42  # same mean brightness for every sepia figure
 for s in SLUGS:
     im = Image.open(SRC / "transparent" / f"{s}.png").convert("RGBA")
     im = im.resize((W, round(im.height * W / im.width)), Image.LANCZOS)
-    im.save(OUT / f"{s}.webp", "WEBP", quality=88, method=6)
+    # sepia comes from his neutral expression frame so the bloom lines up exactly
+    im = Image.open(Path("/app/scripts/emotions") / s / "neutral.webp").convert("RGBA").resize((W, round(1336 * W / 1000)), Image.LANCZOS)
     a = im.split()[3]
     g = ImageOps.grayscale(im.convert("RGB"))
     mean = ImageStat.Stat(g, mask=a.point(lambda v: 255 if v > 128 else 0)).mean[0] / 255

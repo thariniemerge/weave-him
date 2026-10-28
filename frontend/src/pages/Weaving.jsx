@@ -6,6 +6,7 @@ import { HeartsRow } from "../components/weave/StrandHeader";
 import { COPY, ROMAN } from "../content";
 import { useAnswers } from "../lib/store";
 import { buildPayload, hoopTags, isComplete, pickPortrait } from "../lib/weave";
+import { preloadFrames } from "../lib/face";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
@@ -49,7 +50,8 @@ export default function Weaving() {
   const [skip, setSkip] = useState(false);
   const started = useRef(false);
   const ready = isComplete(answers);
-
+  // his nine expression frames load while he is being woven, ready for Meet him
+  useEffect(() => { if (ready) preloadFrames(husband?.portrait || pickPortrait(answers)); }, [husband?.portrait]); // eslint-disable-line react-hooks/exhaustive-deps
   const weave = () => {
     setError(false);
     const payload = buildPayload(answers);

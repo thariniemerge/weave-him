@@ -202,14 +202,20 @@ export const TOTAL_STRANDS = 10;
 
 // Her husband's painted portrait, chosen from her answers. Signs: "q1:coffee" (a pick), "love:low"/"love:high" (a slider side), "rem:song" (a remembered thing).
 export const PORTRAITS = [
-  { slug: "golden-willow", name: "Golden Willow", signs: ["q1:coffee", "love:low", "feel:low", "q4:small", "q7:safe"] },
-  { slug: "candlelit-rogue", name: "Candlelit Rogue", signs: ["love:high", "feel:high", "q4:voice", "q7:seen", "rem:song"] },
-  { slug: "sunlit-curls", name: "Sunlit Curls", signs: ["q3:laugh", "q2:pancakes", "out:high", "q7:amused", "rem:jokes"] },
-  { slug: "lantern-woodsman", name: "Lantern Woodsman", signs: ["q1:holds", "q4:fixing", "q3:squeeze", "q2:adventure", "q7:alone"] },
-  { slug: "moorland-scholar", name: "Moorland Scholar", signs: ["q1:vent", "q2:reads", "out:low", "q3:rehearse", "q3:won"] },
+  { slug: "golden-willow", lips: [0.53, 0.46], name: "Golden Willow", signs: ["q1:coffee", "love:low", "feel:low", "q4:small", "q7:safe"] },
+  { slug: "candlelit-rogue", lips: [0.57, 0.5], name: "Candlelit Rogue", signs: ["love:high", "feel:high", "q4:voice", "q7:seen", "rem:song"] },
+  { slug: "sunlit-curls", lips: [0.57, 0.4], name: "Sunlit Curls", signs: ["q3:laugh", "q2:pancakes", "out:high", "q7:amused", "rem:jokes"] },
+  { slug: "lantern-woodsman", lips: [0.6, 0.4], name: "Lantern Woodsman", signs: ["q1:holds", "q4:fixing", "q3:squeeze", "q2:adventure", "q7:alone"] },
+  { slug: "moorland-scholar", lips: [0.58, 0.45], name: "Moorland Scholar", signs: ["q1:vent", "q2:reads", "out:low", "q3:rehearse", "q3:won"] },
 ];
-export const PORTRAIT_V = 5;
+export const PORTRAIT_V = 6;
 export const portraitSrc = (slug, kind = "") => `/assets/husbands/${slug}${kind}.${kind === "-bg" ? "jpg" : "webp"}?v=${PORTRAIT_V}`;
+// His expression frames (aligned, same box as the portrait). Hold = seconds at full strength.
+export const EXPRESSIONS = ["neutral", "blink", "wink", "smile", "brow_raise", "blush", "heart_eyes", "kiss", "shy"];
+export const HOLD = { smile: 1.6, wink: 0.9, blush: 1.8, heart_eyes: 1.8, kiss: 1.5, shy: 1.8, brow_raise: 0.9 };
+export const TAP_ORDER = ["smile", "wink", "blush", "heart_eyes", "kiss", "shy", "brow_raise"];
+export const frameSrc = (slug, e) => `/assets/husbands/${slug}/${e}.webp?v=${PORTRAIT_V}`;
+export const lipsOf = (slug) => (PORTRAITS.find((p) => p.slug === slug) || PORTRAITS[0]).lips;
 
 // Strand VIII: what I'm looking for (pick one)
 export const GOALS = [

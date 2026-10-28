@@ -44,7 +44,7 @@ export default function Bands() {
       <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
       <PanelOrInline>
         <div className="w-full max-w-[230px] lg:max-w-[440px] mx-auto mt-2" data-testid="bands-preview">
-          <Medallion band={orderBands(labels, picked)} portrait={pickPortrait(answers)} strands={10} label="Your wicker husband wearing the chosen strands" />
+          <Medallion band={orderBands(labels, picked)} portrait={pickPortrait(answers)} strands={9} finished={false} showBands label="Your wicker husband wearing the chosen strands, his face still to be woven" />
         </div>
       </PanelOrInline>
       <div className="flex flex-wrap justify-center gap-2 mt-3" data-testid="band-choices">
