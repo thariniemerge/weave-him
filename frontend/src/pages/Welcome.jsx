@@ -72,6 +72,7 @@ export default function Welcome() {
       <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#4A5641]">
         {COPY.counter(count ?? "…")}
       </p>
+      <p data-testid="dinklage-line" className="f-cg italic text-center text-[15px] leading-snug mt-2 px-4 text-[color:var(--rose)] opacity-80">{COPY.dinklage}</p>
       <HowItWorks open={how} onOpenChange={setHow} />
     </Page>
   );

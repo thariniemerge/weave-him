@@ -43,12 +43,12 @@ BANNED = [
     "possess", "own you", "jealous", "obey", "touch", "desire", "lust", "curves", "face", "eyes", "figure", "dollars",
 ]
 
-SYSTEM_PROMPT = """You are the basketmaker of an 1800s workshop, weaving a wicker husband from a woman's answers.
+SYSTEM_PROMPT = """You are the basketmaker of a seaside village workshop, weaving a wicker husband from a woman's answers.
 Write his five vows to her.
 Rules:
 - Exactly 5 vows, each a single sentence (a short trailing fragment like "Even the third time." is allowed), max 18 words.
 - First person, each begins with "I'll".
-- Warm, specific to the strands given, lightly witty, Regency-tinged but modern-readable.
+- Warm, specific to the strands given, lightly witty, old-village fairy-tale tinged but modern-readable.
 - Never use em dashes or en dashes; use commas or full stops.
 - Never mention appearance, bodies, money, gifts of value, anything physical, romantic-physical or sexual, and nothing possessive or controlling.
 Example style:
@@ -59,10 +59,10 @@ I'll remember your mom's birthday, and I'll call her.
 I'll always leave the porch light on.
 Return ONLY a JSON array of 5 strings, nothing else."""
 
-REWEAVE_PROMPT = """You are the basketmaker of an 1800s workshop, reweaving ONE vow of a wicker husband.
+REWEAVE_PROMPT = """You are the basketmaker of a seaside village workshop, reweaving ONE vow of a wicker husband.
 Write a single replacement vow, different from the one being replaced and from his other vows.
 Rules: one sentence (a short trailing fragment like "Even the third time." is allowed), max 18 words, begins with "I'll",
-warm, specific to his strands, lightly witty, Regency-tinged but modern-readable.
+warm, specific to his strands, lightly witty, old-village fairy-tale tinged but modern-readable.
 Never use em dashes or en dashes; use commas or full stops.
 Never mention appearance, bodies, money, gifts of value, anything physical, romantic-physical or sexual, and nothing possessive.
 Return ONLY the vow text, nothing else."""

@@ -16,22 +16,23 @@ export const siteHost = () =>
   (CONFIG.SITE_URL || (isPreviewHost(window.location.host) ? CONFIG.PREVIEW_SITE_LABEL : window.location.host)).replace(/^https?:\/\//, "").replace(/^www\./, "").replace(/\/$/, "");
 
 export const COPY = {
-  guild: "The Weavers' Guild",
+  guild: "The Basketmaker's Workshop",
   howItWorks: "How it works",
   howSteps: [
     { title: "Answer", body: "Ten little questions, ten strands. Not one of them about his looks." },
-    { title: "Weave", body: "The basketmaker weaves my answers into willow & wicker, strand by strand." },
-    { title: "Meet him", body: "He arrives with an 1800s name and five vows, written just for me." },
+    { title: "Weave", body: "The basketmaker weaves my answers into willow, strand by strand. Mother Nature helps." },
+    { title: "Meet him", body: "He arrives with an old-village name and five vows, written just for me." },
   ],
-  kicker: "hand-woven for the Season",
+  kicker: "hand-woven, because the village won't stop asking",
   wordmark: "weave him",
   tagline: ["He's made of willow & wicker.", "So make him of what matters."],
   steps: ["Answer", "Weave", "Meet him"],
   cta: "Commission my husband",
-  villageToday: (n) => (n < 10 ? "The village is just waking up..." : `${n} husbands woven in the village today`),
-  villageTalking: "The village is already talking. Let them.",
+  dinklage: "Peter Dinklage can't be your basketmaker. But why should that stop you weaving your own ideal man?",
+  villageToday: (n) => (n < 10 ? "The village is just waking up..." : `${n} husbands woven today. The village is pretending not to look.`),
+  villageTalking: "Let the village talk. They'll be asking to borrow him by Sunday.",
   weavingFinishing: ["Tying the last knot…", "Pressing the seal…"],
-  weavingLoading: ["The Basket Weaver is soaking the willow...", "Weaving his shoulders...", "Checking for loose ends...", "Almost ready to meet you..."],
+  weavingLoading: ["The basketmaker is soaking the willow...", "Asking Mother Nature for a favour...", "Weaving him strong as a tree...", "Hiding him from the tailor's wife..."],
   counter: (n) => `${n} ${n === 1 ? "husband" : "husbands"} woven by hand · two minutes`,
   orderTitle: "Order for one husband",
   spinOwn: "Or, spin my own thread",
@@ -98,14 +99,14 @@ export const COPY = {
   bandsKicker: "Before he's woven",
   bandsTitle: ["Stitch his ", "bands"],
   bandsSub: "Choose three strands for him to wear. Tap them in order.",
-  shareText: (name) => `Meet ${name}, my wicker husband, woven by hand from what matters.`,
+  shareText: (name) => `Meet ${name}, my wicker husband. The village is already jealous.`,
   cardThumb: "His story card",
   cardThumbSub: "tap to view · 1080 × 1920",
   saveImage: "Save image",
   shareShort: "Share",
   reweave: "Reweave this vow",
   reweaveLeft: (n) => `${n} of 3 left`,
-  outOfWillow: "The basketmaker is out of willow.",
+  outOfWillow: "The basketmaker is out of willow. Even Mother Nature needs a day off.",
   reweaveTip: "tap a vow to reweave it",
 };
 
@@ -280,10 +281,10 @@ export const SUITORS = [
     no: { time: "is always out in the forest.", available: "shares his feelings only with the oak trees.", family: "brought your mother a live badger as a gift." } },
   { id: "scholar", name: "Edmund Pryce", title: "The Scholar", goal: "marriage", interests: ["books", "games", "films", "music"],
     no: { time: "is married to his library until Thursday.", kids: "would need to read three books on it first.", family: "corrected your grandmother's Latin. Twice." } },
-  { id: "captain", name: "Rafe Merriweather", title: "The Captain", goal: "serious", interests: ["travel", "fitness", "games", "dancing"],
-    no: { space: "salutes you good morning, noon and night.", time: "is at sea eight months of the year.", family: "challenged your brother to a duel over cards." } },
-  { id: "dandy", name: "Percival Finch", title: "The Dandy", goal: "unsure", interests: ["art", "markets", "films", "dancing"],
-    no: { honest: "said he loved your hat. He did not.", ambitious: "his one ambition is a finer waistcoat.", family: "spent the whole family dinner in the mirror." } },
+  { id: "fisherman", name: "Rafe Merriweather", title: "The Fisherman", goal: "serious", interests: ["travel", "fitness", "games", "dancing"],
+    no: { space: "mends his nets in your kitchen, every evening.", time: "is out on the boat from dawn till dark.", family: "came to Sunday lunch smelling of mackerel. Again." } },
+  { id: "tailor", name: "Percival Finch", title: "The Tailor", goal: "unsure", interests: ["art", "markets", "films", "dancing"],
+    no: { wants: "is already spoken for. His wife keeps eyeing your husband.", honest: "said he loved your hat. He did not.", ambitious: "his one ambition is a finer waistcoat.", family: "took your father's measurements without asking." } },
 ];
 // A must-have of her own words: none of them have heard of it yet
 export const CUSTOM_NO = "hasn't learned that one yet.";
