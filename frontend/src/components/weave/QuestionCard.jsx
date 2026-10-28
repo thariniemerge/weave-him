@@ -61,14 +61,14 @@ export const QuestionCard = ({ q, value, onChange }) => {
           <Option key={o.id} opt={o} i={i} active={others.some((p) => p.id === o.id)} shake={shake?.startsWith(`${o.id}-`) ? shake : null} onPick={() => toggle(o, i)} />
         ))}
       </div>
-      <label className="block f-sc text-[12px] mt-5 mb-1 text-[color:#4A5641]" htmlFor={`own-${q.key}`}>{COPY.spinOwn}</label>
+      <label className="block f-cg italic font-semibold text-center text-[17px] mt-5 mb-2 text-[color:var(--rose)]" htmlFor={`own-${q.key}`}>{COPY.spinOwn}</label>
       <motion.div animate={shake?.startsWith("custom-") ? SHAKE : { x: 0 }} key={shake?.startsWith("custom-") ? shake : "c"}
-        className={`flex items-center gap-2 border-b-2 border-dotted pb-1 ${custom ? "border-[color:var(--rose)]" : "border-[color:var(--peony)]"}`}>
+        className={`flex items-center gap-2 pl-4 pr-4 rounded-full border-2 transition-colors duration-300 ${custom ? "border-solid border-[color:var(--rose)] bg-[color:rgba(107,46,54,.08)]" : "border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]"}`}>
         <Feather className="w-5 h-5 text-[color:var(--rose)] shrink-0" strokeWidth={1.5} />
         <input
           id={`own-${q.key}`} data-testid="custom-answer-input" maxLength={60} value={text} placeholder={COPY.spinPlaceholder}
           onChange={(e) => onText(e.target.value)}
-          className="flex-1 min-h-[44px] bg-transparent outline-none f-cg italic text-[19px] placeholder:text-[color:#5E5A4E]"
+          className="flex-1 min-w-0 min-h-[52px] bg-transparent outline-none f-cg italic text-[19px] placeholder:text-[color:#5E5A4E]"
         />
         <span className="f-sc text-[11px] text-[color:#4A3A2E]">{text.length}/60</span>
       </motion.div>

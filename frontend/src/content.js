@@ -95,7 +95,7 @@ export const COPY = {
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
-  upToThree: "up to three",
+  upToThree: "up to two",
   bandsKicker: "Before he's woven",
   bandsTitle: ["Stitch his ", "bands"],
   bandsSub: "Choose three strands for him to wear. Tap them in order.",
@@ -142,7 +142,6 @@ export const QUESTIONS = [
     options: [
       { id: "coffee", label: "Brings me coffee without asking", strand: "coffee, unasked", tag: "coffee-bringer", band: "COFFEE", sentence: "you bring me coffee before I even think to ask" },
       { id: "vent", label: "Lets me vent. No fixing.", strand: "lets me vent", tag: "good listener", band: "LETS ME VENT", sentence: "you let me vent, and you never try to fix it" },
-      { id: "takeout", label: "Orders takeout, picks the movie", strand: "takeout & a film", tag: "film-picker", band: "TAKEOUT", sentence: "you order the takeout and pick the movie when I can't" },
       { id: "holds", label: "Just holds me. No words.", strand: "holds me, no words", tag: "quiet comfort", band: "HOLDS ME", sentence: "you just hold on, and never need any words" },
     ],
   },
@@ -151,14 +150,12 @@ export const QUESTIONS = [
     options: [
       { id: "pancakes", label: "Makes pancakes, badly", strand: "pancakes, badly", tag: "brave cook", band: "PANCAKES", sentence: "you make pancakes, badly, and serve them proudly" },
       { id: "reads", label: "Reads beside me in silence", strand: "reads beside me", tag: "quiet reader", band: "QUIET READS", sentence: "you read beside me and let the quiet be good" },
-      { id: "market", label: "Drags me to a farmers' market", strand: "farmers' markets", tag: "market-goer", band: "MARKET DAYS", sentence: "you drag me to the farmers' market and make it fun" },
       { id: "adventure", label: "Plans an adventure I didn't ask for", strand: "unasked adventures", tag: "adventurer", band: "ADVENTURES", sentence: "you plan the adventures I'd never think to ask for" },
     ],
   },
   {
     n: 3, key: "q3", text: "When I'm *nervous* before something big, he…",
     options: [
-      { id: "rehearse", label: "Rehearses it with me", strand: "patience", tag: "patient rehearser", band: "PATIENCE", sentence: "you rehearse it with me, as many times as it takes" },
       { id: "won", label: "Tells me I've already won", strand: "faith in me", tag: "believer", band: "FAITH IN ME", sentence: "you tell me I've already won" },
       { id: "laugh", label: "Makes me laugh till I forget", strand: "laughs at my worst jokes", tag: "jester", band: "LAUGHS", sentence: "you make me laugh until I forget to be nervous" },
       { id: "squeeze", label: "Just squeezes my hand", strand: "a squeeze of the hand", tag: "hand-squeezer", band: "STEADY HAND", sentence: "you squeeze my hand right when I need it" },
@@ -170,7 +167,6 @@ export const QUESTIONS = [
       { id: "small", label: "Remembering the small things", strand: "remembers small things", tag: "noticer", band: "SMALL THINGS", sentence: "you remember all the small things" },
       { id: "fixing", label: "Fixing things around the house", strand: "fixes the hinges", tag: "fixer of hinges", band: "FIXES THINGS", sentence: "you quietly fix whatever is creaking around the house" },
       { id: "voice", label: "Long voice notes", strand: "long voice notes", tag: "voice-noter", band: "VOICE NOTES", sentence: "you send me long voice notes, and I love every minute" },
-      { id: "lastbite", label: "Saving me the last bite", strand: "saves the last bite", tag: "last-bite saver", band: "LAST BITE", sentence: "you always save me the last bite" },
     ],
   },
   {
@@ -179,7 +175,6 @@ export const QUESTIONS = [
       { id: "safe", label: "Safe harbour", strand: "safe harbour", tag: "safe harbour", band: "SAFE HAVEN", sentence: "you make me feel safe, like a harbour in a storm" },
       { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", tag: "amuser", band: "AMUSED", sentence: "you keep me endlessly amused" },
       { id: "seen", label: "Truly seen", strand: "truly sees me", tag: "noticer", band: "TRULY SEEN", sentence: "you make me feel truly seen" },
-      { id: "alone", label: "Never alone", strand: "never alone", tag: "constant", band: "NEVER ALONE", sentence: "you make sure I never feel alone" },
     ],
   },
 ];

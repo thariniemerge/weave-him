@@ -31,7 +31,7 @@ export function bandLines(band = []) {
 }
 
 
-export const MAX_PICKS = 3;
+export const MAX_PICKS = 2;
 export const allBandLabels = (a) => {
   const [q1, q2, q3, q4, q7] = [...QK, "q7"].map((k) => resolveChoices(k, a[k]));
   const rem = a.remembers.map(resolveRemember).filter(Boolean);
