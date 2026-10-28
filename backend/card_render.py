@@ -4,16 +4,49 @@ import math
 import re
 from functools import lru_cache
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont
 
 ASSETS = Path(__file__).parent / "card_assets"
 W, H = 1080, 1920
+
+# Header band text. The base layers still carry the old title baked in ("Woven to Order" /
+# "Commissioned from the Basket Weaver's workshop"); _retitle papers over it and draws these instead.
+CARD_TITLE = "Hand-Woven With Love"
+CARD_SUBTITLE = "Certified husband material. Splinters not included."
 
 
 @lru_cache(maxsize=None)
 def _layers(portrait: str):
     # one base layer per painted portrait (frame + his painting in the oval); text is drawn on top
-    return Image.open(ASSETS / f"base-{portrait}.png").convert("RGBA"), Image.open(ASSETS / "overlay.png").convert("RGBA")
+    return _retitle(Image.open(ASSETS / f"base-{portrait}.png").convert("RGBA")), Image.open(ASSETS / "overlay.png").convert("RGBA")
+
+
+def _paper(size):
+    # the band's paper: its measured colour (221, 213, 198) with the same faint grain
+    grain = Image.effect_noise(size, 3.5)
+    return ImageChops.add(Image.new("RGB", size, (221, 213, 198)), Image.merge("RGB", [grain] * 3), 1.0, -128).convert("RGBA")
+
+
+def _retitle(base):
+    # old title sits between the two suns (x 211-869, y 94-133), old subtitle at x 241-835, y 166-178
+    base.paste(_paper((690, 60)), (195, 84))
+    base.paste(_paper((920, 26)), (80, 160))
+    # title: Cormorant 500 caps, 0.14em tracking, shrunk to fit between the suns, caps centred where the old ones were
+    t = CARD_TITLE.upper()
+    s = fit([t], "cg", 62, 30, 1, 680, 0.14)
+    f, ls = font("cg", s), s * 0.14
+    cap = f.getbbox("H", anchor="ls")
+    m = Image.new("L", (W, H), 0)
+    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 113.5 - (cap[1] + cap[3]) / 2, ls)
+    paint(base, m, hexrgb("2A211B"))
+    # subtitle: Cormorant SC 600, 0.16em tracking, on the old baseline
+    t = CARD_SUBTITLE
+    s = fit([t], "sc600", 20, 14, 1, 900, 0.16)
+    f, ls = font("sc600", s), s * 0.16
+    m = Image.new("L", (W, H), 0)
+    draw_line(m, t, f, (W - text_width(t, f, ls) + ls) / 2, 178, ls)
+    paint(base, m, hexrgb("4A5641"))
+    return base
 
 
 @lru_cache(maxsize=256)
