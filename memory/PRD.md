@@ -60,3 +60,11 @@ Mobile-first promo fan app (inspired by The Wicker Man, Regency/Bridgerton tone)
 - Her husband is still the single K design with a generated name. The suitors' first names were removed from NAMES. Meet shows MustHavesCard with every must-have ticked. Backend: Must model plus goal and interests; keep_a_must makes sure one vow promises a must-have.
 - Share card: the portrait oval is enlarged under the frame rim (sliver fixed) and the card now says "10 Strands". CARD_VERSION=13.
 - Held for next round (user's request): Weaving Shimmer, Phone Weaving Preview, Vows Writing In.
+
+## Iteration 7 (2026-06): painted husbands
+- There are five user-provided portraits (scripts/portraits, exported by scripts/build_portraits.py to public/assets/husbands: {slug}.webp, {slug}-weave.webp raw-willow sepia at equal brightness, and {slug}-bg.jpg). Assets use ?v=PORTRAIT_V (5).
+- pickPortrait(answers) in lib/weave.js uses the PORTRAITS signs in content.js. Ties go to the earliest match, then list order. The pick is sent as `portrait` and saved on the husband (default golden-willow).
+- Medallion (assets/medallion.js from build_medallion.py) has the K drawing removed. The image slot is the oval's width, bottom-anchored. Layers: img-glow, img-color and img-weave (sepia while weaving, with a 1s bloom at the final step), plus shimmer masked by his alpha. Floaters rise from the brooch. Light-only effects (lib/face.js useLight): breathing, shimmer, hearts, and a glow on tap.
+- Share card: CardPortrait shows {slug}-bg.jpg. The server uses card_assets/base-{slug}.png (build_card_layers.sh loops over all five). CARD_VERSION=14. The video in lib/cardVideo.js is light-only.
+- The suitor cards stay portrait-free: a monogram over a dark silhouette.
+- Checks: scripts/check_portraits.py and record_full.py.

@@ -1,0 +1,41 @@
+{
+  "summary": "Tested the painted portraits on the backend and frontend. Backend: 17/17 pytest pass. The portrait is saved and returned, invalid, empty, missing or path-traversal values fall back to golden-willow, a legacy record with no portrait (8kkfvndb) returns golden-willow, and card.jpg?v=14 is a 1080x1920 JPEG for all 5 existing ids, with a different oval for each. Frontend: portrait selection is deterministic for all 5 answer sets. Meet at 390 and 1280 shows the painting clipped by the oval, with no K-* ids, and the bands, heart and ribbon drawn after (above) the figure. Tapping adds mk-glow and mk-hearts. The 'breathing' class is present and is removed under reduced motion. The desktop strand 1-9 reveal rises monotonically 600->407 and never resets, in sepia (weave opacity 1). Strand 10 shows the suitor check instead. Weaving starts at 600, rises to 30, then blooms to colour (weave 1->0) and goes to Meet. The share card shows the matching -bg painting, the mp4 video download works, /card?frames gives 3 frames, /h matches the portrait, and the full UI flow from the intro veil to Meet with the must-haves checklist works. Suitor cards have no portrait images. Main issues: on Bands the face/bloom animation never plays (instant colour), and the moorland-scholar colour painting is almost greyscale.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Bands medallion (Medallion.jsx useReveal)", "issue": "On desktop, arriving from strand 9->10->/bands, the medallion is already at reveal y=30 with img-weave opacity 0 on its first rendered frame. The face does not weave in and the colours do not bloom; he just appears in full colour. On phones there is never a growth/bloom on Bands, because lastStrands is null (no desktop panel). The end state is correct.", "selector": "[data-testid=bands-preview] [data-testid=medallion]", "priority": "MEDIUM"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Meet / weaving bloom: moorland-scholar", "issues": ["moorland-scholar.webp (the colour image) is almost greyscale: mean HSV saturation is 52, against about 205-238 for the other four and 123 for its own -weave sepia. When he 'blooms into true colours' he gets greyer, and on Meet he looks like an un-bloomed stone/grey statue. Recolour the portrait, or accept that this one has a weak bloom."]},
+      {"screen": "Legacy husband (8kkfvndb)", "issues": ["The legacy band line shows a lone 'REMEMBERS' label (old data). Cosmetic only."]}
+    ]
+  },
+  "passed_checks": [
+    "POST portrait=lantern-woodsman persists via GET; invalid, empty, ../ and missing values -> golden-willow; legacy -> golden-willow",
+    "card.jpg?v=14 for dx22jcd8, c5vtepae, 4dxnbdm4, sbjpsxqb, brng33tv is 1080x1920 image/jpeg, and the 5 ovals differ",
+    "pickPortrait: the willow, rogue, curls, woodsman and scholar sets each map to the expected slug; repeat runs give the same slug (and the same husband id)",
+    "Meet: data-portrait is correct, img-color href is /assets/husbands/{slug}.webp?v=5, clipped by portrait-clip, no K-* ids, figure index < heart/bands/ribbon, 'meet {name}' ribbon",
+    "face-tap-target adds mk-glow and mk-hearts with no page errors; under reduced motion there is no breathing class and tapping is a no-op",
+    "Desktop strands 1-9: building-husband shows the leading portrait in sepia, y goes 600,575,...,407, the edge is on, no reset between strands; strand 10 shows the suitor-check and no building-husband",
+    "Weaving: y goes 600 -> 392 -> 30, then img-weave 1 -> 0 (bloom), then /meet",
+    "Share reveal: 1080x1920 blob card with the candlelit-rogue painting; reveal-video-button downloads rowan-woven-by-hand.mp4; /card/{id}?frames=1.4,3.6,4.6 gives data-frames-ready=1 and 3 frames",
+    "Fresh '/' shows the intro veil -> enter -> commission -> full UI flow strand 1-10 -> bands -> weaving -> meet with musts-checklist; 13 suitor elements and no husband portrait images in them"
+  ],
+  "test_report_links": ["/app/backend/tests/test_iter20_portraits.py", "/app/test_reports/pytest/iter20.xml"],
+  "action_items": [
+    "Fix the missing face weave-in/bloom on /bands. Likely RCA: React.StrictMode (dev) double-invokes layout effects. The `root.current.innerHTML = html` effect runs again and swaps in a fresh SVG (no rect.dataset.y), while module-level `lastStrands` was already set to 10 by the first pass. So on the second pass grow=false, and the face and colour are applied instantly. Make the innerHTML effect idempotent (e.g. skip if root already has children, or set it via dangerouslySetInnerHTML/useState), or record lastStrands outside the layout effect. Also decide what phones should do on Bands, where lastStrands is null (e.g. start from LEVELS[9])",
+    "Recolour moorland-scholar.webp (and -bg/base layer if needed) so his 'true colours' are actually warmer and more colourful than the sepia weave state"
+  ],
+  "critical_code_review_comments": [
+    "Medallion.jsx: the module-level `lastStrands` is shared global state mutated inside a layout effect. It is fragile under StrictMode/concurrent re-renders and across several medallions on a page",
+    "Medallion.jsx: imperative innerHTML + querySelector inside layout effects; the double-run in dev resets the DOM (see the action item)"
+  ],
+  "updated_files": ["/app/backend/tests/test_iter20_portraits.py"],
+  "success_rate": {"backend": "100% (17/17)", "frontend": "~93% (Bands bloom animation missing)"},
+  "seed_data_creation": "Created husbands via API (several TEST payloads from test_weave_api.PAYLOAD) and via UI: k2pp96ts willow, r6h667fy rogue, nxbmxsdz curls, vcn54vg7 woodsman, 89ya3zhv scholar, qnyr8n27 curls, e9wzekvs willow",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Run pytest test_iter20_portraits.py (it imports PAYLOAD from test_weave_api). To check the reveal, read the computed transform of [id$=reveal-rect] (DOMMatrix.f) and the opacity of [id$=img-weave] inside the medallion. Bands medallion lives in [data-testid=bands-preview]. In the browser tool, use literal screenshot paths (the tool's path rewrite breaks on str()/f-string expressions).",
+  "rca of the issue": "Bands no-bloom: repro on desktop 1280x800: inject answers, /strand/9 -> next-musts-button -> weave-him-musts-button -> /bands, then poll [id$=img-weave] opacity every 60ms. The first frame with the medallion already shows y=30 and opacity 0. Expected: grow from LEVELS[9]=407 to 30 with weave 1->0 after 0.7s. Probable cause: StrictMode's double layout-effect run (see the action item)."
+}

@@ -64,8 +64,10 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
     if (!rect.dataset.y) {
       // first paint of this instance: start from the last level any screen showed (never from top or bottom),
       // with nothing fading out from the SVG's defaults
-      const grow = lastStrands != null && lastStrands < strands;
-      const from = grow ? LEVELS[lastStrands] : y;
+      // with no earlier screen (phones), the final step still weaves his face in from the chin
+      const prev = lastStrands ?? (strands === LAST ? LAST - 1 : null);
+      const grow = prev != null && prev < strands;
+      const from = grow ? LEVELS[prev] : y;
       const all = [rect, edge, ...late, ribbon, weave];
       weave.style.opacity = color && !grow ? 0 : 1;
       all.forEach((el) => { el.style.transition = "none"; });
@@ -100,7 +102,7 @@ export function Medallion({ name, band, portrait, alive = false, strands, finish
   const root = useRef(null);
   const wrap = useRef(null);
   const tap = useLight(wrap, { ambient: alive, reduce });
-  useLayoutEffect(() => { root.current.innerHTML = html; }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  useLayoutEffect(() => { if (!root.current.firstChild) root.current.innerHTML = html; }, []); // eslint-disable-line react-hooks/exhaustive-deps
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
     const slug = portrait || PORTRAITS[0].slug;
