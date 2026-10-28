@@ -45,7 +45,7 @@ export const COPY = {
   comingTogether: "He's coming together…",
   nextRemembers: "Next: what he remembers",
   remembersTitle: ["What does he ", "remember", " about me?"],
-  remembersSub: "pick up to three. He's wicker, not a goldfish.",
+  remembersSub: "pick up to two. He's wicker, not a goldfish.",
   remembersOwn: "Spin my own",
   remembersOwnPlaceholder: "He remembers…",
   nextFeel: "Next: how he makes me feel",
@@ -55,11 +55,11 @@ export const COPY = {
   goalSub: "pick the one that's true today",
   nextInterests: "Next: things I love",
   interestsTitle: ["Things I ", "love"],
-  interestsSub: "pick up to five. He'll love them too, and so will the jealous neighbours.",
+  interestsSub: "pick up to two. He'll love them too, and so will the jealous neighbours.",
   interestsOwnPlaceholder: "I love…",
   nextMusts: "Next: my non-negotiables",
   mustsTitle: ["My ", "non-negotiables"],
-  mustsSub: "pick up to five. I'm checking every bachelor on the harbour.",
+  mustsSub: "pick up to two. I'm checking every bachelor on the harbour.",
   // Shown on the must-haves screen once "Emotionally available" or "Respects my space" is picked
   basketAside: "He'll carry your emotional baggage. He's literally a basket.",
   mustsOwnPlaceholder: "He must…",
@@ -206,13 +206,14 @@ export const SLIDERS = [
   },
 ];
 
+// Strand VI. `links` are earlier answers each one relates to (see topByLinks): only her best three show
 export const REMEMBERS = [
-  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S DAY", sentence: "you always remember Mom's birthday" },
-  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee" },
-  { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time" },
-  { id: "song", label: "My favourite song", short: "my favourite song", band: "OUR SONG", sentence: "you never forget my favourite song" },
-  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "PET'S NAME", sentence: "you remember the name of my childhood pet" },
-  { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises" },
+  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S DAY", sentence: "you always remember Mom's birthday", links: ["q4:small", "love:low"] },
+  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee", links: ["q1:coffee", "q4:small", "love:low"] },
+  { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time", links: ["q3:laugh", "q2:pancakes", "out:high"] },
+  { id: "song", label: "My favourite song", short: "my favourite song", band: "OUR SONG", sentence: "you never forget my favourite song", links: ["q4:voice", "love:high", "feel:high"] },
+  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "PET'S NAME", sentence: "you remember the name of my childhood pet", links: ["q4:small", "q1:vent"] },
+  { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises", links: ["love:low", "feel:low", "q2:reads"] },
 ];
 
 export const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
@@ -246,26 +247,27 @@ export const GOALS = [
   { id: "unsure", label: "Not sure yet", short: "not sure yet" },
 ];
 
-// Strand IX: things I love (up to five, plus my own)
+// Strand IX: things I love (up to two, her own included). `links` as for REMEMBERS
 export const INTERESTS = [
-  { id: "books", label: "Books" }, { id: "cooking", label: "Cooking" }, { id: "travel", label: "Travel" },
-  { id: "music", label: "Music" }, { id: "films", label: "Films" }, { id: "fitness", label: "Fitness" },
-  { id: "walks", label: "Nature walks" }, { id: "art", label: "Art" }, { id: "games", label: "Games" },
-  { id: "markets", label: "Markets" }, { id: "dancing", label: "Dancing" }, { id: "coffee", label: "Coffee" },
+  { id: "books", label: "Books", links: ["q2:reads", "out:low"] }, { id: "cooking", label: "Cooking", links: ["q2:pancakes", "love:low"] }, { id: "travel", label: "Travel", links: ["q2:adventure", "feel:high"] },
+  { id: "music", label: "Music", links: ["q4:voice", "rem:song", "feel:high"] }, { id: "films", label: "Films", links: ["q7:amused", "out:low"] }, { id: "fitness", label: "Fitness", links: ["q2:adventure"] },
+  { id: "walks", label: "Nature walks", links: ["q2:adventure", "out:low"] }, { id: "art", label: "Art", links: ["q7:seen", "q2:reads"] }, { id: "games", label: "Games", links: ["q3:laugh", "q7:amused", "out:high"] },
+  { id: "markets", label: "Markets", links: ["out:high"] }, { id: "dancing", label: "Dancing", links: ["feel:high", "love:high", "rem:song"] }, { id: "coffee", label: "Coffee", links: ["q1:coffee", "rem:coffeeorder"] },
 ];
 
-// Strand X: my non-negotiables (up to five, plus my own). `vow` is his promise; `words` help check the vows keep it.
+// Strand X: my non-negotiables (up to two, her own included). `vow` is his promise; `words` help check the vows keep it.
+// `links` as for REMEMBERS (goal signs come from strand VIII)
 export const MUSTHAVES = [
-  { id: "wants", label: "Actually wants a relationship", vow: "I'll choose us on purpose, every single day.", words: ["choose us", "relationship"] },
-  { id: "calm", label: "Handles a fight calmly", vow: "When we fight, I'll stay and talk it through.", words: ["fight", "argue", "talk it through", "calm"] },
-  { id: "available", label: "Emotionally available", vow: "I'll tell you what I'm feeling, even the clumsy parts.", words: ["feeling", "feelings"] },
-  { id: "honest", label: "Honest even when it's hard", vow: "I'll tell you the truth, even when it's hard to say.", words: ["truth", "honest"] },
-  { id: "loyal", label: "Loyal", vow: "I'll be on your side, in every room you walk into.", words: ["your side", "loyal"] },
-  { id: "time", label: "Makes time for me", vow: "I'll always make time for you, and I'll guard it.", words: ["time for you", "make time", "make the time"] },
-  { id: "family", label: "Gets along with my family", vow: "I'll win over your family, one Sunday lunch at a time.", words: ["your family"] },
-  { id: "kids", label: "Wants kids someday", vow: "I'll want a little family with you, someday.", words: ["kids", "children", "little family"] },
-  { id: "space", label: "Respects my space", vow: "I'll give you room to breathe, and I'll still be here.", words: ["your space", "room to breathe"] },
-  { id: "ambitious", label: "Ambitious", vow: "I'll chase big things with you, and cheer yours louder.", words: ["big things", "ambition"] },
+  { id: "wants", label: "Actually wants a relationship", vow: "I'll choose us on purpose, every single day.", words: ["choose us", "relationship"], links: ["goal:serious", "goal:marriage"] },
+  { id: "calm", label: "Handles a fight calmly", vow: "When we fight, I'll stay and talk it through.", words: ["fight", "argue", "talk it through", "calm"], links: ["q1:vent", "q3:squeeze", "feel:low"] },
+  { id: "available", label: "Emotionally available", vow: "I'll tell you what I'm feeling, even the clumsy parts.", words: ["feeling", "feelings"], links: ["q1:vent", "q4:voice", "q7:seen"] },
+  { id: "honest", label: "Honest even when it's hard", vow: "I'll tell you the truth, even when it's hard to say.", words: ["truth", "honest"], links: ["q7:seen", "q1:vent"] },
+  { id: "loyal", label: "Loyal", vow: "I'll be on your side, in every room you walk into.", words: ["your side", "loyal"], links: ["q7:safe", "q1:holds", "feel:low"] },
+  { id: "time", label: "Makes time for me", vow: "I'll always make time for you, and I'll guard it.", words: ["time for you", "make time", "make the time"], links: ["love:low", "q4:small", "q2:reads"] },
+  { id: "family", label: "Gets along with my family", vow: "I'll win over your family, one Sunday lunch at a time.", words: ["your family"], links: ["rem:mom", "goal:marriage"] },
+  { id: "kids", label: "Wants kids someday", vow: "I'll want a little family with you, someday.", words: ["kids", "children", "little family"], links: ["goal:marriage", "goal:serious"] },
+  { id: "space", label: "Respects my space", vow: "I'll give you room to breathe, and I'll still be here.", words: ["your space", "room to breathe"], links: ["goal:slow", "out:low", "q2:reads"] },
+  { id: "ambitious", label: "Ambitious", vow: "I'll chase big things with you, and cheer yours louder.", words: ["big things", "ambition"], links: ["q3:won", "q2:adventure", "feel:high"] },
 ];
 
 // Demo "suitors on file" for the live check. Each has a playful reason for every must-have he fails.

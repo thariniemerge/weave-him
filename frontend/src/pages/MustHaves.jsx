@@ -8,7 +8,7 @@ import { PanelOrInline } from "../components/weave/Layout";
 import { SuitorCheck, checkVerdict } from "../components/weave/SuitorCheck";
 import { COPY, MUSTHAVES } from "../content";
 import { useAnswers } from "../lib/store";
-import { resolveMust, resolveInterest } from "../lib/weave";
+import { resolveMust, resolveInterest, topByLinks } from "../lib/weave";
 import { vowsFor } from "../lib/vowDraft";
 
 // Strand X: her non-negotiables, checked live against the suitors on file
@@ -21,7 +21,6 @@ export default function MustHaves() {
   const [verdict, setVerdict] = useState(null);
   const timers = useRef([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
-  const chosen = picks.filter((p) => !p.custom).length;
   const onChange = (next) => {
     setVerdict(null);
     set("musts", next);
@@ -36,8 +35,8 @@ export default function MustHaves() {
   return (
     <Page>
       <StrandHeader n={10} back="/strand/9" />
-      <PickCard testid="musts-card" title={COPY.mustsTitle} sub={COPY.mustsSub} count={`${chosen} of 5 chosen${picks.length > chosen ? " · plus my own" : ""}`}>
-        <ChipPicker items={MUSTHAVES} picks={picks} onChange={onChange} max={5} prefix="must"
+      <PickCard testid="musts-card" title={COPY.mustsTitle} sub={COPY.mustsSub} count={`${picks.length} of 2 chosen`}>
+        <ChipPicker items={topByLinks(MUSTHAVES, answers, picks)} picks={picks} onChange={onChange} max={2} countOwn prefix="must"
           placeholder={COPY.mustsOwnPlaceholder} ownLabel="Add my own must-have" />
       </PickCard>
       {picks.some((p) => p.id === "available" || p.id === "space") && (

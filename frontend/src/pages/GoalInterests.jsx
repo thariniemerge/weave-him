@@ -6,6 +6,7 @@ import { ChipPicker, PickCard } from "../components/weave/ChipPicker";
 import { Option } from "../components/weave/QuestionCard";
 import { COPY, GOALS, INTERESTS } from "../content";
 import { useAnswers } from "../lib/store";
+import { topByLinks } from "../lib/weave";
 
 // Strand VIII: one relationship goal
 export function Goal() {
@@ -32,12 +33,11 @@ export function Interests() {
   const nav = useNavigate();
   const { answers, set } = useAnswers();
   const picks = answers.interests || [];
-  const chosen = picks.filter((p) => !p.custom).length;
   return (
     <Page>
       <StrandHeader n={9} back="/strand/8" />
-      <PickCard testid="interests-card" title={COPY.interestsTitle} sub={COPY.interestsSub} count={`${chosen} of 5 chosen${picks.length > chosen ? " · plus my own" : ""}`}>
-        <ChipPicker items={INTERESTS} picks={picks} onChange={(v) => set("interests", v)} max={5} prefix="interest"
+      <PickCard testid="interests-card" title={COPY.interestsTitle} sub={COPY.interestsSub} count={`${picks.length} of 2 chosen`}>
+        <ChipPicker items={topByLinks(INTERESTS, answers, picks)} picks={picks} onChange={(v) => set("interests", v)} max={2} countOwn prefix="interest"
           placeholder={COPY.interestsOwnPlaceholder} ownLabel="Add a thing I love" />
       </PickCard>
       <StrandCTA data-testid="next-musts-button" disabled={!picks.length} onClick={() => { nav("/strand/10"); }}>{COPY.nextMusts}</StrandCTA>

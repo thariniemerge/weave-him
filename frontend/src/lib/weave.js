@@ -77,14 +77,29 @@ export const resolveInterest = (m) => (m.custom ? { id: "custom", label: clean(m
 // One suitor against one must-have: { ok, reason }
 export const suitorVerdict = (s, m) => (m.id === "custom" ? { ok: false, reason: CUSTOM_NO } : s.no[m.id] ? { ok: false, reason: s.no[m.id] } : { ok: true });
 
-// Her answers as signs, in strand order (I to VII)
-function signs(a) {
+// Her answers as signs, in strand order (I to VIII)
+export function signs(a) {
   const out = [];
   ["q1", "q2", "q3", "q4"].forEach((k) => resolveChoices(k, a[k]).forEach((o) => out.push(`${k}:${o.id}`)));
   ["out", "love", "feel"].forEach((k) => { const v = a.sliders?.[k]; if (v < 50) out.push(`${k}:low`); else if (v > 50) out.push(`${k}:high`); });
   (a.remembers || []).forEach((r) => r.id && out.push(`rem:${r.id}`));
   resolveChoices("q7", a.q7).forEach((o) => out.push(`q7:${o.id}`));
+  if (a.goal) out.push(`goal:${a.goal}`);
   return out;
+}
+
+// The `n` options most like her answers so far: score = how many of an option's `links` are among her signs,
+// ties keep list order. Anything she already picked always stays. Shown in the list's own order.
+export function topByLinks(items, a, picks, n = 3) {
+  const s = new Set(signs(a));
+  const picked = (id) => picks.some((p) => p.id === id);
+  const keep = new Set(items.filter((it) => picked(it.id)).map((it) => it.id));
+  items.map((it, i) => ({ id: it.id, score: (it.links || []).filter((l) => s.has(l)).length, i }))
+    .filter((x) => !keep.has(x.id))
+    .sort((x, y) => y.score - x.score || x.i - y.i)
+    .slice(0, Math.max(0, n - keep.size))
+    .forEach((x) => keep.add(x.id));
+  return items.filter((it) => keep.has(it.id));
 }
 
 // The portrait with the most matching signs; ties go to the one she matched first, then list order
