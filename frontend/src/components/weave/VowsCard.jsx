@@ -73,18 +73,15 @@ export const VowsCard = ({ h, setH, canEdit }) => {
 
   const reweave = async (i) => {
     setBusy(i);
-    play("quill");
-    const q = setInterval(() => play("quill", { gain: 0.7 }), 800);
     try {
       const nh = await reweaveVow(h.id, i);
       setH(nh);
       emote("hearts");
-      play("quill", { rate: 1.1 });
       if (nh.reweaves_left === 0) setOpen(i);
     } catch (e) {
       if (e.response?.status === 409) { setH({ ...h, reweaves_left: 0 }); toast(COPY.outOfWillow); }
       else toast("The thread snapped. Try again in a moment.");
-    } finally { clearInterval(q); setBusy(null); }
+    } finally { setBusy(null); }
   };
 
   return (

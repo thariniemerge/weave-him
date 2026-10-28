@@ -6,7 +6,6 @@ import { Page, Pill, Art, Chip } from "../components/weave/ui";
 import { StrandHeader, WovenProgress } from "../components/weave/StrandHeader";
 import { COPY, REMEMBERS } from "../content";
 import { useAnswers } from "../lib/store";
-import { play } from "../lib/sound";
 
 const TINTS = ["var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)", "var(--peony)", "var(--wisteria)"];
 
@@ -18,11 +17,11 @@ export default function Remembers() {
   const [draft, setDraft] = useState("");
   const full = picks.length >= 3;
   const has = (id) => picks.some((p) => p.id === id);
-  const toggle = (id) => play("pluck", { rate: has(id) ? 0.8 : 1.1 }) || set("remembers", has(id) ? picks.filter((p) => p.id !== id) : full ? picks : [...picks, { id }]);
+  const toggle = (id) => set("remembers", has(id) ? picks.filter((p) => p.id !== id) : full ? picks : [...picks, { id }]);
   const addCustom = () => {
     const t = draft.trim();
     if (!t || full) return;
-    play("pluck"); set("remembers", [...picks.filter((p) => !p.custom), { custom: t }]); setDraft("");
+    set("remembers", [...picks.filter((p) => !p.custom), { custom: t }]); setDraft("");
   };
 
   return (
@@ -67,7 +66,7 @@ export default function Remembers() {
       <div className="mt-auto pt-8 hidden">
         <WovenProgress done={5} />
       </div>
-      <StrandCTA data-testid="next-feel-button" disabled={!picks.length} onClick={() => { play("page"); nav("/strand/7"); }}>{COPY.nextFeel}</StrandCTA>
+      <StrandCTA data-testid="next-feel-button" disabled={!picks.length} onClick={() => { nav("/strand/7"); }}>{COPY.nextFeel}</StrandCTA>
     </Page>
   );
 }

@@ -1,7 +1,7 @@
 import { CardPortrait } from "./Medallion";
 import { forwardRef } from "react";
 import "./sharecard.css";
-import { CONFIG, siteHost } from "../../content";
+import { CONFIG } from "../../content";
 import { useFitText } from "../../hooks/useFitText";
 import { Credit } from "./ui";
 
@@ -13,11 +13,10 @@ const STARS = [
 
 const wovenLines = ([a, b, c]) => [`${a}, ${b},`, `& ${c}`];
 
-export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, layer = "full", site, credit }, ref) {
+export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, layer = "full", credit }, ref) {
   const { name, number, card } = husband;
   const [nameRef] = useFitText([name, fontsReady], { max: 64, min: 30, width: 300 });
   const [wfRef] = useFitText([card.woven.join(), fontsReady], { max: 29, min: 16, step: 1, width: 524 });
-  const [urlRef] = useFitText([fontsReady], { max: 19, min: 11, step: 1, width: 524 });
   const [l1, l2] = wovenLines(card.woven);
   return (
     <div className={`whc layer-${layer}`} ref={ref} data-testid="share-card" style={{ "--sky-img": `url(${A("oval-sky.webp")})` }}>
@@ -25,10 +24,12 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
       <div className="amb-sky" />
       <div className="damask" />
       <div className="band top">
-        <div className="t-l">Woven</div>
-        <img className="t-sun" src={A("gold-sun.webp")} alt="" />
-        <div className="t-r">to Order</div>
-        <div className="t-sub">Willow &amp; wicker, never jawlines · Miss Austen would approve</div>
+        <div className="t-row">
+          <img className="t-sun" src={A("gold-sun.webp")} alt="" />
+          <div className="t-title">Woven to Order</div>
+          <img className="t-sun t-sun-r" src={A("gold-sun.webp")} alt="" />
+        </div>
+        <div className="t-sub">Commissioned from the Basket Weaver&rsquo;s workshop</div>
       </div>
       <div className="sky"><CardPortrait className="sky-husband" portrait={husband.portrait} /><div className="sky-shade" /></div>
       <div className="frame-wrap"><img className="frame" src={A("frame-gold.webp")} alt="" /></div>
@@ -53,9 +54,9 @@ export const ShareCard = forwardRef(function ShareCard({ husband, fontsReady, la
             <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{l1}</span><br />
             <span style={{ display: "inline-block", whiteSpace: "nowrap" }}>{l2}</span>
           </p>
-          <p ref={urlRef}><span style={{ display: "inline-block", whiteSpace: "nowrap" }}>(Weave yours at {site || siteHost()})</span></p>
         </div>
         <div className="seal"><span>W</span></div>
+        <div className="fine">Keep away from open flames</div>
       </div>
       <div className="credit dyn" style={{ fontSize: 19 }}><Credit text={credit || CONFIG.CARD_CREDIT_LINE} /></div>
       <div className="grain" />

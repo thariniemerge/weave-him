@@ -4,7 +4,6 @@ import { asList, MAX_PICKS } from "../../lib/weave";
 import { Feather } from "lucide-react";
 import { Art, Accent } from "./ui";
 import { COPY } from "../../content";
-import { play } from "../../lib/sound";
 
 const TINTS = ["var(--paper)", "var(--paper)", "var(--paper)", "var(--paper)"];
 
@@ -27,11 +26,10 @@ export const QuestionCard = ({ q, value, onChange }) => {
   const others = picks.filter((p) => p.custom === undefined);
   const [text, setText] = useState(custom?.custom || "");
   const [shake, setShake] = useState(null);
-  const nope = (id) => { setShake(`${id}-${Date.now()}`); play("tick", { rate: 0.6 }); };
+  const nope = (id) => { setShake(`${id}-${Date.now()}`); };
   const toggle = (o, i) => {
-    if (others.some((p) => p.id === o.id)) { play("pluck", { rate: 0.8 }); onChange(picks.filter((p) => p.id !== o.id)); return; }
+    if (others.some((p) => p.id === o.id)) { onChange(picks.filter((p) => p.id !== o.id)); return; }
     if (picks.length >= MAX_PICKS) return nope(o.id);
-    play("pluck", { rate: 0.9 + i * 0.08 });
     onChange([...picks, { id: o.id }]);
   };
   const onText = (t) => {

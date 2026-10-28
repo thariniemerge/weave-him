@@ -122,23 +122,15 @@ def render_card(name: str, number: str, line1: str, line2: str, woven, site: str
     star(m, x0 + wa + 3.36 + 13.5, 1606, 12, 4.8)
     paint(card, m, hexrgb("6B2E36"))
 
-    # Woven from (two caps lines) + site line
+    # Woven from: two caps lines, centred on the row's midline (label and seal share it)
     l1, l2 = f"{woven[0]}, {woven[1]},".upper(), f"& {woven[2]}".upper()
     s = fit([l1, l2], "cg600", 29, 16, 1, 524, 0.04)
     l1, l2 = clamp_lines([l1, l2], "cg600", s, 524, 0.04)
     f, ls, lh = font("cg600", s), s * 0.04, s * 1.08
     m = new()
     for i, t in enumerate([l1, l2]):
-        draw_line(m, t, f, 348, content_baseline(f, 1738 + i * lh, lh), ls)
+        draw_line(m, t, f, 348, content_baseline(f, 1772 - lh + i * lh, lh), ls)
     paint(card, m, hexrgb("2A211B"))
-    url = f"(Weave yours at {site})"
-    s2 = fit([url], "sc600", 19, 11, 1, 524, 0.12)
-    url = clamp_lines([url], "sc600", s2, 524, 0.12)[0]
-    f2 = font("sc600", s2)
-    a2, d2 = f2.getmetrics()
-    m = new()
-    draw_line(m, url, f2, 348, 1738 + 2 * lh + 8 + a2, s2 * 0.12)
-    paint(card, m, hexrgb("4A5641"))
 
     # Credit line: upright, *word* in italics, one line
     parts = [(t[1:-1], "cgi") if t.startswith("*") else (t, "cg") for t in re.split(r"(\*[^*]+\*)", credit) if t]

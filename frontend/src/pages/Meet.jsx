@@ -70,18 +70,18 @@ export default function Meet({ isPublic = false }) {
   }, [h?.id, framesReady]);
 
   const [reveal, setReveal] = useState(false);
-  const onShare = () => { play("paper"); blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
-  const onSave = () => { play("paper"); blob && saveCard({ blob, name: h.name }); };
-  const onCopy = async () => { play("paper"); await copyText(shareLink(h.id)); toast(COPY.linkCopied); };
+  const onShare = () => { blob && shareCard({ blob, name: h.name, link: shareLink(h.id) }); };
+  const onSave = () => { blob && saveCard({ blob, name: h.name }); };
+  const onCopy = async () => { await copyText(shareLink(h.id)); toast(COPY.linkCopied); };
   const [video, setVideo] = useState(null);
   const onVideo = async () => {
     if (!blob || video != null) return;
-    play("paper"); setVideo(0);
+    setVideo(0);
     try { await saveVideo({ blob: await makeCardVideo(blob, h.portrait, setVideo), name: h.name, link: shareLink(h.id) }); }
     catch { toast("The loom jammed. Try the video again in a moment."); }
     finally { setVideo(null); }
   };
-  const again = () => { play("page"); reset(); nav("/strand/1"); };
+  const again = () => { reset(); nav("/strand/1"); };
 
   if (missing) return (
     <Page className="items-center justify-center text-center">
@@ -120,14 +120,18 @@ export default function Meet({ isPublic = false }) {
       )}
       <motion.div className="space-y-3 mt-6" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : 5.4, duration: 0.5 }}>
         {isPublic ? (
-          <Pill data-testid="weave-your-own-button" onClick={again}>{COPY.weaveOwn}</Pill>
+          <>
+            <p data-testid="village-talking" className="f-cg italic text-center text-[15px] text-[color:var(--rose)] opacity-80">{COPY.villageTalking}</p>
+            <Pill data-testid="weave-your-own-button" onClick={again}>{COPY.weaveOwn}</Pill>
+          </>
         ) : (
           <>
             <CardPreview url={url} name={h.name} onOpen={() => setReveal(true)} />
+            <p data-testid="village-talking" className="f-cg italic text-center text-[15px] text-[color:var(--rose)] opacity-80">{COPY.villageTalking}</p>
             <button data-testid="share-him-button" onClick={() => { emote("wink"); setReveal(true); }} className="pill pill-primary">
               <Share className="w-5 h-5" strokeWidth={1.8} /><span>{COPY.share}</span>
             </button>
-            <button data-testid="in-your-life-button" onClick={() => { play("page"); nav(`/tell/${h.id}`); }} className="pill pill-secondary">{COPY.inLife}</button>
+            <button data-testid="in-your-life-button" onClick={() => { nav(`/tell/${h.id}`); }} className="pill pill-secondary">{COPY.inLife}</button>
             <div className="text-center"><button data-testid="weave-another-link" onClick={again} className="text-link">{COPY.again}</button></div>
           </>
         )}

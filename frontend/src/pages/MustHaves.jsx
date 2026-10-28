@@ -5,11 +5,10 @@ import { StrandHeader } from "../components/weave/StrandHeader";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { ChipPicker, PickCard } from "../components/weave/ChipPicker";
 import { PanelOrInline } from "../components/weave/Layout";
-import { SuitorCheck, checkVerdict, failCount } from "../components/weave/SuitorCheck";
+import { SuitorCheck, checkVerdict } from "../components/weave/SuitorCheck";
 import { COPY, MUSTHAVES } from "../content";
 import { useAnswers } from "../lib/store";
 import { resolveMust, resolveInterest } from "../lib/weave";
-import { play } from "../lib/sound";
 
 // Strand X: her non-negotiables, checked live against the suitors on file
 export default function MustHaves() {
@@ -23,14 +22,10 @@ export default function MustHaves() {
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const chosen = picks.filter((p) => !p.custom).length;
   const onChange = (next) => {
-    const added = next.filter((p) => !picks.includes(p)).map(resolveMust).filter(Boolean);
-    // a thread snaps for every suitor who fails the new must-have
-    added.forEach((m) => { for (let i = 0; i < failCount(m); i++) timers.current.push(setTimeout(() => play("snap", { rate: 0.9 + i * 0.05 }), 140 + i * 110)); });
     setVerdict(null);
     set("musts", next);
   };
   const confirm = () => {
-    play("harp");
     setVerdict(checkVerdict(musts));
     timers.current.push(setTimeout(() => document.querySelector("[data-testid=suitor-check-verdict]")?.scrollIntoView({ behavior: "smooth", block: "center" }), 60));
     timers.current.push(setTimeout(() => nav("/bands"), 2400));

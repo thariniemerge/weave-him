@@ -5,7 +5,10 @@ const BASE = process.env.REACT_APP_BACKEND_URL;
 const sameHost = (() => { try { return new URL(BASE).host === window.location.host; } catch { return false; } })();
 export const API = `${sameHost ? BASE : ""}/api`;
 
-export const getStats = () => axios.get(`${API}/stats`).then((r) => r.data);
+export const getStats = () => {
+  const midnight = new Date(); midnight.setHours(0, 0, 0, 0);
+  return axios.get(`${API}/stats`, { params: { since: midnight.toISOString() } }).then((r) => r.data);
+};
 export const createHusband = (payload) => axios.post(`${API}/husbands`, payload, { timeout: 25000 }).then((r) => r.data);
 export const getHusband = (id) => axios.get(`${API}/husbands/${id}`).then((r) => r.data);
 export const shareLink = (id) => `${window.location.origin}/api/share/${id}`;

@@ -6,7 +6,6 @@ import { Page, Art, Chip } from "../components/weave/ui";
 import { COPY, RECIPIENTS, FAMILY_ONLY, LETTER_STRANDS, MAX_LETTER_STRANDS } from "../content";
 import { cachedHusband, getHusband, shareLink } from "../lib/api";
 import { copyText } from "../lib/card";
-import { play } from "../lib/sound";
 import { SoundToggle } from "../components/weave/ui";
 import { PanelArt } from "../components/weave/Layout";
 import { Cameo } from "./Meet";
@@ -69,19 +68,18 @@ export default function Tell() {
   const greeting = greetingFor(to, his);
   const body = [greeting, COPY.letterBody(sentence).join(""), COPY.withLove, name.trim()].filter(Boolean).join("\n");
   const sendText = async () => {
-    play("paper");
     if (navigator.share) {
       try { await navigator.share({ text: `${body}\n${link}` }); return; } catch (e) { if (e.name === "AbortError") return; }
     }
     const msg = encodeURIComponent(`${body}\n${link}`);
     window.location.href = isMobile() ? `sms:?&body=${msg}` : `https://wa.me/?text=${msg}`;
   };
-  const copy = async () => { play("paper"); await copyText(link); toast(COPY.linkCopied); };
+  const copy = async () => { await copyText(link); toast(COPY.linkCopied); };
 
   return (
     <Page>
       <PanelArt><Cameo h={h} /></PanelArt>
-      <button data-testid="back-button" aria-label="Back" onClick={() => { play("page"); nav(`/meet/${h.id}`); }} className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)]">
+      <button data-testid="back-button" aria-label="Back" onClick={() => { nav(`/meet/${h.id}`); }} className="w-11 h-11 -ml-2 flex items-center justify-center rounded-full hover:bg-[color:var(--wisteria)]">
         <ChevronLeft className="w-6 h-6" strokeWidth={1.6} />
       </button>
       <Art name="corner-wedgwood" className="absolute right-0 top-0 w-20 pointer-events-none" />
@@ -93,7 +91,7 @@ export default function Tell() {
       <p className="f-sc text-[13px] mt-5 mb-2">{COPY.sendTo}</p>
       <div className="flex flex-wrap gap-2.5">
         {RECIPIENTS.map((r) => (
-          <Chip key={r.id} data-testid={`recipient-${r.id}`} active={to.id === r.id} tint={r.tint} onClick={() => { play("pluck"); pickTo(r); }}
+          <Chip key={r.id} data-testid={`recipient-${r.id}`} active={to.id === r.id} tint={r.tint} onClick={() => { pickTo(r); }}
             className={`f-body font-semibold text-[17px] min-w-[96px] ${to.id === r.id && r.id === "so" ? "text-[color:var(--paper)]" : ""}`}>
             {r.label}
           </Chip>
@@ -102,7 +100,7 @@ export default function Tell() {
       <p className="f-sc text-[13px] mt-5 mb-2">{COPY.strandGave}</p>
       <div className="flex flex-wrap gap-2.5">
         {threads.map((t, i) => (
-          <Chip key={i} data-testid={`strand-chip-${i}`} active={strand === i} tint={STRAND_TINTS[i % 5]} onClick={() => { play("pluck", { rate: 0.9 + (i % 5) * 0.07 }); setStrand(i); }}
+          <Chip key={i} data-testid={`strand-chip-${i}`} active={strand === i} tint={STRAND_TINTS[i % 5]} onClick={() => { setStrand(i); }}
             className="f-cg italic text-[17px]">
             <span className="flex items-center gap-2">{strand === i && <Art name="heart" className="w-5 h-5" />}{t.label}</span>
           </Chip>

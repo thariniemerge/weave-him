@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 15
+CARD_VERSION = 16
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -288,8 +288,15 @@ async def root():
 
 
 @api.get("/stats")
-async def stats():
-    return {"total": await db.husbands.count_documents({})}
+async def stats(since: Optional[str] = None):
+    # `since` is the visitor's local midnight; "today" counts husbands created after it
+    try:
+        start = datetime.fromisoformat(since.replace("Z", "+00:00")).astimezone(timezone.utc) if since else None
+    except ValueError:
+        raise HTTPException(400, "since must be an ISO date-time")
+    start = start or datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+    today = await db.husbands.count_documents({"created_at": {"$gte": start.isoformat()}})
+    return {"total": await db.husbands.count_documents({}), "today": today}
 
 
 @api.post("/husbands", response_model=HusbandCreated)

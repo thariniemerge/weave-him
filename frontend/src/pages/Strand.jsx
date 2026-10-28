@@ -10,7 +10,6 @@ import Temperament from "./Temperament";
 import Remembers from "./Remembers";
 import { Goal, Interests } from "./GoalInterests";
 import MustHaves from "./MustHaves";
-import { play } from "../lib/sound";
 
 export const nextPath = (n) => (n < 10 ? `/strand/${n + 1}` : "/bands");
 export const prevPath = (n) => (n > 1 ? `/strand/${n - 1}` : "/");
@@ -37,7 +36,7 @@ function Question({ n }) {
         <Art name="corner-wedgwood" className="absolute -left-10 -top-8 w-12 opacity-80 -scale-x-100 pointer-events-none" />
         <WovenProgress done={n - 1} />
       </div>
-      <StrandCTA data-testid="weave-strand-button" disabled={!ok} onClick={() => { play("page"); nav(nextPath(n)); }}>
+      <StrandCTA data-testid="weave-strand-button" disabled={!ok} onClick={() => { nav(nextPath(n)); }}>
         {n === 7 ? COPY.nextGoal : COPY.weaveStrand}
       </StrandCTA>
     </Page>

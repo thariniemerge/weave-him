@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Plus, X } from "lucide-react";
 import { Art, Chip } from "./ui";
-import { play } from "../../lib/sound";
 
 const TINTS = ["var(--wisteria)", "var(--ochre)", "var(--sage)", "var(--wedgwood)", "var(--peony)", "var(--wisteria)"];
 
@@ -12,13 +11,12 @@ export function ChipPicker({ items, picks, onChange, max, prefix, placeholder, o
   const full = picks.filter((p) => !p.custom).length >= max;
   const has = (id) => picks.some((p) => p.id === id);
   const toggle = (id) => {
-    play("pluck", { rate: has(id) ? 0.8 : 1.1 });
     onChange(has(id) ? picks.filter((p) => p.id !== id) : full ? picks : [...picks, { id }]);
   };
   const addCustom = () => {
     const t = draft.trim();
     if (!t) return;
-    play("pluck"); onChange([...picks.filter((p) => !p.custom), { custom: t }]); setDraft("");
+    onChange([...picks.filter((p) => !p.custom), { custom: t }]); setDraft("");
   };
   return (
     <>

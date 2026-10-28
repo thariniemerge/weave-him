@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { Download, Film, Share, X } from "lucide-react";
 import { COPY } from "../../content";
-import { play, duckMusic } from "../../lib/sound";
+import { duckMusic } from "../../lib/sound";
 import { useDesktop } from "./Layout";
 
 const DUST = Array.from({ length: 14 }, (_, i) => ({
@@ -37,7 +37,6 @@ export const ShareReveal = ({ open, onClose, name, url, onSave, onShare, onCopy,
 
   useEffect(() => {
     if (!open) { setRevealed(false); setDust(false); return; }
-    play("reveal");
     duckMusic(1.8);
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";

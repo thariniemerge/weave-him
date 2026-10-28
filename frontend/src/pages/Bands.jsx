@@ -8,7 +8,6 @@ import { PanelOrInline } from "../components/weave/Layout";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { useAnswers } from "../lib/store";
 import { allBandLabels, isComplete, pickPortrait } from "../lib/weave";
-import { play } from "../lib/sound";
 import { COPY } from "../content";
 
 const MAX = 3;
@@ -23,9 +22,8 @@ export default function Bands() {
   if (!ready) return <Navigate to="/strand/1" replace />;
 
   const toggle = (l) => {
-    if (picked.includes(l)) { play("pluck", { rate: 0.8 }); set("bandPick", picked.filter((x) => x !== l)); return; }
-    if (picked.length >= MAX) { play("tick", { rate: 0.6 }); return; }
-    play("pluck", { rate: 1 + picked.length * 0.12 });
+    if (picked.includes(l)) { set("bandPick", picked.filter((x) => x !== l)); return; }
+    if (picked.length >= MAX) return;
     set("bandPick", [...picked, l]);
   };
 
@@ -61,7 +59,7 @@ export default function Bands() {
       </div>
       <p className="f-cg italic text-center text-[15px] mt-2 text-[color:#4A3A2E]" data-testid="bands-count">{picked.length} of {MAX} chosen</p>
       <div className="mt-auto" />
-      <StrandCTA data-testid="weave-him-button" disabled={!picked.length} onClick={() => { play("page"); nav("/weaving"); }}>{COPY.weaveHim}</StrandCTA>
+      <StrandCTA data-testid="weave-him-button" disabled={!picked.length} onClick={() => { nav("/weaving"); }}>{COPY.weaveHim}</StrandCTA>
     </Page>
   );
 }

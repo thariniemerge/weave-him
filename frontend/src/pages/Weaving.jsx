@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
-import { motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Page, Art } from "../components/weave/ui";
 import { HeartsRow } from "../components/weave/StrandHeader";
 import { COPY, ROMAN } from "../content";
@@ -37,6 +37,28 @@ const Tag = ({ text, i, shown }) => {
       style={{ ...t.pos, background: t.bg }}>
       {text}
     </motion.span>
+  );
+};
+
+// While he is being generated: the workshop's progress lines, one every 2s, holding on the last
+const LoadingLine = ({ active, reduce }) => {
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    if (!active) return;
+    const t = setInterval(() => setI((n) => Math.min(n + 1, COPY.weavingLoading.length - 1)), 2000);
+    return () => clearInterval(t);
+  }, [active]);
+  return (
+    <div className="h-7 mt-3 relative w-full flex justify-center" aria-live="polite" data-testid="weaving-loading">
+      <AnimatePresence mode="wait" initial={false}>
+        {active && (
+          <motion.p key={i} data-testid="weaving-loading-text" className="f-cg italic text-[17px] text-[color:#4A5641] text-center"
+            initial={reduce ? false : { opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: reduce ? 0 : 0.4 }}>
+            {COPY.weavingLoading[i]}
+          </motion.p>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
@@ -122,13 +144,14 @@ export default function Weaving() {
         <div className="absolute left-[9%] right-[9%] top-[22%] transition-[height] duration-500 ease-out bg-[color:#fbf7ef]"
           style={{ height: `${(1 - p) * 62}%` }} />
       </div>
-      <p className="f-cg italic text-center text-[18px] mt-6 leading-snug">
+      <LoadingLine active={!husband && !error} reduce={!!reduce} />
+      <p className="f-cg italic text-center text-[18px] mt-3 leading-snug">
         {COPY.weavingAside[0]}<br />{COPY.weavingAside[1]}<span className="hl-peony">{COPY.weavingAside[2]}</span>{COPY.weavingAside[3]}
       </p>
       {error ? (
         <button data-testid="weave-retry" onClick={weave} className="text-link mt-4">The thread snapped. Try again</button>
       ) : (
-        <button data-testid="skip-to-him" onClick={() => { play("page"); setSkip(true); }} className="text-link mt-4">
+        <button data-testid="skip-to-him" onClick={() => { setSkip(true); }} className="text-link mt-4">
           {skip && !husband ? "Tying the last knot…" : COPY.skip}
         </button>
       )}
