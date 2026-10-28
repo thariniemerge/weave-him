@@ -27,21 +27,24 @@ export default function Welcome() {
       <PanelOrInline forest>
         <Art name="welcome-cameo" alt="A cameo portrait framed in roses beside a wicker basket" className="w-full max-h-[38.5dvh] lg:max-h-[82vh] object-contain -mt-1" />
       </PanelOrInline>
-      <p className="f-cg italic text-center text-[20px] -mt-1">{COPY.kicker}</p>
-      <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[52px] leading-[0.95] tracking-[0.01em]">{COPY.welcomeTitle[0]}<br />{COPY.welcomeTitle[1]}</h1>
-      <Art name="divider" className="w-full mt-1" />
-      <p className="f-cg italic text-center text-[21px] leading-snug mt-2">{COPY.tagline[0]}<br />{COPY.tagline[1]}</p>
-      <div className="mt-5">
-        <Art name="steps" className="w-full px-3" />
-        <div className="grid grid-cols-3 mt-1 text-center f-sc text-[14px] font-semibold">
-          {COPY.steps.map((s) => <span key={s}>{s}</span>)}
+      {/* on desktop the header stays on top and the rest sits centred in the column */}
+      <div className="flex flex-col lg:flex-1 lg:justify-center lg:pb-14">
+        <p className="f-cg italic text-center text-[20px] -mt-1 lg:mt-0">{COPY.kicker}</p>
+        <h1 data-testid="wordmark" className="f-mark text-center text-[color:var(--rose)] text-[52px] lg:text-[64px] leading-[0.95] tracking-[0.01em] lg:mt-1">{COPY.welcomeTitle[0]}<br />{COPY.welcomeTitle[1]}</h1>
+        <Art name="divider" className="w-full mt-1 lg:mt-4" />
+        <p className="f-cg italic text-center text-[21px] leading-snug mt-2 lg:mt-4">{COPY.tagline[0]}<br />{COPY.tagline[1]}</p>
+        <div className="mt-5 lg:mt-9">
+          <Art name="steps" className="w-full px-3" />
+          <div className="grid grid-cols-3 mt-1 text-center f-sc text-[14px] font-semibold">
+            {COPY.steps.map((s) => <span key={s}>{s}</span>)}
+          </div>
         </div>
+        <Pill data-testid="commission-button" className="mt-5 lg:mt-9" onClick={start}>{COPY.cta}</Pill>
+        <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#4A5641]">
+          {COPY.counter(count)}
+        </p>
+        {beforeRelease() && <p data-testid="release-hook" className="f-cg italic text-center text-[15px] leading-snug mt-2 px-4 text-[color:var(--rose)] opacity-80">{COPY.releaseHook}</p>}
       </div>
-      <Pill data-testid="commission-button" className="mt-5" onClick={start}>{COPY.cta}</Pill>
-      <p data-testid="husband-counter" className="f-sc text-center text-[13px] mt-4 text-[color:#4A5641]">
-        {COPY.counter(count)}
-      </p>
-      {beforeRelease() && <p data-testid="release-hook" className="f-cg italic text-center text-[15px] leading-snug mt-2 px-4 text-[color:var(--rose)] opacity-80">{COPY.releaseHook}</p>}
     </Page>
   );
 }
