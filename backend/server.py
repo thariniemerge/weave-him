@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 14
+CARD_VERSION = 15
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -231,7 +231,7 @@ async def llm_text(system: str, msg: str) -> Optional[str]:
     return await asyncio.wait_for(attempt(), timeout=8)
 
 
-def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interests=()) -> str:
+def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interests=(), band=()) -> str:
     extra = ""
     if musts:
         extra += ("Her non-negotiables (at least one vow must clearly promise one of these, in his own words, "
@@ -240,13 +240,15 @@ def strands_brief(strands, remembers, feel, sliders, musts=(), goal="", interest
         extra += f"She is looking for: {goal}.\n"
     if interests:
         extra += f"Things she loves: {', '.join(interests)}.\n"
+    if band and len(band) <= 3:
+        extra += f"The three strands she chose to stitch on him, most important first (the first vow should honour the first): {', '.join(band)}.\n"
     return ("His strands:\n" + "\n".join(f"- {s}" for s in strands) +
             f"\nHe remembers: {', '.join(remembers) or 'the small things'}.\nHe should make her feel: {feel}.\n" +
             slider_words(sliders) + ("\n" + extra if extra else ""))
 
 
 async def llm_vows(p: HusbandIn) -> Optional[List[str]]:
-    raw = await llm_text(SYSTEM_PROMPT, strands_brief(p.strands, p.remembers, p.feel, p.sliders, p.musts, p.goal, p.interests))
+    raw = await llm_text(SYSTEM_PROMPT, strands_brief(p.strands, p.remembers, p.feel, p.sliders, p.musts, p.goal, p.interests, p.band))
     if not raw:
         return None
     start = raw.find("[")
@@ -355,7 +357,7 @@ async def reweave_vow(hid: str, body: ReweaveIn):
     new = None
     try:
         others = "\n".join(f"- {v}" for i, v in enumerate(h.vows) if i != body.index)
-        raw = await llm_text(REWEAVE_PROMPT, strands_brief(h.strands, h.remembers, h.feel, h.sliders) +
+        raw = await llm_text(REWEAVE_PROMPT, strands_brief(h.strands, h.remembers, h.feel, h.sliders, h.musts, h.goal, h.interests, h.band) +
                              f"\nHis other vows (do not repeat them):\n{others}\nThe vow to replace: {old}")
         cand = undash(clip((raw or "").strip().strip('"').splitlines()[0] if raw else "", 200))
         if vow_ok(cand) and cand.lower() != old.lower() and cand not in h.vows:

@@ -97,7 +97,12 @@ function useReveal(root, p, strands, finished, named, fadeOnly, showBands) {
 // The medallion frame as one piece, with her painted husband in the oval: bottom-anchored, clipped by the oval.
 // `portrait` picks the painting; `strands` (0-10) weaves him bottom-up in raw willow; `finished` blooms his colours
 // and adds the heart (pulsing once with `pulse`), bands and ribbon. He moves only with light.
-export function Medallion({ name, band, portrait, alive = false, strands, finished = true, pulse = false, fadeOnly = false, showBands = false, testid = "medallion", label }) {
+// One global rule: his face, hair and true colours exist only once the weave is done (`woven`: the end of the
+// weaving screen, Meet him and his share page). Every other screen is held at the chin, in raw willow.
+export function Medallion({ name, band, portrait, woven = false, alive: wantAlive = false, strands: wantStrands, finished: wantFinished = true, pulse = false, fadeOnly = false, showBands = false, testid = "medallion", label }) {
+  const strands = woven ? wantStrands : Math.min(wantStrands ?? LAST - 1, LAST - 1);
+  const finished = woven && wantFinished;
+  const alive = woven && wantAlive;
   const reduce = useReducedMotion();
   const [[p, html]] = useState(() => scoped(MEDALLION));
   const root = useRef(null);
@@ -119,7 +124,7 @@ export function Medallion({ name, band, portrait, alive = false, strands, finish
   useReveal(root, p, strands, finished, !!name, fadeOnly, showBands);
   return (
     <div ref={wrap} className={`medallion relative w-full${reduce ? "" : " breathing"}${pulse && finished ? " mk-pulse" : ""}`} data-testid={testid}
-      data-portrait={portrait || PORTRAITS[0].slug} data-emotion="neutral" role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
+      data-portrait={portrait || PORTRAITS[0].slug} data-woven={woven ? "1" : "0"} data-emotion="neutral" role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
       <div ref={root} />
       {alive && <button type="button" aria-label="Make him react" onClick={tap} data-testid="face-tap-target"
         className="absolute rounded-full cursor-pointer" style={{ left: "24%", top: "10%", width: "52%", height: "56%" }} />}

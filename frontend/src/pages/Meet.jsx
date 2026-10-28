@@ -21,7 +21,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
   <div className="w-full max-w-[330px] lg:max-w-[440px] mx-auto" data-testid="meet-cameo">
-    <Medallion name={h.name} band={h.band} portrait={h.portrait} alive={alive} />
+    <Medallion woven name={h.name} band={h.band} portrait={h.portrait} alive={alive} />
   </div>
 );
 

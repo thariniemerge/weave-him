@@ -16,12 +16,14 @@ export function shortLabel(t) {
   return one || (words[0] || "").slice(0, BAND_MAX);
 }
 
-// Up to three band lines: two labels on each of the top bands, one short label on the low band
+// Band lines: three picks or fewer get one label per band (band 1 = first pick); older husbands with more
+// labels keep two labels on each top band and one short label on the low band
 const SEP = " · ";
 const ALIAS = { "SAFE HARBOUR": "SAFE HAVEN", "CHILDHOOD PET": "PET'S NAME", "FAVOURITE SONG": "OUR SONG", "MOM'S BIRTHDAY": "MOM'S DAY" };
 export function bandLines(band = []) {
   const all = [...new Set(band.flatMap((b) => b.split(SEP)).map((s) => s.trim()).filter(Boolean)
     .map((s) => ALIAS[s] || s).map((s) => (s.length > BAND_MAX ? shortLabel(s) : s)))];
+  if (all.length <= 3) return all;
   const lines = [all.slice(0, 2), all.slice(2, 4)].filter((l) => l.length).map((l) => l.join(SEP));
   const low = all.slice(4).find((l) => l.split(" ").length <= 2) || (all[4] ? shortLabel(all[4]) : null);
   if (low && lines.length === 2) lines.push(low);
@@ -30,8 +32,6 @@ export function bandLines(band = []) {
 
 
 export const MAX_PICKS = 3;
-// Her chosen band strands lead, in the order she tapped them
-export const orderBands = (labels, pick = []) => [...(pick || []).filter((l) => labels.includes(l)), ...labels.filter((l) => !(pick || []).includes(l))];
 export const allBandLabels = (a) => {
   const [q1, q2, q3, q4, q7] = [...QK, "q7"].map((k) => resolveChoices(k, a[k]));
   const rem = a.remembers.map(resolveRemember).filter(Boolean);
@@ -108,6 +108,13 @@ export function buildPayload(a) {
   const firsts = [q3[0], q1[0], q4[0], q2[0], q7[0], rem[0]];
   const rest = [...q3.slice(1), ...q1.slice(1), ...q4.slice(1), ...q2.slice(1), ...q7.slice(1), ...rem.slice(1)];
   const ids = (l) => l.map((o) => o.id).join(",");
+  // her three band picks, in the order she tapped them, are the one source for bands, card, video and vows
+  const opts = [...firsts, ...rest];
+  const labels = [...new Set(opts.map((o) => o.band))];
+  const picks = (a.bandPick || []).filter((l) => labels.includes(l)).slice(0, 3);
+  const band = picks.length ? picks : labels.slice(0, 3);
+  const strandOf = (l) => { const o = opts.find((x) => x.band === l); return o.strand || `remembers ${o.short}`; };
+  const woven = band.map(strandOf);
   return {
     strands,
     keys: { q1: ids(q1), q2: ids(q2), q3: ids(q3), q4: ids(q4), q7: ids(q7) },
@@ -115,11 +122,11 @@ export function buildPayload(a) {
     remembers: rem.map((r) => r.short),
     remember_keys: rem.map((r) => r.id),
     feel: q7.map((o) => o.label).join(" & "),
-    band: orderBands([...new Set([...firsts, ...rest].map((o) => o.band))], a.bandPick),
+    band,
     card: {
-      line1: `${cap(q3[0].strand)} · ${cap(q1[0].strand)}`,
-      line2: cap(`remembers ${rem[0].short}`),
-      woven: [flat(q3[0].strand), flat(q1[0].strand), rem[0].short],
+      line1: woven.slice(0, 2).map(cap).join(" · "),
+      line2: cap(woven[2] || `remembers ${rem[0].short}`),
+      woven: woven.map(flat),
     },
     threads: [...all.flat().map((o) => ({ label: cap(o.strand), sentence: o.sentence })),
       ...rem.map((r) => ({ label: cap(r.short), sentence: r.sentence })),
