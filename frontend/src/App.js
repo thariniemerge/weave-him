@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useLocation, Navigate } from "react-route
 import { AnimatePresence, MotionConfig } from "framer-motion";
 import { Toaster } from "sonner";
 import { AnswersProvider } from "./lib/store";
+import { PORTRAITS, portraitSrc } from "./content";
 import Welcome from "./pages/Welcome";
 import Strand from "./pages/Strand";
 import Weaving from "./pages/Weaving";
@@ -21,6 +22,8 @@ function AnimatedRoutes() {
   const [introOpen, setIntroOpen] = useState(false);
   const stage = useRef(null);
   useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); window.scrollTo(0, 0); }, [location.pathname]);
+  // all five paintings (and their raw-willow weaving state) load during the intro, so no reveal waits on an image
+  useEffect(() => { PORTRAITS.forEach((p) => ["", "-weave"].forEach((k) => { new Image().src = portraitSrc(p.slug, k); })); }, []);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;
   return (
     <>

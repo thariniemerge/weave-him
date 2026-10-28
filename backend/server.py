@@ -11,7 +11,7 @@ from pathlib import Path
 import os, re, json, random, secrets, hashlib, logging, asyncio, uuid
 
 from emergentintegrations.llm.chat import LlmChat, UserMessage
-from content import NAMES, VOW_TEMPLATES, GENERIC_VOWS, BANNED, SYSTEM_PROMPT, REWEAVE_PROMPT
+from content import PORTRAITS, NAMES, VOW_TEMPLATES, GENERIC_VOWS, BANNED, SYSTEM_PROMPT, REWEAVE_PROMPT
 from card_render import render_card, og_jpeg, full_jpeg
 
 ROOT_DIR = Path(__file__).parent
@@ -25,7 +25,7 @@ logger = logging.getLogger("weave")
 logging.basicConfig(level=logging.INFO)
 
 MAX_REWEAVES = 3
-CARD_VERSION = 13
+CARD_VERSION = 14
 PREVIEW_SITE_LABEL = "weavehim.[domain]"
 DEFAULT_CREDIT_LINE = "Built with Emergent"
 DEFAULT_CREDIT = "[Inspired-by credit] · Built on Emergent"
@@ -69,6 +69,7 @@ class Must(BaseModel):
 
 
 class HusbandIn(BaseModel):
+    portrait: str = Field(default=PORTRAITS[0], max_length=40)
     strands: List[str] = Field(min_length=7, max_length=24)
     keys: Dict[str, str] = {}
     sliders: Dict[str, int] = {}
@@ -123,6 +124,7 @@ class Husband(BaseModel):
     goal: str = ""
     interests: List[str] = []
     musts: List[Must] = []
+    portrait: str = PORTRAITS[0]
 
     @classmethod
     def from_mongo(cls, doc):
@@ -261,7 +263,7 @@ def render_for(h: "Husband", host: str = "") -> bytes:
     if not site or re.search(r"preview\.emergentagent\.com|localhost", site):
         site = PREVIEW_SITE_LABEL
     credit = DEFAULT_CREDIT_LINE
-    return render_card(h.name, h.number, h.card.line1, h.card.line2, h.card.woven, site, credit)
+    return render_card(h.name, h.number, h.card.line1, h.card.line2, h.card.woven, site, credit, h.portrait)
 
 
 async def store_card(h: "Husband", host: str = "") -> dict:
@@ -305,6 +307,7 @@ async def create_husband(p: HusbandIn, request: Request):
         card=p.card, threads=p.threads, created_at=datetime.now(timezone.utc).isoformat(),
         keys=p.keys, remember_keys=p.remember_keys, site=clip(p.site), credit=clip(p.credit, 120),
         goal=clip(p.goal), interests=[clip(i, 40) for i in p.interests if clip(i)], musts=p.musts,
+        portrait=p.portrait if p.portrait in PORTRAITS else PORTRAITS[0],
     )
     token = secrets.token_urlsafe(18)
     await db.husbands.insert_one({**h.to_mongo(), "edit_token_hash": hashlib.sha256(token.encode()).hexdigest()})

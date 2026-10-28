@@ -1,3 +1,4 @@
+PORTRAITS = ["golden-willow", "candlelit-rogue", "sunlit-curls", "lantern-woodsman", "moorland-scholar"]
 NAMES = ["Rowan", "Alistair", "Cornelius", "Felix", "Jasper", "Lucian", "Theodore", "Laurence", "Augustin", "Tobias", "Hollis", "Ellis"]
 
 # Fallback vow per answer key

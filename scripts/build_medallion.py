@@ -1,13 +1,12 @@
-"""Builds src/assets/medallionK.js from the user's medallion-K.svg (no redrawing; only grouping + hidden emotion layers)."""
+"""Builds src/assets/medallion.js: the user's medallion frame (medallion-K.svg) with the K drawing removed and
+an empty slot for a painted portrait (the user's PNGs, never redrawn), plus light layers and the weaving mask."""
 import json
 import re
-import shutil
 from pathlib import Path
 
 SRC = Path("/app/scripts/medallion/medallion-K.svg")
-OUT = Path("/app/frontend/src/assets/medallionK.js")
+OUT = Path("/app/frontend/src/assets/medallion.js")
 svg = SRC.read_text()
-shutil.copy(SRC, "/app/frontend/public/assets/medallion-K.svg")
 
 
 def sub1(pat, rep, s, flags=re.S):
@@ -16,59 +15,44 @@ def sub1(pat, rep, s, flags=re.S):
     return out
 
 
-# Split K-eyes into left/right eyes, pupils grouped, plus hidden red heart eyes
-m = re.search(r'<g id="K-eyes">(.*?)</g>', svg, re.S)
-items = re.findall(r"<(?:path|circle)[^>]*/>", m.group(1))
-assert len(items) == 12
 HEART = "M0,9 C-13,0 -13,-10 -6.5,-10 C-3,-10 0,-7 0,-4 C0,-7 3,-10 6.5,-10 C13,-10 13,0 0,9Z"
+# Portrait box: the oval's width (92..508), bottom-anchored at the oval's foot (598); PNGs are 1500x2004
+X, W = 92, 416
+H = round(W * 2004 / 1500, 1)
+Y = round(598 - H, 1)
+IMG = f'x="{X}" y="{Y}" width="{W}" height="{H}" preserveAspectRatio="xMidYMax meet" href=""'
 
+figure = (
+    '<g id="figure"><g id="breath">'
+    f'<image id="img-glow" {IMG} filter="url(#him-glow)" opacity="0"/>'
+    f'<image id="img-color" {IMG}/>'
+    f'<image id="img-weave" {IMG} opacity="1"/>'
+    # warm light sweeping across the weave, only where he is painted
+    f'<g mask="url(#him-mask)"><rect id="shimmer" x="-150" y="0" width="130" height="760" fill="url(#shimmer-grad)" opacity="0" style="mix-blend-mode:screen"/></g>'
+    '</g></g>'
+)
+svg = sub1(r'<g id="figure">.*?</svg></g>', figure, svg)
+assert "K-" not in svg and 'id="Kw"' not in svg
 
-def eye(side, e):
-    return f'<g id="K-eye-{side}">{e[0]}<g id="K-pupil-{side}">{"".join(e[1:4])}</g>{"".join(e[4:])}</g>'
-
-
-def heart_eye(x):
-    return (f'<g transform="translate({x},183.6)"><g class="mk-he">'
-            f'<circle r="8.5" fill="#E04A5A" opacity=".4" filter="url(#Kg)"/>'
-            f'<path d="{HEART}" transform="scale(.56)" fill="#B3263A"/>'
-            f'<path d="M-3.4,-3.4 q1.1,-1.2 2.3,0" stroke="#fff" stroke-opacity=".85" stroke-width="1" fill="none" stroke-linecap="round"/></g></g>')
-
-
-eyes = (f'<g id="K-eyes">{eye("l", items[:6])}{eye("r", items[6:])}'
-        f'<g id="K-hearteyes" opacity="0">{heart_eye(177)}{heart_eye(225)}</g></g>')
-svg = svg[:m.start()] + eyes + svg[m.end():]
-
-# Hidden warm blush inside K-cheeks (clipped to his head like the rest of the group)
-svg = sub1(r'\n </g><g id="K-brows">',
-           '<g id="K-blush" opacity="0"><ellipse cx="160" cy="211" rx="15" ry="8" fill="#C4505A" filter="url(#Ks)"/>'
-           '<ellipse cx="240" cy="211" rx="15" ry="8" fill="#C4505A" filter="url(#Ks)"/></g></g><g id="K-brows">', svg)
-
-# Red hearts that float up from him (kiss / heart eyes); invisible until played
+# Red hearts that float up from his brooch; invisible until played
 fl = "".join(f'<g transform="translate({x},{y})"><path class="mk-fl" opacity="0" style="--dx:{dx}px;--s:{s}" d="{HEART}" fill="#B3263A"/></g>'
-             for x, y, s, dx in [(226, 242, .6, 46), (232, 236, .45, 70), (220, 234, .4, 24)])
-svg = sub1(r"\n</g>\n\n</svg></g>", f'\n</g>\n<g id="K-floaters">{fl}</g>\n</svg></g>', svg)
+             for x, y, s, dx in [(306, 430, .9, 40), (292, 424, .7, -34), (314, 418, .6, 12)])
+svg = sub1(r'(\n <g id="bands">)', f'\n <g id="floaters">{fl}</g>' + r'\1', svg)
 
-# Weaving reveal: a mask for #figure (applied only while weaving) and a soft golden weaving edge
 svg = sub1(r"<defs>", '<defs>\n <mask id="reveal-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760">'
            '<rect id="reveal-rect" x="0" y="0" width="600" height="760" fill="#fff"/></mask>'
            '\n <linearGradient id="reveal-gold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E9C878" stop-opacity="0"/>'
-           '<stop offset=".5" stop-color="#F3D58C" stop-opacity=".9"/><stop offset="1" stop-color="#E9C878" stop-opacity="0"/></linearGradient>', svg)
+           '<stop offset=".5" stop-color="#F3D58C" stop-opacity=".9"/><stop offset="1" stop-color="#E9C878" stop-opacity="0"/></linearGradient>'
+           f'\n <mask id="him-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760" style="mask-type:alpha"><image id="img-mask" {IMG}/></mask>'
+           '\n <linearGradient id="shimmer-grad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FFE3A8" stop-opacity="0"/>'
+           '<stop offset=".5" stop-color="#FFE9B8" stop-opacity=".55"/><stop offset="1" stop-color="#FFE3A8" stop-opacity="0"/></linearGradient>'
+           '\n <filter id="him-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="9"/>'
+           '<feColorMatrix values="0 0 0 0 1  0 0 0 0 .82  0 0 0 0 .52  0 0 0 1.6 0"/></filter>', svg)
 svg = sub1(r'(\n <g id="heart")', '\n <g id="reveal-edge" opacity="0"><rect x="0" y="-9" width="600" height="18" fill="url(#reveal-gold)"/>'
            r'<rect x="0" y="-.7" width="600" height="1.4" fill="#FFF1C8" opacity=".9"/></g>\1', svg)
-
 svg = sub1(r'<svg ([^>]*?) width="600" height="760" id="medallion">',
            r'<svg \1 id="medallion" width="100%" style="display:block;height:auto" role="img">', svg)
-medallion = svg
 
-# Share card portrait: only the contents of #portrait (bg + figure + heart), no bands, cropped to the oval
-defs = re.search(r"<defs>.*?</defs>", svg, re.S).group(0)
-body = re.search(r'<g id="portrait" clip-path="url\(#portrait-clip\)">(.*?)\n <g id="bands">', svg, re.S).group(1)
-body = re.sub(r'\n <g id="reveal-edge".*?</g></g>|\n <g id="reveal-edge".*?</g>', "", body, flags=re.S)
-portrait = (f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="92 82 416 516" '
-            f'preserveAspectRatio="xMidYMid slice" width="100%" height="100%" style="display:block">{defs}'
-            f'<g id="portrait">{body}<ellipse cx="300" cy="340" rx="208" ry="258" fill="url(#portrait-shade)"/></g></svg>')
-assert 'id="bands"' not in portrait and "reveal-edge" not in portrait
-
-OUT.write_text("// Generated by /app/scripts/build_medallion.py from medallion-K.svg. Do not edit.\n"
-               f"export const MEDALLION = {json.dumps(medallion)};\nexport const PORTRAIT = {json.dumps(portrait)};\n")
-print("ok", len(medallion), len(portrait))
+OUT.write_text("// Generated by /app/scripts/build_medallion.py. Do not edit.\n"
+               f"export const MEDALLION = {json.dumps(svg)};\n")
+print("ok", len(svg), "img box", X, Y, W, H)

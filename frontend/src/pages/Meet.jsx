@@ -21,7 +21,7 @@ import { motion, useReducedMotion } from "framer-motion";
 
 export const Cameo = ({ h, alive = false }) => (
   <div className="w-full max-w-[330px] lg:max-w-[440px] mx-auto" data-testid="meet-cameo">
-    <Medallion name={h.name} band={h.band} alive={alive} />
+    <Medallion name={h.name} band={h.band} portrait={h.portrait} alive={alive} />
   </div>
 );
 
@@ -74,7 +74,7 @@ export default function Meet({ isPublic = false }) {
   const onVideo = async () => {
     if (!blob || video != null) return;
     play("paper"); setVideo(0);
-    try { await saveVideo({ blob: await makeCardVideo(blob, setVideo), name: h.name, link: shareLink(h.id) }); }
+    try { await saveVideo({ blob: await makeCardVideo(blob, h.portrait, setVideo), name: h.name, link: shareLink(h.id) }); }
     catch { toast("The loom jammed. Try the video again in a moment."); }
     finally { setVideo(null); }
   };

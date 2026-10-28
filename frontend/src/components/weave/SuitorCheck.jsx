@@ -13,9 +13,12 @@ const Torn = ({ name, reason, testid }) => (
   </motion.p>
 );
 
-// Woven monogram initial (no portrait)
+// Woven monogram initial over a dark woven silhouette (no portrait: the paintings are only for her husband)
 const Monogram = ({ letter }) => (
-  <span className="monogram shrink-0 w-9 h-9 rounded-full flex items-center justify-center f-mark text-[19px] text-[color:#F1ECE1]" aria-hidden>{letter}</span>
+  <span className="monogram relative shrink-0 w-9 h-9 rounded-full overflow-hidden flex items-center justify-center f-mark text-[19px] text-[color:#F1ECE1]" aria-hidden>
+    <svg viewBox="0 0 36 36" className="absolute inset-0 w-full h-full"><path d="M18 7a6 6 0 1 1 0 12a6 6 0 1 1 0-12zM5 36c1-8 6-13 13-13s12 5 13 13z" fill="#2E2116" opacity=".6" /></svg>
+    <span className="relative">{letter}</span>
+  </span>
 );
 
 function SuitorCard({ s, musts, interests }) {

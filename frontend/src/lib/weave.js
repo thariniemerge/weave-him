@@ -1,4 +1,4 @@
-import { QUESTIONS, SLIDERS, REMEMBERS, CONFIG, siteHost, MUSTHAVES, INTERESTS, GOALS, CUSTOM_NO } from "../content";
+import { QUESTIONS, SLIDERS, REMEMBERS, CONFIG, siteHost, MUSTHAVES, INTERESTS, GOALS, CUSTOM_NO, PORTRAITS } from "../content";
 
 export const qByKey = (key) => QUESTIONS.find((q) => q.key === key);
 const clean = (t) => t.replace(/^\s*(he|he…|he\.\.\.)\s+/i, "").replace(/\s+/g, " ").trim();
@@ -77,6 +77,27 @@ export const resolveInterest = (m) => (m.custom ? { id: "custom", label: clean(m
 // One suitor against one must-have: { ok, reason }
 export const suitorVerdict = (s, m) => (m.id === "custom" ? { ok: false, reason: CUSTOM_NO } : s.no[m.id] ? { ok: false, reason: s.no[m.id] } : { ok: true });
 
+// Her answers as signs, in strand order (I to VII)
+function signs(a) {
+  const out = [];
+  ["q1", "q2", "q3", "q4"].forEach((k) => resolveChoices(k, a[k]).forEach((o) => out.push(`${k}:${o.id}`)));
+  ["out", "love", "feel"].forEach((k) => { const v = a.sliders?.[k]; if (v < 50) out.push(`${k}:low`); else if (v > 50) out.push(`${k}:high`); });
+  (a.remembers || []).forEach((r) => r.id && out.push(`rem:${r.id}`));
+  resolveChoices("q7", a.q7).forEach((o) => out.push(`q7:${o.id}`));
+  return out;
+}
+
+// The portrait with the most matching signs; ties go to the one she matched first, then list order
+export function pickPortrait(a) {
+  const s = signs(a);
+  const rank = PORTRAITS.map((p, i) => {
+    const hits = s.map((x, j) => (p.signs.includes(x) ? j : -1)).filter((j) => j >= 0);
+    return { slug: p.slug, score: hits.length, first: hits.length ? hits[0] : 99, i };
+  });
+  rank.sort((x, y) => y.score - x.score || x.first - y.first || x.i - y.i);
+  return rank[0].slug;
+}
+
 export function buildPayload(a) {
   const [q1, q2, q3, q4, q7] = [...QK, "q7"].map((k) => resolveChoices(k, a[k]));
   const rem = a.remembers.map(resolveRemember).filter(Boolean);
@@ -108,6 +129,7 @@ export function buildPayload(a) {
     goal: GOALS.find((g) => g.id === a.goal)?.short || "",
     interests: (a.interests || []).map(resolveInterest).filter(Boolean).map((i) => i.label),
     musts: (a.musts || []).map(resolveMust).filter(Boolean).map(({ label, vow, words }) => ({ label, vow, words })),
+    portrait: pickPortrait(a),
   };
 }
 

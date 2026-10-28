@@ -11,8 +11,9 @@ W, H = 1080, 1920
 
 
 @lru_cache(maxsize=None)
-def _layers():
-    return Image.open(ASSETS / "base.png").convert("RGBA"), Image.open(ASSETS / "overlay.png").convert("RGBA")
+def _layers(portrait: str):
+    # one base layer per painted portrait (frame + his painting in the oval); text is drawn on top
+    return Image.open(ASSETS / f"base-{portrait}.png").convert("RGBA"), Image.open(ASSETS / "overlay.png").convert("RGBA")
 
 
 @lru_cache(maxsize=256)
@@ -93,8 +94,8 @@ def star(mask, cx, cy, r, inner):
     ImageDraw.Draw(mask).polygon(pts, fill=255)
 
 
-def render_card(name: str, number: str, line1: str, line2: str, woven, site: str, credit: str) -> bytes:
-    base, over = _layers()
+def render_card(name: str, number: str, line1: str, line2: str, woven, site: str, credit: str, portrait: str) -> bytes:
+    base, over = _layers(portrait)
     card = base.copy()
     new = lambda: Image.new("L", (W, H), 0)  # noqa: E731
 

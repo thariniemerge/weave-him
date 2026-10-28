@@ -200,6 +200,17 @@ export const REMEMBERS = [
 export const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];
 export const TOTAL_STRANDS = 10;
 
+// Her husband's painted portrait, chosen from her answers. Signs: "q1:coffee" (a pick), "love:low"/"love:high" (a slider side), "rem:song" (a remembered thing).
+export const PORTRAITS = [
+  { slug: "golden-willow", name: "Golden Willow", signs: ["q1:coffee", "love:low", "feel:low", "q4:small", "q7:safe"] },
+  { slug: "candlelit-rogue", name: "Candlelit Rogue", signs: ["love:high", "feel:high", "q4:voice", "q7:seen", "rem:song"] },
+  { slug: "sunlit-curls", name: "Sunlit Curls", signs: ["q3:laugh", "q2:pancakes", "out:high", "q7:amused", "rem:jokes"] },
+  { slug: "lantern-woodsman", name: "Lantern Woodsman", signs: ["q1:holds", "q4:fixing", "q3:squeeze", "q2:adventure", "q7:alone"] },
+  { slug: "moorland-scholar", name: "Moorland Scholar", signs: ["q1:vent", "q2:reads", "out:low", "q3:rehearse", "q3:won"] },
+];
+export const PORTRAIT_V = 5;
+export const portraitSrc = (slug, kind = "") => `/assets/husbands/${slug}${kind}.${kind === "-bg" ? "jpg" : "webp"}?v=${PORTRAIT_V}`;
+
 // Strand VIII: what I'm looking for (pick one)
 export const GOALS = [
   { id: "serious", label: "Something serious", short: "something serious" },

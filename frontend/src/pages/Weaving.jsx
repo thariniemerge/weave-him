@@ -5,7 +5,7 @@ import { Page, Art } from "../components/weave/ui";
 import { HeartsRow } from "../components/weave/StrandHeader";
 import { COPY, ROMAN } from "../content";
 import { useAnswers } from "../lib/store";
-import { buildPayload, hoopTags, isComplete } from "../lib/weave";
+import { buildPayload, hoopTags, isComplete, pickPortrait } from "../lib/weave";
 import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
@@ -108,7 +108,7 @@ export default function Weaving() {
       <p className="f-mark text-[34px] text-[color:var(--rose)] leading-none mt-2">{COPY.wordmark}</p>
       <PanelOrInline>
       <div className="relative w-full max-w-[400px] lg:max-w-[540px] mx-auto mt-3" data-testid="weaving-hoop">
-        <div className="w-[72%] mx-auto"><Medallion band={band} strands={step} finished={step >= 10} pulse fadeOnly={!!reduce} name={step >= 10 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
+        <div className="w-[72%] mx-auto"><Medallion band={band} portrait={husband?.portrait || pickPortrait(answers)} strands={step} finished={step >= 10} pulse fadeOnly={!!reduce} name={step >= 10 ? husband?.name : undefined} testid="weaving-medallion" label="A wicker husband being woven" /></div>
         {tags.map((t, i) => <Tag key={i} text={t} i={i} shown={step > i} />)}
       </div>
       </PanelOrInline>

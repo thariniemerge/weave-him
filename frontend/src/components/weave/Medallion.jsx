@@ -1,7 +1,8 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { useReducedMotion } from "framer-motion";
-import { MEDALLION, PORTRAIT } from "../../assets/medallionK";
-import { scoped, faceParts, applyPose, floatHearts, useFaceLife, POSES } from "../../lib/face";
+import { MEDALLION } from "../../assets/medallion";
+import { scoped, useLight } from "../../lib/face";
+import { PORTRAITS, portraitSrc } from "../../content";
 import { bandLines } from "../../lib/weave";
 
 const NAME_MAX = 320;
@@ -31,9 +32,9 @@ function useTexts(root, p, name, lines) {
   }, [key]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-// Reveal line (top of the woven part) per answered strand, by his anatomy: lower abs up to the chin over
-// strands I-IX, then face and hair last at X. Shared across screens so the line only ever grows upward.
-const LEVELS = [600, 572, 549, 527, 504, 482, 459, 437, 414, 392, 84];
+// Reveal line (top of the woven part) per answered strand: chest up to the neck over strands I-IX (his chin
+// sits near y 360), then face and hair last at X. Shared across screens so the line only ever grows upward.
+const LEVELS = [600, 575, 551, 527, 503, 479, 455, 431, 407, 384, 30];
 const LAST = LEVELS.length - 1;
 let lastStrands = null;
 
@@ -41,8 +42,12 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
   useLayoutEffect(() => {
     const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
     const fig = q("figure"), rect = q("reveal-rect"), edge = q("reveal-edge");
-    const late = [q("bands"), q("heart")], ribbon = q("ribbon");
+    const late = [q("bands"), q("heart")], ribbon = q("ribbon"), weave = q("img-weave");
+    // raw-willow sepia while he is being woven; his true colours bloom in once his face is done
+    const color = strands == null || (strands === LAST && finished);
     if (strands == null) {
+      weave.style.transition = "none";
+      weave.style.opacity = 0;
       fig.removeAttribute("mask");
       edge.style.opacity = 0;
       late.forEach((el) => { el.style.opacity = 1; });
@@ -61,7 +66,8 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
       // with nothing fading out from the SVG's defaults
       const grow = lastStrands != null && lastStrands < strands;
       const from = grow ? LEVELS[lastStrands] : y;
-      const all = [rect, edge, ...late, ribbon];
+      const all = [rect, edge, ...late, ribbon, weave];
+      weave.style.opacity = color && !grow ? 0 : 1;
       all.forEach((el) => { el.style.transition = "none"; });
       [rect, edge].forEach((el) => { el.style.transform = `translateY(${from}px)`; });
       [...late, ribbon].forEach((el) => { el.style.opacity = finished && !grow ? 1 : 0; });
@@ -80,36 +86,42 @@ function useReveal(root, p, strands, finished, named, fadeOnly) {
     late.forEach((el) => { el.style.transitionDelay = finished ? ".8s" : "0s"; el.style.opacity = finished ? 1 : 0; });
     ribbon.style.transitionDelay = finished ? ".8s" : "0s";
     ribbon.style.opacity = finished && named ? 1 : 0;
+    weave.style.transition = "opacity 1s ease .7s";
+    weave.style.opacity = color ? 0 : 1;
   }, [strands, finished, named, fadeOnly]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
-// medallion-K.svg as one piece: frame, portrait, bands and ribbon. He moves only through K's own groups.
-// `strands` (0-7) weaves him bottom-up; `finished` adds the heart (pulsing once with `pulse`), bands and ribbon.
-export function Medallion({ name, band, alive = false, strands, finished = true, pulse = false, fadeOnly = false, testid = "medallion", label }) {
+// The medallion frame as one piece, with her painted husband in the oval: bottom-anchored, clipped by the oval.
+// `portrait` picks the painting; `strands` (0-10) weaves him bottom-up in raw willow; `finished` blooms his colours
+// and adds the heart (pulsing once with `pulse`), bands and ribbon. He moves only with light.
+export function Medallion({ name, band, portrait, alive = false, strands, finished = true, pulse = false, fadeOnly = false, testid = "medallion", label }) {
   const reduce = useReducedMotion();
   const [[p, html]] = useState(() => scoped(MEDALLION));
   const root = useRef(null);
-  const parts = useRef(null);
-  const { e, blink, lift, n, tap } = useFaceLife({ ambient: alive, reduce });
+  const wrap = useRef(null);
+  const tap = useLight(wrap, { ambient: alive, reduce });
   useLayoutEffect(() => { root.current.innerHTML = html; }, []); // eslint-disable-line react-hooks/exhaustive-deps
-  useLayoutEffect(() => { parts.current = faceParts(root.current, p, !reduce); }, [p, reduce]);
   useLayoutEffect(() => {
-    applyPose(parts.current, reduce ? POSES.smile : POSES[e], { blink, lift });
-  }, [e, blink, lift, reduce]);
-  useLayoutEffect(() => { if (!reduce && (e === "kiss" || e === "hearts")) floatHearts(parts.current); }, [n]); // eslint-disable-line react-hooks/exhaustive-deps
+    const q = (id) => root.current.querySelector(`[id="${p}${id}"]`);
+    const slug = portrait || PORTRAITS[0].slug;
+    ["img-color", "img-glow", "img-mask"].forEach((id) => q(id).setAttribute("href", portraitSrc(slug)));
+    q("img-weave").setAttribute("href", portraitSrc(slug, "-weave"));
+  }, [portrait]); // eslint-disable-line react-hooks/exhaustive-deps
   useTexts(root, p, name, bandLines(band));
   useReveal(root, p, strands, finished, !!name, fadeOnly);
   return (
-    <div className={`medallion relative w-full${pulse && finished ? " mk-pulse" : ""}`} data-testid={testid} data-emotion={reduce ? "smile" : e} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
+    <div ref={wrap} className={`medallion relative w-full${reduce ? "" : " breathing"}${pulse && finished ? " mk-pulse" : ""}`} data-testid={testid}
+      data-portrait={portrait || PORTRAITS[0].slug} role="img" aria-label={label || (name ? `${name}, a wicker husband` : "A wicker husband")}>
       <div ref={root} />
-      {alive && <button type="button" aria-label="Make him react" onClick={tap} data-testid="face-tap-target"
-        className="absolute rounded-full cursor-pointer" style={{ left: "32%", top: "12%", width: "36%", height: "40%" }} />}
+      {alive && <button type="button" aria-label="Make him glow" onClick={tap} data-testid="face-tap-target"
+        className="absolute rounded-full cursor-pointer" style={{ left: "24%", top: "10%", width: "52%", height: "56%" }} />}
     </div>
   );
 }
 
-// Share card: only K's portrait (misty background, figure, red heart), filling the card's oval
-export const CardPortrait = ({ className }) => {
-  const [[, html]] = useState(() => scoped(PORTRAIT));
-  return <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%", clipPath: "ellipse(50% 50% at 50% 50%)", WebkitClipPath: "ellipse(50% 50% at 50% 50%)" }} dangerouslySetInnerHTML={{ __html: html }} />;
-};
+// Share card: his full-background painting filling the card's oval (bottom-anchored)
+export const CardPortrait = ({ className, portrait }) => (
+  <div className={className} aria-hidden data-testid="card-husband" style={{ overflow: "hidden", borderRadius: "50%", clipPath: "ellipse(50% 50% at 50% 50%)", WebkitClipPath: "ellipse(50% 50% at 50% 50%)" }}>
+    <img src={portraitSrc(portrait || PORTRAITS[0].slug, "-bg")} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 100%", display: "block" }} />
+  </div>
+);

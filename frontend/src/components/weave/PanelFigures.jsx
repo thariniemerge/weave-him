@@ -1,6 +1,6 @@
 import { Medallion } from "./Medallion";
 import { useAnswers } from "../../lib/store";
-import { resolveChoices } from "../../lib/weave";
+import { resolveChoices, pickPortrait } from "../../lib/weave";
 import { ROMAN } from "../../content";
 
 // Desktop panel: the husband woven bottom-up as she answers
@@ -11,7 +11,7 @@ export const BuildingHusband = ({ done }) => {
   return (
     <div className="w-full" data-testid="building-husband">
       <div className="w-full max-w-[440px] mx-auto">
-        <Medallion band={band} strands={done} finished={false} label="Your wicker husband, part-woven" />
+        <Medallion band={band} portrait={pickPortrait(answers)} strands={done} finished={false} label="Your wicker husband, part-woven" />
       </div>
       <p className="f-sc text-center text-[16px] mt-4 text-[color:#F1ECE1]">
         {done ? `${ROMAN[done]} of X strands woven` : "The basketmaker awaits the first strand"}

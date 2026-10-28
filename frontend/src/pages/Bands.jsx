@@ -7,7 +7,7 @@ import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { useAnswers } from "../lib/store";
-import { allBandLabels, isComplete, orderBands } from "../lib/weave";
+import { allBandLabels, isComplete, orderBands, pickPortrait } from "../lib/weave";
 import { play } from "../lib/sound";
 import { COPY } from "../content";
 
@@ -44,7 +44,7 @@ export default function Bands() {
       <p className="f-cg italic text-center text-[17px] mt-1 text-[color:#4A5641]">{COPY.bandsSub}</p>
       <PanelOrInline>
         <div className="w-full max-w-[230px] lg:max-w-[440px] mx-auto mt-2" data-testid="bands-preview">
-          <Medallion band={orderBands(labels, picked)} strands={10} label="Your wicker husband wearing the chosen strands" />
+          <Medallion band={orderBands(labels, picked)} portrait={pickPortrait(answers)} strands={10} label="Your wicker husband wearing the chosen strands" />
         </div>
       </PanelOrInline>
       <div className="flex flex-wrap justify-center gap-2 mt-3" data-testid="band-choices">
