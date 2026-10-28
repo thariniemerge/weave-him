@@ -19,12 +19,6 @@ export const siteHost = () =>
 
 export const COPY = {
   guild: "The Basketmaker's Workshop",
-  howItWorks: "How it works",
-  howSteps: [
-    { title: "Answer", body: "Ten little questions, ten strands. Not one about his looks. (He's Skarsgård-adjacent anyway.)" },
-    { title: "Weave", body: "Peter Dinklage is booked. Our basketmaker has read my answers very, very carefully." },
-    { title: "Meet him", body: "He arrives with an old-village name and five vows, written just for me." },
-  ],
   kicker: "hand-woven for the village gossips",
   wordmark: "weave him",
   welcomeTitle: ["Weave Wicker", "Your Husband"],
@@ -34,7 +28,6 @@ export const COPY = {
   // Release hook, shown on Welcome until the end of RELEASE_DAY (local time)
   releaseHook: "In theatres Oct 30. Can't wait till Friday? Weave him now.",
   RELEASE_DAY: "2026-10-30",
-  howIntro: "Dear lonely fisherwoman, it's quite simple…",
   villageTalking: "The village is already talking. Soon they'll be jealous.",
   weavingFinishing: ["Sanding down his rough edges…", "No assembly required. Unlike some husbands."],
   weavingLoading: ["The basketmaker is soaking the willow… (Peter Dinklage would've been faster. Probably.)", "Weaving his shoulders. Skarsgård-width, as requested.", "Checking for splinters. Emotional ones too.", "Bending the willow. Not your standards."],

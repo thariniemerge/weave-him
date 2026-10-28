@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Drawer, DrawerContent, DrawerTitle, DrawerDescription } from "../components/ui/drawer";
 import { Art, Pill, Page, SoundToggle } from "../components/weave/ui";
 import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
 import { COPY, CONFIG } from "../content";
@@ -9,33 +8,10 @@ import { useAnswers } from "../lib/store";
 // The release hook says "till Friday", so it retires after release day (visitor's local time)
 const beforeRelease = () => new Date() <= new Date(`${COPY.RELEASE_DAY}T23:59:59`);
 
-const HowItWorks = ({ open, onOpenChange }) => (
-  <Drawer open={open} onOpenChange={onOpenChange}>
-    <DrawerContent className="mx-auto max-w-[430px] bg-[color:var(--paper)] border-[color:var(--gold)]" data-testid="how-it-works-sheet">
-      <div className="px-7 pt-4 pb-10">
-        <DrawerTitle className="f-cg text-3xl font-semibold">How it <span className="italic text-[color:var(--rose)]">works</span></DrawerTitle>
-        <DrawerDescription className="f-cg italic text-[17px] text-[color:#4A5641] mt-1">{COPY.howIntro}</DrawerDescription>
-        <ol className="mt-6 space-y-5">
-          {COPY.howSteps.map((s, i) => (
-            <li key={s.title} className="flex gap-4 items-start">
-              <span className="f-mark text-3xl text-[color:var(--rose)] w-8 shrink-0 leading-none">{["I", "II", "III"][i]}</span>
-              <div>
-                <p className="f-sc text-[15px] font-semibold">{s.title}{i < 2 && <span className="text-[color:var(--gold)]"> →</span>}</p>
-                <p className="text-[16px] leading-snug mt-0.5">{s.body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-    </DrawerContent>
-  </Drawer>
-);
-
 export default function Welcome() {
   const nav = useNavigate();
   const { reset } = useAnswers();
   const [count] = useState(() => CONFIG.WOVEN_COUNTS[Math.floor(Math.random() * CONFIG.WOVEN_COUNTS.length)]);
-  const [how, setHow] = useState(false);
   const start = () => { reset(); nav("/strand/1"); };
 
   return (
@@ -46,9 +22,6 @@ export default function Welcome() {
           <Art name="heart" className="w-6 h-6" />
           <span className="f-sc text-[15px] font-semibold">{COPY.guild}</span>
         </div>
-        <button data-testid="how-it-works-link" onClick={() => setHow(true)} className="f-cg italic text-[17px] text-[color:var(--rose)] min-h-[44px] px-1">
-          {COPY.howItWorks}
-        </button>
         <SoundToggle className="-mr-2 ml-1" />
       </header>
       <PanelOrInline forest>
@@ -69,7 +42,6 @@ export default function Welcome() {
         {COPY.counter(count)}
       </p>
       {beforeRelease() && <p data-testid="release-hook" className="f-cg italic text-center text-[15px] leading-snug mt-2 px-4 text-[color:var(--rose)] opacity-80">{COPY.releaseHook}</p>}
-      <HowItWorks open={how} onOpenChange={setHow} />
     </Page>
   );
 }
