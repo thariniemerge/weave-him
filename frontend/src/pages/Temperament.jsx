@@ -6,11 +6,21 @@ import { StrandHeader } from "../components/weave/StrandHeader";
 import { COPY, SLIDERS } from "../content";
 import { useAnswers } from "../lib/store";
 import { sliderStep, soFarTags } from "../lib/weave";
+import { play } from "../lib/sound";
+import { useRef } from "react";
 
 const CHIP_TINTS = ["var(--peony)", "var(--sage)", "var(--wisteria)", "var(--ochre)", "var(--wedgwood)"];
 
 const Slider = ({ s, value, onChange }) => {
   const step = s.steps[sliderStep(value)];
+  // a wicker tick every 10%, a creak when the heart crosses into a new caption
+  const last = useRef(value);
+  const move = (v) => {
+    if (sliderStep(v) !== sliderStep(last.current)) play("creak");
+    else if (Math.floor(v / 10) !== Math.floor(last.current / 10)) play("tick", { rate: 0.85 + v / 250 });
+    last.current = v;
+    onChange(v);
+  };
   return (
     <section className="stitch-card px-5 pt-5 pb-4 lg:pt-3 lg:pb-1" style={{ background: s.tint }} data-testid={`slider-card-${s.key}`}>
       <h2 className="f-cg font-semibold text-center text-[21px] lg:text-[19px]">{s.title}</h2>
@@ -20,7 +30,7 @@ const Slider = ({ s, value, onChange }) => {
         <img src="/art/slider-track.svg" alt="" className="w-full h-auto block pointer-events-none" draggable={false} />
         <input
           type="range" min={0} max={100} value={value} aria-label={s.title} data-testid={`slider-${s.key}`}
-          onChange={(e) => onChange(Number(e.target.value))} className="woven-range"
+          onChange={(e) => move(Number(e.target.value))} className="woven-range"
         />
         <img src="/art/heart.svg" alt="" aria-hidden className="woven-heart" style={{ left: `${value}%` }} data-testid={`slider-heart-${s.key}`} />
       </div>
