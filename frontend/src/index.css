@@ -147,6 +147,9 @@ body {
 
 input, textarea, button { font-family: inherit; }
 button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--rose); outline-offset: 3px; }
+/* "Spin my own" pills: the pill itself shows focus (solid edge + soft glow) instead of a square box round the input */
+.own-pill input:focus-visible { outline: none; }
+.own-pill:focus-within { border-style: solid; box-shadow: 0 0 0 3px rgba(107, 46, 54, .16); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }

@@ -55,7 +55,7 @@ export default function Remembers() {
         {!custom && (
           <div className="mt-5">
             <label className="block f-cg italic font-semibold text-center text-[17px] mb-2 text-[color:var(--rose)]" htmlFor="remember-own">{COPY.spinOwn}</label>
-            <div className="flex items-center gap-2 pl-4 pr-1.5 rounded-full border-2 transition-colors duration-300 border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]">
+            <div className="own-pill flex items-center gap-2 pl-4 pr-1.5 rounded-full border-2 transition-colors duration-300 border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]">
               <input id="remember-own" data-testid="remember-custom-input" maxLength={60} value={draft} disabled={full} placeholder={COPY.remembersOwnPlaceholder}
                 onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustom()}
                 aria-label={COPY.remembersOwn}

@@ -63,7 +63,7 @@ export const QuestionCard = ({ q, value, onChange }) => {
       </div>
       <label className="block f-cg italic font-semibold text-center text-[17px] mt-5 mb-2 text-[color:var(--rose)]" htmlFor={`own-${q.key}`}>{COPY.spinOwn}</label>
       <motion.div animate={shake?.startsWith("custom-") ? SHAKE : { x: 0 }} key={shake?.startsWith("custom-") ? shake : "c"}
-        className={`flex items-center gap-2 pl-4 pr-4 rounded-full border-2 transition-colors duration-300 ${custom ? "border-solid border-[color:var(--rose)] bg-[color:rgba(107,46,54,.08)]" : "border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]"}`}>
+        className={`own-pill flex items-center gap-2 pl-4 pr-4 rounded-full border-2 transition-colors duration-300 ${custom ? "border-solid border-[color:var(--rose)] bg-[color:rgba(107,46,54,.08)]" : "border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]"}`}>
         <Feather className="w-5 h-5 text-[color:var(--rose)] shrink-0" strokeWidth={1.5} />
         <input
           id={`own-${q.key}`} data-testid="custom-answer-input" maxLength={60} value={text} placeholder={COPY.spinPlaceholder}

@@ -41,7 +41,7 @@ export function ChipPicker({ items, picks, onChange, max, prefix, placeholder, o
       {!custom && (
         <div className="mt-5">
           <label className="block f-cg italic font-semibold text-center text-[17px] mb-2 text-[color:var(--rose)]" htmlFor={`${prefix}-own`}>{COPY.spinOwn}</label>
-          <div className="flex items-center gap-2 pl-4 pr-1.5 rounded-full border-2 transition-colors duration-300 border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]">
+          <div className="own-pill flex items-center gap-2 pl-4 pr-1.5 rounded-full border-2 transition-colors duration-300 border-dashed border-[color:var(--rose)] bg-[color:rgba(107,46,54,.04)]">
             <input id={`${prefix}-own`} data-testid={`${prefix}-custom-input`} maxLength={50} value={draft} placeholder={placeholder} disabled={ownBlocked}
               onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addCustom()} aria-label={ownLabel}
               className="flex-1 min-w-0 min-h-[52px] bg-transparent outline-none f-cg italic text-[18px] placeholder:text-[color:#5E5A4E] disabled:opacity-40" />
