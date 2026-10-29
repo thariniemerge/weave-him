@@ -136,45 +136,46 @@ export const LETTER_STRANDS = [
 export const MAX_LETTER_STRANDS = 6;
 
 // Single-choice strands. strand = tag label, tag = "so far" chip, band = band word, sentence = letter form
+// woven = how it reads on the share card after "Woven from" (a noun phrase, no commas)
 export const QUESTIONS = [
   {
     n: 1, key: "q1", text: "When I've had a *terrible* day, he…",
     options: [
-      { id: "coffee", label: "Brings me coffee without asking", strand: "coffee, unasked", tag: "coffee-bringer", band: "COFFEE", sentence: "you bring me coffee before I even think to ask" },
-      { id: "vent", label: "Lets me vent. No fixing.", strand: "lets me vent", tag: "good listener", band: "LETS ME VENT", sentence: "you let me vent, and you never try to fix it" },
-      { id: "holds", label: "Just holds me. No words.", strand: "holds me, no words", tag: "quiet comfort", band: "HOLDS ME", sentence: "you just hold on, and never need any words" },
+      { id: "coffee", label: "Brings me coffee without asking", strand: "coffee, unasked", woven: "unasked-for coffee", tag: "coffee-bringer", band: "COFFEE", sentence: "you bring me coffee before I even think to ask" },
+      { id: "vent", label: "Lets me vent. No fixing.", strand: "lets me vent", woven: "room to vent", tag: "good listener", band: "LETS ME VENT", sentence: "you let me vent, and you never try to fix it" },
+      { id: "holds", label: "Just holds me. No words.", strand: "holds me, no words", woven: "quiet hugs", tag: "quiet comfort", band: "HOLDS ME", sentence: "you just hold on, and never need any words" },
     ],
   },
   {
     n: 2, key: "q2", text: "On a *lazy* Sunday, he…",
     options: [
-      { id: "pancakes", label: "Makes pancakes, badly", strand: "pancakes, badly", tag: "brave cook", band: "PANCAKES", sentence: "you make pancakes, badly, and serve them proudly" },
-      { id: "reads", label: "Reads beside me in silence", strand: "reads beside me", tag: "quiet reader", band: "QUIET READS", sentence: "you read beside me and let the quiet be good" },
-      { id: "adventure", label: "Plans an adventure I didn't ask for", strand: "unasked adventures", tag: "adventurer", band: "ADVENTURES", sentence: "you plan the adventures I'd never think to ask for" },
+      { id: "pancakes", label: "Makes pancakes, badly", strand: "pancakes, badly", woven: "badly made pancakes", tag: "brave cook", band: "PANCAKES", sentence: "you make pancakes, badly, and serve them proudly" },
+      { id: "reads", label: "Reads beside me in silence", strand: "reads beside me", woven: "reading side by side", tag: "quiet reader", band: "QUIET READS", sentence: "you read beside me and let the quiet be good" },
+      { id: "adventure", label: "Plans an adventure I didn't ask for", strand: "unasked adventures", woven: "unplanned adventures", tag: "adventurer", band: "ADVENTURES", sentence: "you plan the adventures I'd never think to ask for" },
     ],
   },
   {
     n: 3, key: "q3", text: "When I'm *nervous* before something big, he…",
     options: [
-      { id: "won", label: "Tells me I've already won", strand: "faith in me", tag: "believer", band: "FAITH IN ME", sentence: "you tell me I've already won" },
-      { id: "laugh", label: "Makes me laugh till I forget", strand: "laughs at my worst jokes", tag: "jester", band: "LAUGHS", sentence: "you make me laugh until I forget to be nervous" },
-      { id: "squeeze", label: "Just squeezes my hand", strand: "a squeeze of the hand", tag: "hand-squeezer", band: "STEADY HAND", sentence: "you squeeze my hand right when I need it" },
+      { id: "won", label: "Tells me I've already won", strand: "faith in me", woven: "faith in me", tag: "believer", band: "FAITH IN ME", sentence: "you tell me I've already won" },
+      { id: "laugh", label: "Makes me laugh till I forget", strand: "laughs at my worst jokes", woven: "shared laughter", tag: "jester", band: "LAUGHS", sentence: "you make me laugh until I forget to be nervous" },
+      { id: "squeeze", label: "Just squeezes my hand", strand: "a squeeze of the hand", woven: "a squeeze of the hand", tag: "hand-squeezer", band: "STEADY HAND", sentence: "you squeeze my hand right when I need it" },
     ],
   },
   {
     n: 4, key: "q4", text: "His love *language*, honestly, is…",
     options: [
-      { id: "small", label: "Remembering the small things", strand: "remembers small things", tag: "noticer", band: "SMALL THINGS", sentence: "you remember all the small things" },
-      { id: "fixing", label: "Fixing things around the house", strand: "fixes the hinges", tag: "fixer of hinges", band: "FIXES THINGS", sentence: "you quietly fix whatever is creaking around the house" },
-      { id: "voice", label: "Long voice notes", strand: "long voice notes", tag: "voice-noter", band: "VOICE NOTES", sentence: "you send me long voice notes, and I love every minute" },
+      { id: "small", label: "Remembering the small things", strand: "remembers small things", woven: "the small things", tag: "noticer", band: "SMALL THINGS", sentence: "you remember all the small things" },
+      { id: "fixing", label: "Fixing things around the house", strand: "fixes the hinges", woven: "mended hinges", tag: "fixer of hinges", band: "FIXES THINGS", sentence: "you quietly fix whatever is creaking around the house" },
+      { id: "voice", label: "Long voice notes", strand: "long voice notes", woven: "long voice notes", tag: "voice-noter", band: "VOICE NOTES", sentence: "you send me long voice notes, and I love every minute" },
     ],
   },
   {
     n: 7, key: "q7", text: "How should he make me *feel*?", kicker: "The final strand",
     options: [
-      { id: "safe", label: "Safe harbour", strand: "safe harbour", tag: "safe harbour", band: "SAFE HAVEN", sentence: "you make me feel safe, like a harbour in a storm" },
-      { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", tag: "amuser", band: "AMUSED", sentence: "you keep me endlessly amused" },
-      { id: "seen", label: "Truly seen", strand: "truly sees me", tag: "noticer", band: "TRULY SEEN", sentence: "you make me feel truly seen" },
+      { id: "safe", label: "Safe harbour", strand: "safe harbour", woven: "a safe harbour", tag: "safe harbour", band: "SAFE HAVEN", sentence: "you make me feel safe, like a harbour in a storm" },
+      { id: "amused", label: "Endlessly amused", strand: "endlessly amusing", woven: "endless amusement", tag: "amuser", band: "AMUSED", sentence: "you keep me endlessly amused" },
+      { id: "seen", label: "Truly seen", strand: "truly sees me", woven: "feeling truly seen", tag: "noticer", band: "TRULY SEEN", sentence: "you make me feel truly seen" },
     ],
   },
 ];
@@ -208,12 +209,12 @@ export const SLIDERS = [
 
 // Strand VI. `links` are earlier answers each one relates to (see topByLinks): only her best three show
 export const REMEMBERS = [
-  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", band: "MOM'S DAY", sentence: "you always remember Mom's birthday", links: ["q4:small", "love:low"] },
-  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee", links: ["q1:coffee", "q4:small", "love:low"] },
-  { id: "jokes", label: "My worst jokes", short: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time", links: ["q3:laugh", "q2:pancakes", "out:high"] },
-  { id: "song", label: "My favourite song", short: "my favourite song", band: "OUR SONG", sentence: "you never forget my favourite song", links: ["q4:voice", "love:high", "feel:high"] },
-  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", band: "PET'S NAME", sentence: "you remember the name of my childhood pet", links: ["q4:small", "q1:vent"] },
-  { id: "surprises", label: "That I hate surprises", short: "no surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises", links: ["love:low", "feel:low", "q2:reads"] },
+  { id: "mom", label: "Mom's birthday", short: "Mom's birthday", woven: "Mom's birthday", band: "MOM'S DAY", sentence: "you always remember Mom's birthday", links: ["q4:small", "love:low"] },
+  { id: "coffeeorder", label: "How I take my coffee", short: "my coffee order", woven: "my coffee order", band: "COFFEE ORDER", sentence: "you know exactly how I take my coffee", links: ["q1:coffee", "q4:small", "love:low"] },
+  { id: "jokes", label: "My worst jokes", short: "my worst jokes", woven: "my worst jokes", band: "WORST JOKES", sentence: "you laugh at my worst jokes, every time", links: ["q3:laugh", "q2:pancakes", "out:high"] },
+  { id: "song", label: "My favourite song", short: "my favourite song", woven: "our song", band: "OUR SONG", sentence: "you never forget my favourite song", links: ["q4:voice", "love:high", "feel:high"] },
+  { id: "pet", label: "The name of my childhood pet", short: "my childhood pet", woven: "my childhood pet", band: "PET'S NAME", sentence: "you remember the name of my childhood pet", links: ["q4:small", "q1:vent"] },
+  { id: "surprises", label: "That I hate surprises", short: "no surprises", woven: "zero surprises", band: "NO SURPRISES", sentence: "you remember that I hate surprises", links: ["love:low", "feel:low", "q2:reads"] },
 ];
 
 export const ROMAN = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"];

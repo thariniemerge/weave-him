@@ -45,7 +45,7 @@ function resolveOne(key, ans) {
   if (ans.custom !== undefined) {
     const t = clean(ans.custom || "");
     if (!t) return null;
-    return { id: "custom", label: t, strand: t, tag: t.toLowerCase(), band: shortLabel(t), sentence: `“${t}”` };
+    return { id: "custom", label: t, strand: t, woven: `“${t}”`, tag: t.toLowerCase(), band: shortLabel(t), sentence: `“${t}”` };
   }
   return qByKey(key).options.find((o) => o.id === ans.id) || null;
 }
@@ -54,7 +54,7 @@ export const resolveChoices = (key, v) => asList(v).map((x) => resolveOne(key, x
 export function resolveRemember(r) {
   if (r.custom) {
     const t = clean(r.custom);
-    return { id: "custom", label: t, short: t, band: shortLabel(t), sentence: `you remember ${t}` };
+    return { id: "custom", label: t, short: t, woven: t, band: shortLabel(t), sentence: `you remember ${t}` };
   }
   return REMEMBERS.find((x) => x.id === r.id);
 }
@@ -128,7 +128,8 @@ export function buildPayload(a) {
   const labels = [...new Set(opts.map((o) => o.band))];
   const picks = (a.bandPick || []).filter((l) => labels.includes(l)).slice(0, 3);
   const band = picks.length ? picks : labels.slice(0, 3);
-  const strandOf = (l) => { const o = opts.find((x) => x.band === l); return o.strand || `remembers ${o.short}`; };
+  // on the card each pick reads after "Woven from", so it uses its noun-phrase `woven` form
+  const strandOf = (l) => opts.find((x) => x.band === l).woven;
   const woven = band.map(strandOf);
   return {
     strands,
@@ -140,7 +141,7 @@ export function buildPayload(a) {
     band,
     card: {
       line1: woven.slice(0, 2).map(cap).join(" · "),
-      line2: cap(woven[2] || `remembers ${rem[0].short}`),
+      line2: cap(woven[2] || rem[0].woven),
       woven: woven.map(flat),
     },
     threads: [...all.flat().map((o) => ({ label: cap(o.strand), sentence: o.sentence })),
