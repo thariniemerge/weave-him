@@ -22,7 +22,7 @@ The sound effects use no audio files. They are generated once, after the first t
 | Share reveal | The card rising in the share overlay (~2.2s) | A low timpani swell and roll, then a harp glissando and a bell shimmer | Original, synthesised in code · CC0 1.0 |
 | Paper rustle | Share, Save image, Copy link, Send as a text | Short band-passed noise crinkles | Original, synthesised in code · CC0 1.0 |
 
-The master level is about -18 dB, and the page turn is the loudest sound. Sound starts only after the first tap. It is muted by default when the device prefers reduced motion. Where supported (`navigator.audioSession.type = "ambient"`), it respects the phone's silent switch. The speaker icon's choice is saved in localStorage (`weave-him-muted`).
+The master level is about -18 dB, and the page turn is the loudest sound. Sound is on by default and starts after the first tap (browsers allow no sound before that). Where supported (`navigator.audioSession.type = "ambient"`), it respects the phone's silent switch. The speaker icon's choice is saved in localStorage (`weave-him-muted`).
 
 ## Fonts
 Grenze Gotisch, Cormorant Garamond, Cormorant SC and EB Garamond come from Google Fonts and are self-hosted in `frontend/public/fonts`. All are SIL Open Font License 1.1.

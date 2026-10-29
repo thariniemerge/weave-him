@@ -10,11 +10,8 @@ let buffers = {};
 let loop = null;
 const subs = new Set();
 
-const reduced = () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-let muted = (() => {
-  const v = localStorage.getItem(KEY);
-  return v === null ? !!reduced() : v === "1";
-})();
+// Sound is on by default for everyone; only the visitor's own choice on the speaker icon mutes it
+let muted = localStorage.getItem(KEY) === "1";
 
 // ---------- tiny DSP helpers ----------
 const rnd = (() => { let s = 1234567; return () => ((s = (s * 16807) % 2147483647) / 2147483647) * 2 - 1; })();
