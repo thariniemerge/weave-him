@@ -77,7 +77,7 @@ export const COPY = {
   readyPublic: "A commission, woven by hand",
   biceps: ["Ten strands. Not one of them about his ", "biceps", "."],
   vowsNo: "His vows · No.",
-  dearest: "dear village, I promise…",
+  dearest: "my dear fisherwoman, I promise…",
   yours: "Yours, woven by hand,",
   share: "Show the village",
   inLife: "Is he already in my life?",
