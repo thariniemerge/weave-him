@@ -18,8 +18,8 @@ export default function Bands() {
   const { answers, set } = useAnswers();
   const ready = isComplete(answers);
   const labels = ready ? allBandLabels(answers) : [];
-  const picked = (answers.bandPick || labels.slice(0, MAX)).filter((l) => labels.includes(l));
-  useEffect(() => { if (ready && !answers.bandPick) set("bandPick", labels.slice(0, MAX)); }); // eslint-disable-line react-hooks/exhaustive-deps
+  // nothing is pre-ticked: she chooses all three herself
+  const picked = (answers.bandPick || []).filter((l) => labels.includes(l));
   // her band picks feed the vows too: rewrite them in the background once she settles
   const pickKey = picked.join("|");
   useEffect(() => {
@@ -67,7 +67,7 @@ export default function Bands() {
       </div>
       <p className="f-cg italic text-center text-[15px] mt-2 text-[color:#4A3A2E]" data-testid="bands-count">{picked.length} of {MAX} chosen</p>
       <div className="mt-auto" />
-      <StrandCTA data-testid="weave-him-button" disabled={!picked.length} onClick={() => { nav("/weaving"); }}>{COPY.weaveHim}</StrandCTA>
+      <StrandCTA data-testid="weave-him-button" disabled={picked.length < MAX} onClick={() => { nav("/weaving"); }}>{COPY.weaveHim}</StrandCTA>
     </Page>
   );
 }
