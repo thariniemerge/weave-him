@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { holdMusic, isMuted } from "../../lib/sound";
+import { isMuted } from "../../lib/sound";
 import { maxDpr, onFrame } from "../../lib/perf";
 import "./intro.css";
 
@@ -130,7 +130,6 @@ function sound(){
 
 // Shown once per fresh page load that lands on the home page
 export const introWanted = () => window.location.pathname === "/";
-const MUSIC_AFTER = 1400; // just after the harp shimmer
 const REMOVE_AFTER = 3400, REMOVE_AFTER_REDUCED = 700;
 
 // Waits for the real Welcome screen (fonts + its images) so it comes forward complete
@@ -148,7 +147,6 @@ export function IntroVeil({ stageRef, onOpen, onDone }) {
   const canvases = () => ({ L: cv.L.current, R: cv.R.current, T: cv.T.current, B: cv.B.current });
 
   useEffect(() => {
-    holdMusic(true);
     paint(canvases());
     btn.current?.focus({ preventScroll: true });
     const prev = document.body.style.overflow;
@@ -168,7 +166,6 @@ export function IntroVeil({ stageRef, onOpen, onDone }) {
       setOpen(true); onOpen();
       if (!reduce) burst(fx.current, fxState.current);
       document.body.style.overflow = "";
-      setTimeout(() => holdMusic(false), MUSIC_AFTER);
       setTimeout(() => document.querySelector("[data-testid=commission-button]")?.focus({ preventScroll: true }), 1800);
       setTimeout(onDone, reduce ? REMOVE_AFTER_REDUCED : REMOVE_AFTER);
     });
@@ -176,7 +173,7 @@ export function IntroVeil({ stageRef, onOpen, onDone }) {
 
   return (
     <div className={`iv${open ? " is-open" : ""}`} data-testid="intro-veil">
-      <button ref={btn} className="iv-veil" type="button" aria-label="Enter Weave Him" onClick={enter} data-testid="intro-veil-enter">
+      <button ref={btn} className="iv-veil" type="button" aria-label="Enter Weave Your Wicker Man" onClick={enter} data-testid="intro-veil-enter">
         <div className="iv-backdrop" />
         <div className="iv-shaft" />
         <div className="iv-layer iv-B"><div className="iv-sway"><canvas ref={cv.B} /></div></div>
@@ -188,7 +185,7 @@ export function IntroVeil({ stageRef, onOpen, onDone }) {
           <div className="iv-twine" />
           <div className="iv-plaque">
             <div className="iv-seal">w</div>
-            <b>weave him</b>
+            <b>weave your wicker man</b>
             <span className="iv-pulse">tap to enter</span>
           </div>
         </div>

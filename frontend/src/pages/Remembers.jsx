@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Plus, X } from "lucide-react";
 import { Page, Pill, Art, Chip } from "../components/weave/ui";
 import { StrandHeader, WovenProgress } from "../components/weave/StrandHeader";
+import { StrandFooter } from "../components/weave/StrandFooter";
 import { COPY, REMEMBERS } from "../content";
 import { useAnswers } from "../lib/store";
 import { topByLinks } from "../lib/weave";
@@ -71,6 +72,7 @@ export default function Remembers() {
       <div className="mt-auto pt-8 hidden">
         <WovenProgress done={5} />
       </div>
+      <StrandFooter n={6} />
       <StrandCTA data-testid="next-feel-button" disabled={!picks.length} onClick={() => { nav("/strand/7"); }}>{COPY.nextFeel}</StrandCTA>
     </Page>
   );

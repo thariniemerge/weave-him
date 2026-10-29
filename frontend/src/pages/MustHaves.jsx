@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Page } from "../components/weave/ui";
 import { StrandHeader } from "../components/weave/StrandHeader";
+import { StrandFooter } from "../components/weave/StrandFooter";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { ChipPicker, PickCard } from "../components/weave/ChipPicker";
 import { PanelOrInline } from "../components/weave/Layout";
@@ -44,6 +45,7 @@ export default function MustHaves() {
       )}
       <PanelOrInline><div className="mt-5 lg:mt-0 w-full lg:max-h-[88vh] lg:overflow-y-auto check-panel">{check}</div></PanelOrInline>
       {verdict && <p className="hidden lg:block f-cg italic font-semibold text-center text-[19px] mt-4 text-[color:var(--rose)]" data-testid="musts-verdict">{verdict}</p>}
+      <StrandFooter n={10} />
       <StrandCTA data-testid="weave-him-musts-button" disabled={!picks.length || !!verdict} onClick={confirm}>{COPY.weaveHim}</StrandCTA>
     </Page>
   );

@@ -6,7 +6,8 @@ import { PanelOrInline, FallingLeaves } from "../components/weave/Layout";
 import { VowsCard } from "../components/weave/VowsCard";
 import { MustHavesCard } from "../components/weave/MustHavesCard";
 import { CardPreview } from "../components/weave/CardPreview";
-import { play, duckMusic } from "../lib/sound";
+import { play } from "../lib/sound";
+import { SoundtrackLink } from "../components/weave/SoundtrackLink";
 import { ShareCard } from "../components/weave/ShareCard";
 import { COPY } from "../content";
 import { cachedHusband, getCardBlob, getHusband, isMine, shareLink, upgradeVows, rememberHusband } from "../lib/api";
@@ -77,7 +78,7 @@ export default function Meet({ isPublic = false }) {
   useEffect(() => { if (isPublic && h) document.title = `Meet ${h.name} · Weave Him`; }, [h, isPublic]);
   useEffect(() => {
     if (!h?.id || !framesReady) return;
-    play("harp"); duckMusic();
+    play("harp");
     const t = setTimeout(() => emote("blush"), 1000);
     return () => clearTimeout(t);
   }, [h?.id, framesReady]);
@@ -132,6 +133,7 @@ export default function Meet({ isPublic = false }) {
         </motion.div>
       )}
       <motion.div className="space-y-3 mt-6" initial={reduce ? false : { opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduce ? 0 : 5.4, duration: 0.5 }}>
+        <SoundtrackLink text={COPY.soundtrackMeet} testid="soundtrack-link-meet" />
         {isPublic ? (
           <>
             <p data-testid="village-talking" className="f-cg italic text-center text-[15px] text-[color:var(--rose)] opacity-80">{COPY.villageTalking}</p>

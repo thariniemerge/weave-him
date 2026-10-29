@@ -79,6 +79,9 @@ async def main():
             await pg.goto(BASE + "/bands", wait_until="domcontentloaded"); await pg.evaluate(PROBE)
         await pg.wait_for_selector("[data-testid=bands-preview]", timeout=15000)
         print("on /bands at", await now(), "count", await pg.inner_text("[data-testid=bands-count]"))
+        # nothing is pre-ticked: choose the first three bands
+        for c in (await pg.locator("[data-testid^=band-choice-]").all())[:3]:
+            await c.click(); await pg.wait_for_timeout(150)
         await pg.wait_for_timeout(2500 if MODE == "full" else 200)
         if MODE == "full":
             n0 = len([n for n in net if n[1] == "REQ" and "draft" in n[2]])

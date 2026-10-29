@@ -3,6 +3,7 @@ import { StrandCTA } from "../components/weave/StrandCTA";
 import { useNavigate } from "react-router-dom";
 import { Page, Pill, Art } from "../components/weave/ui";
 import { StrandHeader } from "../components/weave/StrandHeader";
+import { StrandFooter } from "../components/weave/StrandFooter";
 import { COPY, SLIDERS } from "../content";
 import { useAnswers } from "../lib/store";
 import { sliderStep, soFarTags } from "../lib/weave";
@@ -79,6 +80,7 @@ export default function Temperament() {
         <Art name="hoop-small" className="w-24 floaty" />
         <p className="f-cg italic text-[16px] text-[color:#4A5641] mt-1">{COPY.comingTogether}</p>
       </div>
+      <StrandFooter n={5} />
       <StrandCTA data-testid="next-remembers-button" onClick={() => { nav("/strand/6"); }}>{COPY.nextRemembers}</StrandCTA>
     </Page>
   );

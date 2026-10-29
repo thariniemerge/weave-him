@@ -10,7 +10,7 @@ export const vowsFor = (answers) => {
   const sig = JSON.stringify(payload);
   if (!drafts.has(sig)) {
     if (drafts.size > 4) drafts.delete(drafts.keys().next().value);
-    drafts.set(sig, draftVows(payload).then((r) => r.draft).catch(() => null));
+    drafts.set(sig, draftVows(payload).then((r) => r.draft).catch(() => null).then((d) => { if (!d) drafts.delete(sig); return d; }));
   }
   return drafts.get(sig);
 };

@@ -11,7 +11,8 @@ import { createHusband, getHusband, rememberHusband } from "../lib/api";
 import { vowsFor, setLateDraft } from "../lib/vowDraft";
 import { Medallion } from "../components/weave/Medallion";
 import { PanelOrInline } from "../components/weave/Layout";
-import { play, startLoop, stopLoop } from "../lib/sound";
+import { play, startLoop, stopLoop, playClip } from "../lib/sound";
+import { SoundtrackLink } from "../components/weave/SoundtrackLink";
 import { SoundToggle } from "../components/weave/ui";
 
 // up to the chin by 4s, face at 5s; if the vows are late, finishing touches until a hard stop at 7s
@@ -114,7 +115,7 @@ export default function Weaving() {
     weave();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  useEffect(() => { startLoop("rustle"); return () => stopLoop(); }, []);
+  useEffect(() => { startLoop("weave-hum", { gain: 0.6, fade: 0.5 }); return () => stopLoop(); }, []);
   // Warm up everything Meet him needs so nothing pops in late
   useEffect(() => {
     ["vow-strip", "wax-seal", "heart", "heart-empty"].forEach((n) => { new Image().src = `/art/${n}.svg`; });
@@ -137,10 +138,19 @@ export default function Weaving() {
     if (step === 9 && ((husband && due) || late)) setStep(10);
   }, [step, husband, due, late, skip]);
   const finishing = due && !husband && !error && step < 10;
+  // once he's woven: the hum fades, the hearth bloom rings, and only then do we move on
+  const stinger = useRef(null);
+  useEffect(() => {
+    if (step < 10 || stinger.current) return;
+    stopLoop(0.4);
+    stinger.current = playClip("weave-done", { gain: 0.8, delay: 0.4 });
+  }, [step]);
   useEffect(() => {
     if (husband && step >= 10) {
-      const t = setTimeout(() => nav(`/meet/${husband.id}`, { replace: true }), skip ? 0 : FINISH_MS);
-      return () => clearTimeout(t);
+      let t;
+      let live = true;
+      stinger.current.then(() => { if (live) t = setTimeout(() => nav(`/meet/${husband.id}`, { replace: true }), skip ? 0 : FINISH_MS); });
+      return () => { live = false; clearTimeout(t); };
     }
   }, [husband, step, skip, nav]);
 
@@ -168,6 +178,7 @@ export default function Weaving() {
           style={{ transform: `scaleY(${1 - p})` }} />
       </div>
       <LoadingLine active={step < 10 && !error} finishing={finishing} reduce={!!reduce} />
+      <SoundtrackLink text={COPY.soundtrackWeaving} testid="soundtrack-link-weaving" className="mt-1" />
       <p className="f-cg italic text-center text-[18px] mt-3 leading-snug">
         {COPY.weavingAside[0]}<br />{COPY.weavingAside[1]}<span className="hl-peony">{COPY.weavingAside[2]}</span>{COPY.weavingAside[3]}
       </p>

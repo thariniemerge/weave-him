@@ -10,16 +10,10 @@ import Temperament from "./Temperament";
 import Remembers from "./Remembers";
 import { Goal, Interests } from "./GoalInterests";
 import MustHaves from "./MustHaves";
+import { StrandFooter } from "../components/weave/StrandFooter";
 
 export const nextPath = (n) => (n < 10 ? `/strand/${n + 1}` : "/bands");
 export const prevPath = (n) => (n > 1 ? `/strand/${n - 1}` : "/");
-
-const Aside = () => (
-  <div className="relative text-center mt-5 mb-4 lg:order-last lg:mt-4 [@media(max-height:820px)]:lg:hidden">
-    <p className="f-cg italic text-[17px]">{COPY.asideA}</p>
-    <p className="f-cg italic text-[17px]"><span className="hl">{COPY.asideB}</span></p>
-  </div>
-);
 
 function Question({ n }) {
   const nav = useNavigate();
@@ -31,7 +25,7 @@ function Question({ n }) {
     <Page>
       <StrandHeader n={n} back={prevPath(n)} />
       <QuestionCard key={q.key} q={q} value={value} onChange={(v) => set(q.key, v)} />
-      <Aside />
+      <StrandFooter n={n} />
       <div className="relative mt-auto hidden">
         <Art name="corner-wedgwood" className="absolute -left-10 -top-8 w-12 opacity-80 -scale-x-100 pointer-events-none" />
         <WovenProgress done={n - 1} />

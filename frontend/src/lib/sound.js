@@ -1,4 +1,4 @@
-// Quiet workshop sounds, synthesised in the browser with the Web Audio API (no audio files).
+// Workshop sounds: short effects synthesised with the Web Audio API, plus two recorded weaving clips.
 import { useSyncExternalStore } from "react";
 
 const KEY = "weave-him-muted";
@@ -131,77 +131,9 @@ function init() {
 
 function unlock() {
   init();
-  ctx?.resume?.().then(() => { if (loop?.pending) startLoop(loop.name); musicOn(); }).catch(() => {});
+  ctx?.resume?.().then(() => { if (loop?.pending) startLoop(loop.name, loop.opts); }).catch(() => {});
 }
 ["pointerdown", "keydown", "touchend"].forEach((e) => window.addEventListener(e, unlock, { passive: true }));
-
-// ---------- Welcome music: decoded AudioBuffer, looped seamlessly ----------
-const music = { wanted: false, level: 0.22, raw: null, buffer: null, src: null, gain: null, offset: 0, t0: 0, loading: null, duckUntil: 0 };
-
-function loadMusic() {
-  if (music.loading) return music.loading;
-  const ogg = new Audio().canPlayType('audio/ogg; codecs="vorbis"');
-  music.loading = fetch(ogg ? "/audio/welcome-theme.ogg" : "/audio/welcome-theme.mp3")
-    .then((r) => r.arrayBuffer()).then((b) => { music.raw = b; musicOn(); }).catch(() => {});
-  return music.loading;
-}
-
-async function musicOn() {
-  if (music.held || !music.wanted || muted || music.src || music.starting || document.hidden || !ctx || ctx.state !== "running" || !music.raw) return;
-  if (!music.buffer) {
-    music.starting = true;
-    try { music.buffer = await ctx.decodeAudioData(music.raw.slice(0)); } catch { music.starting = false; return; }
-    music.starting = false;
-    if (!music.wanted || muted || music.src || document.hidden) return;
-  }
-  const src = ctx.createBufferSource(), g = ctx.createGain();
-  src.buffer = music.buffer; src.loop = true;
-  const now = ctx.currentTime;
-  g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(music.level, now + 3);
-  src.connect(g).connect(ctx.destination);
-  src.start(0, music.offset % music.buffer.duration);
-  Object.assign(music, { src, gain: g, t0: now });
-}
-
-function musicOff(fade = 1.2) {
-  if (!music.src) return;
-  const { src, gain } = music, now = ctx.currentTime;
-  music.offset = (music.offset + now - music.t0) % music.buffer.duration;
-  gain.gain.cancelScheduledValues(now);
-  gain.gain.setValueAtTime(gain.gain.value, now);
-  gain.gain.linearRampToValueAtTime(0, now + fade);
-  src.stop(now + fade + 0.05);
-  music.src = null;
-}
-
-function rampTo(v, sec) {
-  if (!music.gain) return;
-  const g = music.gain.gain, now = ctx.currentTime;
-  g.cancelScheduledValues(now); g.setValueAtTime(g.value, now); g.linearRampToValueAtTime(v, now + sec);
-}
-
-// One soundtrack for the whole app; quieter while she's answering or weaving
-export function musicForRoute(path) {
-  music.wanted = !path.startsWith("/card/");
-  const quiet = path.startsWith("/strand") || path.startsWith("/weaving") || path.startsWith("/bands");
-  music.level = quiet ? 0.12 : 0.22;
-  if (!music.wanted) return musicOff(0.4);
-  if (!music.loading) setTimeout(() => (window.requestIdleCallback || setTimeout)(loadMusic), 800); // after first paint
-  if (performance.now() > music.duckUntil) rampTo(music.level, 1.2);
-  musicOn();
-}
-
-// Dip under the reveal flourishes, then swell back
-export function duckMusic(hold = 1.6) {
-  if (!music.gain) return;
-  music.duckUntil = performance.now() + (0.3 + hold + 1.5) * 1000;
-  const g = music.gain.gain, now = ctx.currentTime;
-  g.cancelScheduledValues(now); g.setValueAtTime(g.value, now);
-  g.linearRampToValueAtTime(0.06, now + 0.3);
-  g.setValueAtTime(0.06, now + 0.3 + hold);
-  g.linearRampToValueAtTime(music.level, now + 0.3 + hold + 1.5);
-}
-document.addEventListener("visibilitychange", () => (document.hidden ? musicOff(0.3) : musicOn()));
 
 const ready = () => !muted && ctx && ctx.state === "running";
 
@@ -212,21 +144,55 @@ export function play(name, { rate = 1, gain = 1 } = {}) {
   src.connect(g).connect(master); src.start();
 }
 
-export function startLoop(name) {
-  stopLoop();
-  if (!ready()) { loop = { name, pending: true }; return; }
-  const src = ctx.createBufferSource(), g = ctx.createGain();
-  src.buffer = buffers[name]; src.loop = true;
-  g.gain.setValueAtTime(0, ctx.currentTime); g.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.4);
-  src.connect(g).connect(master); src.start();
-  loop = { name, src, g };
+// ---------- recorded clips (public/assets/audio), fetched early and decoded once ----------
+const FILES = { "weave-hum": "/assets/audio/weave_loop_C_willow_hum.wav", "weave-done": "/assets/audio/done_3_hearth_bloom.mp3" };
+const raw = {};
+const decoded = {};
+export function preloadClips(names) {
+  names.forEach((n) => { raw[n] ||= fetch(FILES[n]).then((r) => r.arrayBuffer()).catch(() => null); });
+}
+function clip(name) {
+  preloadClips([name]);
+  init();
+  if (!ctx) return Promise.resolve(null);
+  return (decoded[name] ||= raw[name].then((b) => (b ? ctx.decodeAudioData(b.slice(0)) : null)).catch(() => null));
 }
 
-export function stopLoop() {
+// Plays a clip once, straight to the speakers; resolves once it has started (or right away if it can't play)
+export function playClip(name, { gain = 1, delay = 0 } = {}) {
+  if (!ready()) return Promise.resolve();
+  return clip(name).then((b) => {
+    if (!b || !ready()) return;
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    src.buffer = b; g.gain.value = gain;
+    src.connect(g).connect(ctx.destination); src.start(ctx.currentTime + delay);
+    return new Promise((r) => setTimeout(r, delay * 1000));
+  }).catch(() => {});
+}
+
+export function startLoop(name, opts = {}) {
+  stopLoop();
+  if (!ready()) { loop = { name, opts, pending: true }; return; }
+  const { gain = 1, fade = 0.4 } = opts;
+  const me = { name, opts };
+  loop = me;
+  const begin = (b) => {
+    if (loop !== me || !b || !ready()) return;
+    const src = ctx.createBufferSource(), g = ctx.createGain();
+    src.buffer = b; src.loop = true;
+    g.gain.setValueAtTime(0, ctx.currentTime); g.gain.linearRampToValueAtTime(gain, ctx.currentTime + fade);
+    src.connect(g).connect(FILES[name] ? ctx.destination : master); src.start();
+    Object.assign(me, { src, g });
+  };
+  if (FILES[name]) clip(name).then(begin); else begin(buffers[name]);
+}
+
+export function stopLoop(fade = 0.3) {
   if (loop?.src) {
-    const { src, g } = loop;
-    g.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.3);
-    src.stop(ctx.currentTime + 0.35);
+    const { src, g } = loop, now = ctx.currentTime;
+    g.gain.cancelScheduledValues(now); g.gain.setValueAtTime(g.gain.value, now);
+    g.gain.linearRampToValueAtTime(0, now + fade);
+    src.stop(now + fade + 0.05);
   }
   loop = null;
 }
@@ -234,16 +200,11 @@ export function stopLoop() {
 export function setMuted(m) {
   muted = m;
   localStorage.setItem(KEY, m ? "1" : "0");
-  if (m && loop?.src) { const n = loop.name; stopLoop(); loop = { name: n, pending: true }; }
-  if (m) musicOff(0.4);
-  else unlock();
+  // muting stops the loop; unmuting starts it again from the beginning
+  if (m && loop) { const { name, opts } = loop; stopLoop(); loop = { name, opts, pending: true }; }
+  if (!m) unlock();
   subs.forEach((f) => f());
 }
 
 export const useMuted = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => muted);
 export const isMuted = () => muted;
-// The intro holds the music until its harp shimmer has rung out
-export function holdMusic(on) {
-  music.held = on;
-  if (!on) { loadMusic(); musicOn(); }
-}

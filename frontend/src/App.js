@@ -14,7 +14,6 @@ import CardPage from "./pages/CardPage";
 import Bands from "./pages/Bands";
 import { Layout } from "./components/weave/Layout";
 import { PageStack } from "./components/weave/PageStack";
-import { musicForRoute } from "./lib/sound";
 import { IntroVeil, introWanted } from "./components/weave/IntroVeil";
 
 function AnimatedRoutes() {
@@ -22,7 +21,7 @@ function AnimatedRoutes() {
   const [intro, setIntro] = useState(introWanted);
   const [introOpen, setIntroOpen] = useState(false);
   const stage = useRef(null);
-  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; musicForRoute(location.pathname); window.scrollTo(0, 0); }, [location.pathname]);
+  useEffect(() => { if (!location.pathname.startsWith("/h/")) document.title = "Weave Him"; window.scrollTo(0, 0); }, [location.pathname]);
   // the five raw-willow weaving states load during the intro; his expression frames load only on the weaving screen
   useEffect(() => { PORTRAITS.forEach((p) => { new Image().src = portraitSrc(p.slug, "-weave"); }); }, []);
   if (location.pathname.startsWith("/card/")) return <Routes><Route path="/card/:id" element={<CardPage />} /></Routes>;

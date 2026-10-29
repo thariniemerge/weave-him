@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Page } from "../components/weave/ui";
 import { StrandHeader } from "../components/weave/StrandHeader";
+import { StrandFooter } from "../components/weave/StrandFooter";
 import { StrandCTA } from "../components/weave/StrandCTA";
 import { ChipPicker, PickCard } from "../components/weave/ChipPicker";
 import { Option } from "../components/weave/QuestionCard";
@@ -23,6 +24,7 @@ export function Goal() {
           ))}
         </div>
       </PickCard>
+      <StrandFooter n={8} />
       <StrandCTA data-testid="next-interests-button" disabled={!answers.goal} onClick={() => { nav("/strand/9"); }}>{COPY.nextInterests}</StrandCTA>
     </Page>
   );
@@ -40,6 +42,7 @@ export function Interests() {
         <ChipPicker items={topByLinks(INTERESTS, answers, picks)} picks={picks} onChange={(v) => set("interests", v)} max={2} countOwn prefix="interest"
           placeholder={COPY.interestsOwnPlaceholder} ownLabel="Add a thing I love" />
       </PickCard>
+      <StrandFooter n={9} />
       <StrandCTA data-testid="next-musts-button" disabled={!picks.length} onClick={() => { nav("/strand/10"); }}>{COPY.nextMusts}</StrandCTA>
     </Page>
   );

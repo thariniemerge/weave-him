@@ -9,8 +9,6 @@ export const CONFIG = {
   CARD_CREDIT_LINE: "Built with Emergent",
   // Printed on the share card while running on a preview address (before publishing)
   PREVIEW_SITE_LABEL: "weavehim.[domain]",
-  // Welcome shows one of these as the husbands-woven count, picked afresh on every page load
-  WOVEN_COUNTS: [58, 67, 81, 94],
 };
 
 const isPreviewHost = (h) => /preview\.emergentagent\.com|localhost|127\.0\.0\.1/.test(h);
@@ -19,24 +17,28 @@ export const siteHost = () =>
 
 export const COPY = {
   guild: "The Basketmaker's Workshop",
-  kicker: "hand-woven for the village gossips",
+  kicker: "The village laughed. So she ordered one.",
   wordmark: "weave him",
-  welcomeTitle: ["Weave Wicker", "Your Husband"],
+  welcomeTitle: ["weave your", "wicker man"],
   tagline: ["Peter Dinklage can't be your basketmaker.", "But that's no reason not to weave your ideal man."],
   steps: ["Answer", "Weave", "Meet him"],
-  cta: "Order my husband material",
-  // Release hook, shown on Welcome until the end of RELEASE_DAY (local time)
-  releaseHook: "In theatres Oct 30. Can't wait till Friday? Weave him now.",
+  stepNotes: ["Ten strands. Not one about his looks.", "The basketmaker gets to work.", "A name and five vows, made for you."],
+  cta: "Start weaving",
+  // Release ribbon on Welcome; switches on RELEASE_DAY (visitor's local time)
+  ribbonBefore: "Wicker · in theatres Oct 30",
+  ribbonAfter: "Wicker · now showing",
   RELEASE_DAY: "2026-10-30",
+  villageToday: (n) => (n < 10 ? "The village is just waking up. The gossip isn't." : `${n} husbands woven today. The village is not coping.`),
   villageTalking: "The village is already talking. Soon they'll be jealous.",
   weavingFinishing: ["Sanding down his rough edges…", "No assembly required. Unlike some husbands."],
   weavingLoading: ["The basketmaker is soaking the willow… (Peter Dinklage would've been faster. Probably.)", "Weaving his shoulders. Skarsgård-width, as requested.", "Checking for splinters. Emotional ones too.", "Bending the willow. Not your standards."],
-  counter: (n) => `${n} ${n === 1 ? "husband" : "husbands"} woven by hand · two minutes`,
+  counter: "10 questions · 2 minutes · 100% husband material",
+  soundtrackWelcome: "Listen to the Wicker soundtrack while you weave",
+  soundtrackWeaving: "Weaving to the Wicker soundtrack. Press play →",
+  soundtrackMeet: "Meet him to 'Falling in Love Again'",
   orderTitle: "One husband, made to order. No fish required.",
   spinOwn: "Or, spin my own thread. The basketmaker can take it.",
   spinPlaceholder: "He…",
-  asideA: "There's no box for height on this form.",
-  asideB: "That's rather the point.",
   soFar: "My husband so far",
   weaveStrand: "Weave this strand",
   temperTitle: ["Tune his ", "temperament"],
@@ -99,7 +101,9 @@ export const COPY = {
   upToTwo: "Select up to two. The basketmaker only has so much willow.",
   bandsKicker: "Before he's woven",
   bandsTitle: ["Stitch his ", "bands"],
-  bandsSub: "Choose three strands for him to wear. Tap them in order.",
+  bandsSub: "Pick 3 bands from your answers below. He'll wear them in the order you tap.",
+  bandsLeft: (n) => (n === 3 ? "Pick 3 bands" : n === 1 ? "1 more band" : `${n} more bands`),
+  bandsPreviewLabel: "Your wicker husband wearing the bands you've picked. Tap to jump to the bands.",
   shareText: (name) => `Meet ${name}. Finally, actual husband material. #WickerMovie`,
   cardThumb: "His story card",
   cardThumbSub: "tap to view · 1080 × 1920",
@@ -138,6 +142,20 @@ export const MAX_LETTER_STRANDS = 6;
 
 // Single-choice strands. strand = tag label, tag = "so far" chip, band = band word, sentence = letter form
 // woven = how it reads on the share card after "Woven from" (a noun phrase, no commas)
+// Footer aside under each strand, keyed by strand number (I–X)
+export const STRAND_FOOTERS = {
+  1: { footerSetup: "There's no box for 'mocks me at the market.'", footerPunch: "That's the villagers' department." },
+  2: { footerSetup: "There's no box for 'quiet dissatisfaction.'", footerPunch: "The village has that covered." },
+  3: { footerSetup: "There's no box for 'tells me to be more like the neighbours.'", footerPunch: "The neighbours are the problem." },
+  4: { footerSetup: "There's no box for 'three gold coins.'", footerPunch: "The basketmaker took a deposit anyway." },
+  5: { footerSetup: "There's no box for 'stiff as a basket.'", footerPunch: "Flexible, like good willow. Slide away." },
+  6: { footerSetup: "There's no box for 'forgets our anniversary.'", footerPunch: "Wicker never forgets. It's woven in." },
+  7: { footerSetup: "There's no box for 'ashamed of how I smell.'", footerPunch: "He'll never mention the fish." },
+  8: { footerSetup: "There's no box for 'approved by the village timetable.'", footerPunch: "It has opinions about everything." },
+  9: { footerSetup: "There's no box for 'hobbies the neighbours approve of.'", footerPunch: "Jealousy doesn't count either." },
+  10: { footerSetup: "There's no box for height on this form.", footerPunch: "The basketmaker already decided." },
+};
+
 export const QUESTIONS = [
   {
     n: 1, key: "q1", text: "When I've had a *terrible* day, he…",
