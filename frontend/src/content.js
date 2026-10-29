@@ -95,7 +95,8 @@ export const COPY = {
   copyLink: "Copy link instead",
   linkCopied: "Link copied",
   pressing: "Pressing his card…",
-  upToThree: "up to two",
+  // pick-limit hint on the question cards (the "· 1 of 2" count is added after it)
+  upToTwo: "Two strands at most. The basketmaker's willow doesn't grow on trees.",
   bandsKicker: "Before he's woven",
   bandsTitle: ["Stitch his ", "bands"],
   bandsSub: "Choose three strands for him to wear. Tap them in order.",

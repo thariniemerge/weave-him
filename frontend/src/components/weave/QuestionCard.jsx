@@ -54,7 +54,7 @@ export const QuestionCard = ({ q, value, onChange }) => {
         <Accent text={q.text} className="text-[color:var(--rose)]" />
       </h1>
       <p data-testid="up-to-three" className={`f-cg italic text-center text-[16px] -mt-3 mb-4 transition-colors ${shake ? "text-[color:var(--rose)]" : "text-[color:#4A3A2E]"}`}>
-        {COPY.upToThree}{picks.length ? ` · ${picks.length} of ${MAX_PICKS}` : ""}
+        {COPY.upToTwo}{picks.length ? ` · ${picks.length} of ${MAX_PICKS}` : ""}
       </p>
       <div className="space-y-3">
         {q.options.map((o, i) => (
